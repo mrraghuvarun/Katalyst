@@ -1,0 +1,196 @@
+body, h1, h2, h3, p {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* General styling for the sidebar */
+.sidebar {
+    width: 280px;
+    height: 100vh;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: fixed;
+    transition: width 0.3s ease, visibility 0.3s ease;
+    overflow: hidden;
+}
+
+/* Collapsed sidebar styles */
+.sidebar.collapsed {
+    width: 80px;
+}
+
+/* Logo styling */
+.logo {
+    margin: 30px 0;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.logo-img {
+    width: 180px;
+    transition: width 0.3s ease, opacity 0.3s ease;
+}
+
+/* Hide logo in collapsed state */
+.sidebar.collapsed .logo-img {
+    width: 0;
+    visibility: hidden;
+    opacity: 0;
+}
+
+/* Navigation links styling */
+.nav-links {
+    list-style: none;
+    padding: 20px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+/* Styling for each nav link item */
+.nav-links li {
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+/* Styles for navigation items */
+.nav-item {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    color: #25396f;
+    text-decoration: none;
+    font-size: 17px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, transform 0.2s ease, padding 0.3s ease;
+}
+
+/* Icon styles */
+.nav-item box-icon {
+    margin-right: 12px;
+    font-size: 22px;
+    color: #bdc3c7;
+    transition: color 0.3s ease, margin 0.3s ease, font-size 0.3s ease;
+}
+
+/* Adjust icon size in collapsed state */
+.sidebar.collapsed .nav-item box-icon {
+    margin-right: 0;
+    font-size: 26px;
+}
+
+/* Hover effects */
+.nav-item:hover {
+    background-color: whitesmoke;
+    cursor: pointer;
+    transform: translateY(-5px);
+}
+
+/* Hover effect on icons */
+.nav-item:hover box-icon {
+    color: #ecf0f1;
+}
+
+/* Logout item specific styling */
+.logout {
+    color: #e74c3c;
+}
+
+.logout:hover {
+    transform: translateY(-3px);
+}
+
+/* Active link styling */
+.nav-item.active {
+    color: #000000;
+}
+
+.nav-item.active box-icon {
+    color: #ffffff;
+}
+
+/* Smooth transition effect on span */
+.nav-item span {
+    font-weight: 500;
+    margin-left: 10px;
+    transition: opacity 0.3s ease;
+}
+
+/* Hide span text in collapsed state */
+.sidebar.collapsed .nav-item span {
+    opacity: 0;
+    width: 0;
+    visibility: hidden;
+}
+
+/* Media queries for responsiveness */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 220px;
+    }
+
+    .logo-img {
+        width: 140px;
+    }
+
+    .nav-item {
+        padding: 10px 30px;
+        font-size: 15px;
+    }
+
+    .nav-item box-icon {
+        font-size: 20px;
+    }
+}
+
+body.dark-mode {
+    background-color: #121212;
+    color: #ffffff;
+}
+
+.sidebar.dark {
+    background-color: #1e1e1e;
+    color: #ffffff;
+    box-shadow: 2px 0 10px rgba(255, 255, 255, 0.15);
+}
+
+.sidebar.dark .nav-item {
+    color: #cfd8dc;
+}
+
+.sidebar.dark .nav-item:hover {
+    background-color: #37474f;
+}
+
+.sidebar.dark .nav-item.active {
+    background-color: #455a64;
+    color: #ffffff;
+}
+
+.sidebar.dark .nav-item box-icon {
+    color: #b0bec5;
+}
+
+.sidebar.dark .nav-item:hover box-icon {
+    color: #ffffff;
+}
+
+.theme-toggle {
+    background: none;
+    border: none;
+    color: inherit;
+    font-size: 20px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.theme-toggle:hover {
+    transform: scale(1.2);
+}

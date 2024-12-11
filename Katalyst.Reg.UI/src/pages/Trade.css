@@ -1,0 +1,421 @@
+body, h1, h2, h3, p {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.trade-container {
+  display: flex;
+  height: 100vh;
+  transition: margin-left 0.3s ease;
+}
+
+.trade-container.collapsed .trade-content {
+  margin-left: 80px;
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 280px;
+  z-index: 1000;
+  background-color: #fff;
+  transition: width 0.5s ease;
+}
+
+.trade-content {
+  padding: 10px;
+  flex-grow: 1;
+  overflow-y: auto;
+  height: 100vh;
+  transition: margin-left 0.3s ease;
+}
+
+h1 {
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.react-data-table-component {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+  min-width: 1000px;
+  overflow-x: auto;
+}
+
+.react-data-table-component table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.react-data-table-component thead {
+  background-color: #f5f5f5;
+}
+
+.react-data-table-component th,
+.react-data-table-component td {
+  padding: 10px;
+  text-align: left;
+  font-weight: 600;
+  color: #333;
+}
+
+.react-data-table-component tbody tr:hover {
+  background-color: #eef;
+}
+
+.react-data-table-component-rows {
+  padding: 10px 0;
+}
+
+.react-data-table-component-rows button {
+  background-color: #435ebe;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+}
+
+.react-data-table-component-rows button:hover {
+  background-color: #3949ab;
+}
+
+@media (max-width: 768px) {
+  .trade-content {
+    margin-left: 220px;
+    padding: 10px;
+    height: calc(100vh - 50px);
+  }
+}
+
+.search-bar {
+  width: 100%;
+  max-width: 400px;
+  padding: 10px 15px;
+  margin-bottom: 10px;
+  font-size: 16px;
+  color: #333;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  outline: none;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.search-bar:focus {
+  border-color: #435ebe;
+  box-shadow: 0 2px 8px rgba(67, 94, 190, 0.2);
+}
+
+.search {
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 5px;
+  font-size: 12px;
+  padding: 4px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.data-table-column-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+@media (max-width: 768px) {
+  .search-bar, .search {
+    max-width: 100%;
+  }
+}
+
+.trade-content {
+  position: relative; /* Make the parent container relatively positioned */
+}
+
+.trade-content {
+  position: relative; /* Make the parent container relatively positioned */
+  padding-top: 2rem; /* Add some top padding */
+}
+
+.button {
+  background-color: #435EBE;
+  color: white;
+  padding: 10px 15px;
+  font-size: 14px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+  display: inline-block;
+  transition: background-color 0.3s ease;
+  position: fixed; /* Position the button fixed */
+  top: 1rem; /* Adjust the top position as needed */
+  right: 1rem; /* Align the button to the right */
+  z-index: 1; /* Make sure the button is on top of the content */
+}
+
+.button:hover {
+  background-color: #0056b3;
+}
+
+.button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5);
+}
+
+.button:disabled {
+  background-color: #c0c0c0;
+  cursor: not-allowed;
+}
+
+.filter-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.filter-modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.filter-modal-content {
+  position: relative;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 600px;
+  width: 90%;
+  z-index: 1001;
+}
+
+.close-btn{
+    background-color: #ffffff;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    font-weight: 600;
+    color: #000000;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.close-btn:hover{
+    background-color: #435EBE;
+    color: #ffffff;
+}
+.clear-button,
+.apply-button {
+    background-color: #ffffff;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    font-weight: 600;
+    color: #000000;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.apply-button:hover,
+.close-button:hover {
+    background-color: #435EBE;
+    color: #ffffff; /* Make text white on hover */
+}
+
+
+.flex {
+  display: flex;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.mb-4 {
+  margin-bottom: 16px; /* Adjust this value as needed */
+}
+
+.filter-icon {
+  color: #007bff; /* Adjust icon color */
+  transition: transform 0.2s;
+}
+
+.filter-icon:hover {
+  transform: scale(1.1); /* Slightly enlarge the icon on hover */
+}
+
+h1 {
+  font-size: 24px;
+  margin: 0;
+}
+
+.trade-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0; /* Adjust padding if needed */
+  background-color: #f5f5f5; /* Optional: Add a background color */
+}
+
+.trade-title {
+  font-size: 24px;
+  margin: 0;
+  color: #333;
+}
+
+.trade-content {
+  padding: 0 10px; /* Remove top padding */
+  margin: 0;
+  flex-grow: 1;
+  overflow-y: auto;
+  height: 100vh;
+  position: relative;
+}
+
+
+.filter-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.filter-modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.filter-modal-content {
+  position: relative;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 600px;
+  width: 90%;
+  z-index: 1001;
+}
+
+.filter-icon {
+  color: #007bff;
+  margin-left: 10px;
+  transition: transform 0.2s, color 0.2s;
+}
+
+.filter-icon:hover {
+  transform: scale(1.1);
+  color: #3949ab;
+}
+
+.filter-row {
+  background-color: #f9fafb;
+  padding: 8px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.filter-row .grid {
+  display: grid;
+  grid-template-columns: repeat(2, 30%); /* Adjust spacing between the filters */
+  gap: 10px; /* Adjust space between filters */
+  margin-bottom: 12px; /* Adjust space between rows */
+}
+
+
+.filter-row .filter-field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 8px; /* Reduce bottom margin for filter fields */
+}
+
+.filter-row .filter-field label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 4px;
+}
+
+.filter-row .filter-field input,
+.filter-row .filter-field select {
+  width: 50%; /* Set width to 50% for input/select */
+  padding: 6px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background-color: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.filter-row .filter-field input::placeholder,
+.filter-row .filter-field select::placeholder {
+  width: 50%; /* Ensure placeholder width is 50% */
+}
+
+.filter-row .filter-field input:focus,
+.filter-row .filter-field select:focus {
+  border-color: #3b82f6;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.filter-row .filter-actions {
+  display: flex;
+  justify-content: flex-start; /* Align buttons to the left */
+  gap: 12px; /* Increase gap between buttons */
+  margin-top: 16px;
+}
+
+.filter-row .filter-actions button {
+  padding: 8px 16px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.filter-row .filter-actions button:hover {
+  cursor: pointer;
+}
+
+.filter-row .filter-actions .bg-gray-200 {
+  background-color: #e5e7eb;
+  color: #374151;
+}
+
+.filter-row .filter-actions .bg-gray-200:hover {
+  background-color: #d1d5db;
+}
+
+.filter-row .filter-actions .bg-blue-500 {
+  background-color: #3b82f6;
+  color: #fff;
+}
+
+.filter-row .filter-actions .bg-blue-500:hover {
+  background-color: #2563eb;
+}

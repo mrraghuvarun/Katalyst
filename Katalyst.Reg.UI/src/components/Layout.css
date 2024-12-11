@@ -1,0 +1,36 @@
+.layout-container {
+  display: flex;
+  height: 100vh;
+  background-color: #ffffff;
+  transition: all 0.3s ease;
+}
+
+.layout-content {
+  flex: 1;
+  padding: 20px;
+  margin-left: 280px;
+  transition: margin-left 0.3s ease;
+}
+
+.layout-container.collapsed .layout-content {
+  margin-left: 80px;
+}
+
+.toggle-sidebar {
+  background-color: #435EBE;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  transition: background-color 0.3s ease;
+
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.toggle-sidebar:hover {
+  background-color: #3b4a94;
+}
