@@ -24,7 +24,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, toggleSidebar }) => {
   return (
     <div className={`sidebar ${collapsed ? "collapsed" : ""}`}>
       <div className="sidebar-header">
-        <h1 className="sidebar-title">{collapsed ? "K" : "Katalyst"}</h1>
+        <h1 className="sidebar-title">{collapsed ? "M" : "MIFID"}</h1>
         <button className="toggle-sidebar" onClick={toggleSidebar}>
           {collapsed ? <FaArrowRight /> : <FaArrowLeft />}
         </button>

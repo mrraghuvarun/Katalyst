@@ -1,0 +1,77 @@
+.nine-dots-container {
+    position: relative;
+  }
+  
+  .nine-dots-icon {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #333;
+    transition: color 0.3s ease;
+  }
+  
+  .nine-dots-icon:hover {
+    color: #007bff;
+  }
+  
+  .menu-sheet {
+    position: absolute;
+    top: 60px; /* Adjust based on icon size */
+    right: -100%; /* Center align under the icon */
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    padding: 16px;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .menu-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .menu-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: #333;
+    font-size: 14px;
+    padding: 8px;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .menu-item:hover {
+    background-color: #f0f0f0;
+  }
+  
+  .menu-item img {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 8px;
+  }
+  
+  .menu-item span {
+    text-align: center;
+  }
+  

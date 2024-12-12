@@ -7,7 +7,8 @@ import Report from './pages/Report.tsx';
 import NCAResponse from './pages/NCAResponse.tsx';
 import Data from './pages/Data.tsx';
 import BackReporting from './pages/BackReporting.tsx';
-import Loading from './components/Loading.tsx';  // Import the Loading component
+import Loading from './components/Loading.tsx';
+import HomePage from './pages/HomePage.tsx'
 import 'boxicons';
 import './App.css';
 
@@ -32,13 +33,15 @@ const App: React.FC = () => {
       {loading && <Loading />} {/* Show loading page during page transition */}
       
       <Routes>
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={<HomePage />} />
         <Route path="/summary" element={<Summary />} />
         <Route path="/trade" element={<Trade />} />
         <Route path="/report" element={<Report />} />
         <Route path="/data" element={<Data />} />
         <Route path="/backreporting" element={<BackReporting />} />
         <Route path="/nca-response" element = {<NCAResponse />} />
+        <Route path="/home" element = {<HomePage />} />
+        <Route path="/login" element = {<Login />} />
       </Routes>
     </div>
   );
