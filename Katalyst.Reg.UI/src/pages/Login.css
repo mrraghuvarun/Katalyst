@@ -8,6 +8,14 @@
   font-family: 'Poppins', sans-serif;
 }
 
+/* Simple error message styling */
+.error-message {
+  color: red; /* Red text color */
+  font-size: 1rem; /* Standard text size */
+  font-weight: 500; /* Medium weight for emphasis */
+  margin-top: 0.5rem; /* Spacing from the input/button */
+}
+
 .row {
   display: flex;
   width: 100%;

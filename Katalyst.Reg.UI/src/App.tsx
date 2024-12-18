@@ -8,7 +8,8 @@ import NCAResponse from './pages/NCAResponse.tsx';
 import Data from './pages/Data.tsx';
 import BackReporting from './pages/BackReporting.tsx';
 import Loading from './components/Loading.tsx';
-import HomePage from './pages/HomePage.tsx'
+import HomePage from './pages/HomePage.tsx';
+import DataInjection from './pages/DataInjection.tsx';
 import 'boxicons';
 import './App.css';
 
@@ -40,7 +41,7 @@ const App: React.FC = () => {
         <Route path="/data" element={<Data />} />
         <Route path="/backreporting" element={<BackReporting />} />
         <Route path="/nca-response" element = {<NCAResponse />} />
-        <Route path="/home" element = {<HomePage />} />
+        <Route path="/data-injection" element = {<DataInjection />} />
         <Route path="/login" element = {<Login />} />
       </Routes>
     </div>

@@ -72,7 +72,7 @@ const Login: React.FC = () => {
                 </label>
               </div>
               {errorMessage && (
-                <div className="text-danger mt-3">{errorMessage}</div>
+                <div className="error-message">{errorMessage}</div>
               )}
               <button className="btn btn-primary btn-block mt-5">Log in</button>
             </form>
