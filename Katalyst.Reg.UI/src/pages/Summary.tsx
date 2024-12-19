@@ -8,7 +8,24 @@ import "./Summary.css";
 import SummaryCard from "../components/SummaryCard.js";
 import { ChartContainer } from "@/src/components/ui/chart";
 import { BarChart, Bar, CartesianGrid, XAxis, YAxis } from "recharts";
-import { ChartLegend, ChartLegendContent,ChartTooltip, ChartTooltipContent } from "@/src/components/ui/chart"
+import { ChartLegend, ChartLegendContent,ChartTooltip, ChartTooltipContent } from "@/src/components/ui/chart";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/src/components/ui/table";
+import {
+  ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  getPaginationRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import '../output.css';
 interface TradeDataItem {
   "Reporting Date": string;
   [key: string]: string | number;
@@ -245,6 +262,65 @@ const Summary: React.FC = () => {
     },
   };
 
+  const columns: ColumnDef<TradeDataItem>[] = [
+    {
+      header: "Reporting Date",
+      accessorKey: "Reporting Date",
+    },
+    {
+      header: "Total Number of Trade Events",
+      accessorKey: "Total Number of Trade Events",
+    },
+    {
+      header: "Total Number of Trade Events without Fingerprint",
+      accessorKey: "Total Number of Trade Events without Fingerprint",
+    },
+    {
+      header: "Total Number of New Trades",
+      accessorKey: "Total Number of New Trades",
+    },
+    {
+      header: "Total Number of Trades in Amended Status",
+      accessorKey: "Total Number of Trades in Amended Status",
+    },
+    {
+      header: "Total Number of Trades in Cancelled Status",
+      accessorKey: "Total Number of Trades in Cancelled Status",
+    },
+    {
+      header: "Total Number of Eligible Trades",
+      accessorKey: "Total Number of Eligible Trades",
+    },
+    {
+      header: "Total Number of TRN",
+      accessorKey: "Total Number of TRN",
+    },
+    {
+      header: "Total Number of TRN Accepted",
+      accessorKey: "Total Number of TRN Accepted",
+    },
+    {
+      header: "Total Number of TRN in Submitted Status",
+      accessorKey: "Total Number of TRN in Submitted Status",
+    },
+    {
+      header: "Total Number of TRN Rejected",
+      accessorKey: "Total Number of TRN Rejected",
+    },
+    {
+      header: "Total Number of Late Submission",
+      accessorKey: "Total Number of Late Submission",
+    },
+  ];
+  
+  
+    const table = useReactTable({
+      data: tradeDataTyped,
+      columns,
+      getCoreRowModel: getCoreRowModel(),
+      getPaginationRowModel: getPaginationRowModel(),
+    });
+
   return (
     <Layout collapsed={collapsed}>
       <div className="bg-white p-6 rounded-xl">
@@ -333,6 +409,79 @@ const Summary: React.FC = () => {
             </BarChart>
           </ChartContainer>
         </div>
+        <div className="flex gap-6">
+        <h3 className="text-2xl font-semibold text-black mb-1">Data Dashboard</h3>
+        <div
+            className="date-field"
+            style={{ display: "flex", alignItems: "center" }}
+          >
+            <span>Showing: </span>
+            <select
+              value={dateRange}
+              onChange={(e) => setDateRange(e.target.value)}
+              className="date-select"
+            >
+              <option value="All">
+                All
+              </option>
+            </select>
+          </div>
+          </div>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                {columns.map((column) => (
+                  <TableHead className="bg-sky-300" key={column.accessor}>
+                    {column.header}
+                  </TableHead>
+                ))}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {table.getRowModel().rows.map((row) => (
+                <TableRow key={row.id}>
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+                        </Table>
+                
+                        {/* Pagination Controls */}
+                        <div className="pagination-controls">
+            <button
+              onClick={() => table.setPageIndex(0)}
+              disabled={!table.getCanPreviousPage()}
+            >
+              {"<<"}
+            </button>
+            <button
+              onClick={() => table.previousPage()}
+              disabled={!table.getCanPreviousPage()}
+            >
+              {"<"}
+            </button>
+            <span>
+              Page{" "}
+              <strong>
+                {table.getState().pagination.pageIndex + 1} of{" "}
+                {table.getPageCount()}
+              </strong>
+            </span>
+            <button
+              onClick={() => table.nextPage()}
+              disabled={!table.getCanNextPage()}
+            >
+              {">"}
+            </button>
+            <button
+              onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+              disabled={!table.getCanNextPage()}
+            >
+              {">>"}
+            </button>
+                        </div>
       </div>
 
       <Modal
@@ -345,5 +494,4 @@ const Summary: React.FC = () => {
     </Layout>
   );
 };
-
 export default Summary;

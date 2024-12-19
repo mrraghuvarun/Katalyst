@@ -1,8 +1,24 @@
-import React,{useState} from "react";
+import {
+  ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  getPaginationRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "../components/Layout.tsx";
-import "./Data.css";
-import tradeData from '../assets/data.json';
+import tradeData from "../assets/data.json";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/src/components/ui/table";
+import '../output.css';
 
 interface TradeDataItem {
   "Reporting Date": string;
@@ -21,9 +37,67 @@ interface TradeDataItem {
 
 const tradeDataTyped = tradeData as TradeDataItem[];
 
+const columns: ColumnDef<TradeDataItem>[] = [
+  {
+    header: "Reporting Date",
+    accessorKey: "Reporting Date",
+  },
+  {
+    header: "Total Number of Trade Events",
+    accessorKey: "Total Number of Trade Events",
+  },
+  {
+    header: "Total Number of Trade Events without Fingerprint",
+    accessorKey: "Total Number of Trade Events without Fingerprint",
+  },
+  {
+    header: "Total Number of New Trades",
+    accessorKey: "Total Number of New Trades",
+  },
+  {
+    header: "Total Number of Trades in Amended Status",
+    accessorKey: "Total Number of Trades in Amended Status",
+  },
+  {
+    header: "Total Number of Trades in Cancelled Status",
+    accessorKey: "Total Number of Trades in Cancelled Status",
+  },
+  {
+    header: "Total Number of Eligible Trades",
+    accessorKey: "Total Number of Eligible Trades",
+  },
+  {
+    header: "Total Number of TRN",
+    accessorKey: "Total Number of TRN",
+  },
+  {
+    header: "Total Number of TRN Accepted",
+    accessorKey: "Total Number of TRN Accepted",
+  },
+  {
+    header: "Total Number of TRN in Submitted Status",
+    accessorKey: "Total Number of TRN in Submitted Status",
+  },
+  {
+    header: "Total Number of TRN Rejected",
+    accessorKey: "Total Number of TRN Rejected",
+  },
+  {
+    header: "Total Number of Late Submission",
+    accessorKey: "Total Number of Late Submission",
+  },
+];
+
 const Data: React.FC = () => {
   const navigate = useNavigate();
   const [collapsed] = useState<boolean>(false);
+
+  const table = useReactTable({
+    data: tradeDataTyped,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+  });
 
   return (
     <Layout collapsed={collapsed}>
@@ -42,42 +116,62 @@ const Data: React.FC = () => {
         </div>
       </div>
       <div className="cards-container">
-      <table className="data-table">
-        <thead>
-          <tr>
-            <th>Reporting Date</th>
-            <th>Total Number of Trade Events</th>
-            <th>Total Number of Trade Events without Fingerprint</th>
-            <th>Total Number of New Trades</th>
-            <th>Total Number of Trades in Amended Status</th>
-            <th>Total Number of Trades in Cancelled Status</th>
-            <th>Total Number of Eligible Trades</th>
-            <th>Total Number of TRN</th>
-            <th>Total Number of TRN Accepted</th>
-            <th>Total Number of TRN in Submitted Status</th>
-            <th>Total Number of TRN Rejected</th>
-            <th>Total Number of Late Submission</th>
-          </tr>
-        </thead>
-        <tbody>
-          {tradeDataTyped.map((item, index) => (
-            <tr key={index}>
-              <td>{item["Reporting Date"]}</td>
-              <td>{item["Total Number of Trade Events"]}</td>
-              <td>{item["Total Number of Trade Events without Fingerprint"]}</td>
-              <td>{item["Total Number of New Trades"]}</td>
-              <td>{item["Total Number of Trades in Amended Status"]}</td>
-              <td>{item["Total Number of Trades in Cancelled Status"]}</td>
-              <td>{item["Total Number of Eligible Trades"]}</td>
-              <td>{item["Total Number of TRN"]}</td>
-              <td>{item["Total Number of TRN Accepted"]}</td>
-              <td>{item["Total Number of TRN in Submitted Status"]}</td>
-              <td>{item["Total Number of TRN Rejected"]}</td>
-              <td>{item["Total Number of Late Submission"]}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+        <Table>
+          <TableCaption>A list of recent trade data.</TableCaption>
+          <TableHeader>
+            <TableRow>
+              {columns.map((column) => (
+                <TableHead className="bg-sky-300" key={column.accessorKey}>
+                  {column.header}
+                </TableHead>
+              ))}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows.map((row) => (
+              <TableRow key={row.id}>
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+
+        {/* Pagination Controls */}
+        <div className="pagination-controls">
+          <button
+            onClick={() => table.setPageIndex(0)}
+            disabled={!table.getCanPreviousPage()}
+          >
+            {"<<"}
+          </button>
+          <button
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            {"<"}
+          </button>
+          <span>
+            Page{" "}
+            <strong>
+              {table.getState().pagination.pageIndex + 1} of{" "}
+              {table.getPageCount()}
+            </strong>
+          </span>
+          <button
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+          >
+            {">"}
+          </button>
+          <button
+            onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+            disabled={!table.getCanNextPage()}
+          >
+            {">>"}
+          </button>
+        </div>
       </div>
     </Layout>
   );
