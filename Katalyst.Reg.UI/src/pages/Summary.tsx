@@ -209,6 +209,7 @@ const Summary: React.FC = () => {
         <div className="grid grid-cols-4 gap-4">
           {Object.keys(typeMap).map((key) => (
             <SummaryCard
+              onClick={() => handleCardClick(key)}
               key={key}
               title={key}
               icon={iconMap[key]}

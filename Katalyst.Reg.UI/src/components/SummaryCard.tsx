@@ -11,12 +11,13 @@ type CardProps = {
   title: string;
   value: number;
   icon: React.ReactNode;
+  onClick: () => void;
 };
-const SummaryCard: React.FC<CardProps> = ({ title, value, icon }) => {
+const SummaryCard: React.FC<CardProps> = ({ title, value, icon, onClick }) => {
   return (
     <Card
       className="summary-card cursor-pointer shadow-sm hover:shadow-[4px_4px_0_var(--card-shadow-color)] transition-shadow duration-300"
-      //   onClick={() => handleCardClick(key)}
+      onClick={onClick}
     >
       <CardHeader className="flex flex-row justify-between gap-4">
         <CardTitle className="text-xl text-gray-500">{title}</CardTitle>
