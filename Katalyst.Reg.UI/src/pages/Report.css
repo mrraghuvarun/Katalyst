@@ -180,3 +180,57 @@ h3 {
     font-size: 1.1rem;
   }
 }
+
+.header-container {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  gap: 20px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1rem;
+  flex-direction: row;
+}
+
+.date-field, .field-select {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.date-select, .info-select {
+  padding: 0.5rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background-color: white;
+  color: #374151;
+  font-size: 0.875rem;
+  cursor: pointer;
+  min-width: 200px;
+}
+
+.chart-container {
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 768px) {
+  .header-container {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .date-select, .info-select {
+    min-width: 150px;
+  }
+}
+
+.field-select{
+  display: flex;
+    gap: 20px;
+    align-items: center;
+    flex-direction: row;
+}
