@@ -1,23 +1,23 @@
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/src/components/ui/card";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Card from "../components/Card.tsx";
 import Modal from "../components/Modal.tsx";
 import tradeData from "../assets/data.json";
 import detailedData from "../assets/trade.json";
 import Layout from "../components/Layout.tsx";
 import "./Summary.css";
+import { ArrowUpRight } from 'lucide-react';
 
 interface TradeDataItem {
   "Reporting Date": string;
-  "Total Number of TRN Accepted": number;
-  "Total Number of TRN in Submitted Status": number;
-  "Total Number of TRN Rejected": number;
-  "Total Number of Late Submission": number;
-  "Total Number of Trade Events": number;
-  "Total Number of Trade Events without Fingerprint": number;
-  "Total Number of New Trades": number;
-  "Total Number of Trades in Amended Status": number;
-  "Total Number of Trades in Cancelled Status": number;
+  [key: string]: string | number;
 }
 
 interface DetailedDataItem {
@@ -26,13 +26,74 @@ interface DetailedDataItem {
   [key: string]: string | number;
 }
 
-// Add type assertions for the imported JSON data
 const typedTradeData = tradeData as TradeDataItem[];
 const typedDetailedData = detailedData as DetailedDataItem[];
 
-interface TypeMap {
-  [key: string]: string;
-}
+const typeMap: Record<string, string> = {
+  Transactions: "Transaction",
+  "Accepted TRNs": "Accepted",
+  "Submitted TRNs": "Submitted",
+  "Rejected TRNs": "Rejected",
+  "Late Submission TRNs": "Late Submission",
+  "Trade Events": "Trade Event",
+  "Trades No Fingerprint": "No Fingerprint",
+  "New Trades": "New",
+  "Amended Trades": "Amend",
+  "Cancelled Trades": "Cancel",
+};
+
+const iconMap: Record<string, JSX.Element> = {
+  Transactions: (
+    <svg className="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+    </svg>
+  ),
+  "Accepted TRNs": (
+    <svg className="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M5 13l4 4L19 7" />
+    </svg>
+  ),
+  "Submitted TRNs": (
+    <svg className="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M10 12L15 7L20 12M15 17L20 12M10 12H20M10 12L5 7" />
+    </svg>
+  ),
+  "Rejected TRNs": (
+    <svg className="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M18 6L6 18M6 6l12 12" />
+    </svg>
+  ),
+  "Late Submission TRNs": (
+    <svg className="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M20 12c0 4.418-3.582 8-8 8s-8-3.582-8-8 3.582-8 8-8 8 3.582 8 8zm-1 0c0-3.86-3.14-7-7-7s-7 3.14-7 7 3.14 7 7 7 7-3.14 7-7zm-7-3v6h4" />
+    </svg>
+  ),
+  "Trade Events": (
+    <svg className="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M18 12L12 18L6 12M12 6L6 12M12 6L18 12" />
+    </svg>
+  ),
+  "Trades No Fingerprint": (
+    <svg className="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
+    </svg>
+  ),
+  "New Trades": (
+    <svg className="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M12 2v4M12 18v4M4 12h4M16 12h4M6.343 6.343l2.828 2.828M17.656 17.656l2.828 2.828M6.343 17.656l2.828-2.828M17.656 6.343l2.828-2.828" />
+    </svg>
+  ),
+  "Amended Trades": (
+    <svg className="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M10 12L15 7L20 12M15 17L20 12M10 12H20M10 12L5 7" />
+    </svg>
+  ),
+  "Cancelled Trades": (
+    <svg className="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M6 18L18 6M6 6l12 12" />
+    </svg>
+  ),
+};
 
 const Summary: React.FC = () => {
   const navigate = useNavigate();
@@ -41,30 +102,15 @@ const Summary: React.FC = () => {
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
   const [modalData, setModalData] = useState<DetailedDataItem[]>([]);
   const [modalTitle, setModalTitle] = useState<string>("");
+
   const selectedData: TradeDataItem | undefined = typedTradeData.find(
     (item: TradeDataItem) => item["Reporting Date"] === selectedDate
   );
-
-  const typeMap: TypeMap = {
-    Transactions: "Transaction",
-    "Accepted TRNs": "Accepted",
-    "Submitted TRNs": "Submitted",
-    "Rejected TRNs": "Rejected",
-    "Late Submission TRNs": "Late Submission",
-    "Trade Events": "Trade Event",
-    "Trades No Fingerprint": "No Fingerprint",
-    "New Trades": "New",
-    "Amended Trades": "Amend",
-    "Cancelled Trades": "Cancel"
-  };
 
   const handleCardClick = (title: string): void => {
     const [year, month, day] = selectedDate.split("-");
     const formattedDate = `${day}/${month}/${year}`;
     const type = typeMap[title];
-
-    console.log("Clicked Card Type:", type);
-    console.log("Selected Date:", formattedDate);
 
     let filteredData: DetailedDataItem[];
 
@@ -92,7 +138,6 @@ const Summary: React.FC = () => {
 
   const closeModal = (): void => setModalOpen(false);
 
-  // Format the selected date for display in the modal
   const formattedModalDate = selectedDate.split("-").reverse().join("/");
 
   return (
@@ -116,106 +161,42 @@ const Summary: React.FC = () => {
         </div>
       </div>
 
-
       <div className="cards-container">
-      <div className="summary-cards">
-        <Card
-          title="Transactions"
-          value={0}
-          icon="shuffle"
-          color="purple"
-          date={selectedDate}
-          onClick={() => handleCardClick("Transactions")}
-        />
-        <Card
-          title="Accepted TRNs"
-          value={selectedData ? selectedData["Total Number of TRN Accepted"] : 0}
-          icon="check"
-          color="green"
-          date={selectedDate}
-          onClick={() => handleCardClick("Accepted TRNs")}
-        />
-        <Card
-          title="Submitted TRNs"
-          value={selectedData ? selectedData["Total Number of TRN in Submitted Status"] : 0}
-          icon="check"
-          color="blue"
-          date={selectedDate}
-          onClick={() => handleCardClick("Submitted TRNs")}
-        />
-        <Card
-          title="Rejected TRNs"
-          value={selectedData ? selectedData["Total Number of TRN Rejected"] : 0}
-          icon="x"
-          color="red"
-          date={selectedDate}
-          onClick={() => handleCardClick("Rejected TRNs")}
-        />
-        <Card
-          title="Late Submission TRNs"
-          value={selectedData ? selectedData["Total Number of Late Submission"] : 0}
-          icon="calendar"
-          color="orange"
-          date={selectedDate}
-          onClick={() => handleCardClick("Late Submission TRNs")}
-        />
-        <Card
-          title="Trade Events"
-          value={selectedData ? selectedData["Total Number of Trade Events"] : 0}
-          icon="cart"
-          color="purple"
-          date={selectedDate}
-          onClick={() => handleCardClick("Trade Events")}
-        />
-        <Card
-          title="Trades No Fingerprint"
-          value={
-            selectedData
-              ? selectedData["Total Number of Trade Events without Fingerprint"]
-              : 0
-          }
-          icon="fingerprint"
-          color="yellow"
-          date={selectedDate}
-          onClick={() => handleCardClick("Trades No Fingerprint")}
-        />
-        <Card
-          title="New Trades"
-          value={selectedData ? selectedData["Total Number of New Trades"] : 0}
-          icon="plus"
-          color="blue"
-          date={selectedDate}
-          onClick={() => handleCardClick("New Trades")}
-        />
-        <Card
-          title="Amended Trades"
-          value={
-            selectedData ? selectedData["Total Number of Trades in Amended Status"] : 0
-          }
-          icon="edit"
-          color="green"
-          date={selectedDate}
-          onClick={() => handleCardClick("Amended Trades")}
-        />
-        <Card
-          title="Cancelled Trades"
-          value={
-            selectedData ? selectedData["Total Number of Trades in Cancelled Status"] : 0
-          }
-          icon="x"
-          color="red"
-          date={selectedDate}
-          onClick={() => handleCardClick("Cancelled Trades")}
-        />
+            <div className="summary-cards">
+          {Object.keys(typeMap).map((key) => (
+            <Card
+              key={key}
+              className="card"
+              onClick={() => handleCardClick(key)}
+              hoverable
+            >
+              <div className="card-inner">
+                <div className="content-wrapper">
+                  <CardHeader className="card-header">
+                    <CardTitle className="card-title">{key}</CardTitle>
+                  </CardHeader>
+                  <CardContent className="card-value">
+                      <span className="value-text">
+                        {selectedData ? selectedData[`Total Number of ${key}`] || 0 : 0}
+                      </span>
+                      <ArrowUpRight className="arrow-icon" size={20} />
+                    </CardContent>
+                </div>
+                <div className="icon-container" data-type={key}>
+                  {iconMap[key] || null}
+                </div>
+              </div>
+            </Card>
+          ))}
+        </div>
       </div>
-    </div>
 
       <Modal
         isOpen={isModalOpen}
         onClose={closeModal}
         data={modalData}
         title={modalTitle}
-        date={formattedModalDate}  // Pass the formatted date to the modal
+        date={formattedModalDate}
       />
     </Layout>
   );

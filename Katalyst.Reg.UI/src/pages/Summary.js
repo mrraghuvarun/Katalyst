@@ -55,7 +55,7 @@ const Summary = () => {
     const formattedModalDate = selectedDate.split("-").reverse().join("/");
     return (<Layout collapsed={collapsed}>
       <div className="header-container">
-        <h1>Summary Dashboard</h1>
+        <h1 className="text-red-500">Summary Dashboard</h1>
         <div className="tabs">
           <button className="tab active" onClick={() => navigate("/summary")}>
             Summary
