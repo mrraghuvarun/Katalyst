@@ -15,8 +15,9 @@ import {
 import tradeData from "../assets/data.json";
 import Layout from "../components/Layout.tsx";
 import { ChartContainer } from "@/src/components/ui/chart";
-import { BarChart, Bar, CartesianGrid, XAxis } from "recharts";
+import { BarChart, Bar, CartesianGrid, XAxis, YAxis } from "recharts";
 import "./Report.css";
+import { ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent } from "@/src/components/ui/chart"
 
 interface TradeDataItem {
   "Reporting Date": string;
@@ -32,36 +33,6 @@ interface TradeDataItem {
 
 const tradeDataTyped = tradeData as TradeDataItem[];
 
-// Icon mapping for each field
-const iconMap = {
-  "Transactions": <DollarSign size={20} />,
-  "Accepted TRNs": <CheckCircle size={20} />,
-  "Submitted TRNs": <Clock size={20} />,
-  "Rejected TRNs": <XCircle size={20} />,
-  "Trade Events": <Calendar size={20} />,
-  "Trades No Fingerprint": <Fingerprint size={20} />,
-  "New Trades": <FileText size={20} />,
-  "Amended Trades": <PenTool size={20} />
-};
-
-// Type mapping for data fields
-// Update the interface to match exact data fields
-interface TradeDataItem {
-  "Reporting Date": string;
-  "Total Number of Trade Events": number;
-  "Total Number of Trade Events without Fingerprint": number;
-  "Total Number of New Trades": number;
-  "Total Number of Trades in Amended Status": number;
-  "Total Number of Trades in Cancelled Status": number;
-  "Total Number of Eligible Trades": number;
-  "Total Number of TRN": number;
-  "Total Number of TRN Accepted": number;
-  "Total Number of TRN in Submitted Status": number;
-  "Total Number of TRN Rejected": number;
-  "Total Number of Late Submission": number;
-}
-
-// Corrected typeMap that matches exact data field names
 const typeMap = {
   "Transactions": "Total Number of TRN",
   "Accepted TRNs": "Total Number of TRN Accepted",
@@ -93,8 +64,14 @@ const Report: React.FC = () => {
     value: item[typeMap[selectedField as keyof typeof typeMap] as keyof TradeDataItem],
   }));
 
+  const highestValue = Math.max(...chartData.map(item => Number(item.value)));
+
+
+  // Round off the highest value to the nearest 100 (or adjust this as needed)
+  const roundedHighestValue = Math.ceil(highestValue / 100) * 100;
+
   const chartConfig = {
-    desktop: {
+    value: {
       label: selectedField,
       color: "#2563eb",
     },
@@ -113,7 +90,7 @@ const Report: React.FC = () => {
             <option value="1 Jan 2024 - 10 Jan 2024">1 Jan 2024 - 10 Jan 2024</option>
           </select>
         </div>
-        <div className="field-select">
+        <div className="field-select" style={{ display: 'flex', alignItems: 'center' }}>
           <span>Showing info: </span>
           <select
             value={selectedField}
@@ -128,11 +105,11 @@ const Report: React.FC = () => {
           </select>
         </div>
       </div>
-  
+
       <div className="chart-container">
         <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
           <BarChart data={chartData} width={isMobile ? 300 : 600} height={isMobile ? 300 : 400}>
-            <CartesianGrid vertical={false} />
+            <CartesianGrid vertical={true} />
             <XAxis
               dataKey="date"
               tickLine={false}
@@ -146,13 +123,22 @@ const Report: React.FC = () => {
                 });
               }}
             />
-            <Bar dataKey="value" fill={chartConfig.desktop.color} radius={4} />
+            <YAxis
+              dataKey="value"
+              domain={[0, roundedHighestValue]} // Dynamic scaling based on the rounded highest value
+              tickLine={false}
+              tickMargin={10}
+              axisLine={false}
+              tickFormatter={(value) => value.toLocaleString()} // Formatting numerical ticks with commas
+            />
+            <ChartTooltip content={<ChartTooltipContent />} />
+            <ChartLegend content={<ChartLegendContent />} />
+            <Bar dataKey="value" fill={chartConfig.value.color} radius={4} />
           </BarChart>
         </ChartContainer>
       </div>
     </Layout>
   );
-  
 };
 
 export default Report;

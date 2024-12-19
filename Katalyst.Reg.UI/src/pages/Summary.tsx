@@ -1,11 +1,3 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/src/components/ui/card";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Modal from "../components/Modal.tsx";
@@ -15,8 +7,8 @@ import Layout from "../components/Layout.tsx";
 import "./Summary.css";
 import SummaryCard from "../components/SummaryCard.js";
 import { ChartContainer } from "@/src/components/ui/chart";
-import { BarChart, Bar, CartesianGrid, XAxis } from "recharts";
-
+import { BarChart, Bar, CartesianGrid, XAxis, YAxis } from "recharts";
+import { ChartLegend, ChartLegendContent,ChartTooltip, ChartTooltipContent } from "@/src/components/ui/chart"
 interface TradeDataItem {
   "Reporting Date": string;
   [key: string]: string | number;
@@ -232,6 +224,8 @@ const Summary: React.FC = () => {
     "Trades No Fingerprint": "Total Number of Trade Events without Fingerprint",
   };
 
+
+
   const chartData = tradeDataTyped.map((item) => ({
     date: item["Reporting Date"],
     value:
@@ -240,8 +234,12 @@ const Summary: React.FC = () => {
       ],
   }));
 
+  const highestValue = Math.max(...chartData.map(item => parseFloat(item.value as string)));
+  // Round off the highest value to the nearest 100 (or adjust this as needed)
+  const roundedHighestValue = Math.ceil(highestValue / 100) * 100;
+
   const chartConfig = {
-    desktop: {
+    value: {
       label: selectedField,
       color: "#2563eb",
     },
@@ -268,6 +266,7 @@ const Summary: React.FC = () => {
 
       <div className="bg-white p-6 rounded-xl mt-6">
         <div className="flex gap-6">
+        <h3 className="text-2xl font-semibold text-black mb-100">Trend Chart</h3>
           <div
             className="date-field"
             style={{ display: "flex", alignItems: "center" }}
@@ -320,11 +319,17 @@ const Summary: React.FC = () => {
                   });
                 }}
               />
-              <Bar
-                dataKey="value"
-                fill={chartConfig.desktop.color}
-                radius={4}
-              />
+              <YAxis
+              dataKey="value"
+              domain={[0, roundedHighestValue]} // Dynamic scaling based on the rounded highest value
+              tickLine={false}
+              tickMargin={10}
+              axisLine={false}
+              tickFormatter={(value) => value.toLocaleString()} // Formatting numerical ticks with commas
+            />
+              <ChartTooltip content={<ChartTooltipContent />} />
+            <ChartLegend content={<ChartLegendContent />} />
+            <Bar dataKey="value" fill={chartConfig.value.color} radius={4} />
             </BarChart>
           </ChartContainer>
         </div>
