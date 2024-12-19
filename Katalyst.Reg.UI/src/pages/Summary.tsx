@@ -13,7 +13,8 @@ import tradeData from "../assets/data.json";
 import detailedData from "../assets/trade.json";
 import Layout from "../components/Layout.tsx";
 import "./Summary.css";
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight } from "lucide-react";
+import SummaryCard from "../components/SummaryCard.js";
 
 interface TradeDataItem {
   "Reporting Date": string;
@@ -44,52 +45,112 @@ const typeMap: Record<string, string> = {
 
 const iconMap: Record<string, JSX.Element> = {
   Transactions: (
-    <svg className="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <svg
+      className="card-icon"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+    >
       <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
     </svg>
   ),
   "Accepted TRNs": (
-    <svg className="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <svg
+      className="card-icon"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+    >
       <path d="M5 13l4 4L19 7" />
     </svg>
   ),
   "Submitted TRNs": (
-    <svg className="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <svg
+      className="card-icon"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+    >
       <path d="M10 12L15 7L20 12M15 17L20 12M10 12H20M10 12L5 7" />
     </svg>
   ),
   "Rejected TRNs": (
-    <svg className="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <svg
+      className="card-icon"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+    >
       <path d="M18 6L6 18M6 6l12 12" />
     </svg>
   ),
   "Late Submission TRNs": (
-    <svg className="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <svg
+      className="card-icon"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+    >
       <path d="M20 12c0 4.418-3.582 8-8 8s-8-3.582-8-8 3.582-8 8-8 8 3.582 8 8zm-1 0c0-3.86-3.14-7-7-7s-7 3.14-7 7 3.14 7 7 7 7-3.14 7-7zm-7-3v6h4" />
     </svg>
   ),
   "Trade Events": (
-    <svg className="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <svg
+      className="card-icon"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+    >
       <path d="M18 12L12 18L6 12M12 6L6 12M12 6L18 12" />
     </svg>
   ),
   "Trades No Fingerprint": (
-    <svg className="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <svg
+      className="card-icon"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+    >
       <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
     </svg>
   ),
   "New Trades": (
-    <svg className="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <svg
+      className="card-icon"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+    >
       <path d="M12 2v4M12 18v4M4 12h4M16 12h4M6.343 6.343l2.828 2.828M17.656 17.656l2.828 2.828M6.343 17.656l2.828-2.828M17.656 6.343l2.828-2.828" />
     </svg>
   ),
   "Amended Trades": (
-    <svg className="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <svg
+      className="card-icon"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+    >
       <path d="M10 12L15 7L20 12M15 17L20 12M10 12H20M10 12L5 7" />
     </svg>
   ),
   "Cancelled Trades": (
-    <svg className="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <svg
+      className="card-icon"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+    >
       <path d="M6 18L18 6M6 6l12 12" />
     </svg>
   ),
@@ -123,7 +184,8 @@ const Summary: React.FC = () => {
     } else {
       filteredData = typedDetailedData.filter(
         (item: DetailedDataItem) =>
-          item["Trade Status"] === type && item["Reporting Date"] === formattedDate
+          item["Trade Status"] === type &&
+          item["Reporting Date"] === formattedDate
       );
     }
 
@@ -142,51 +204,18 @@ const Summary: React.FC = () => {
 
   return (
     <Layout collapsed={collapsed}>
-      <div className="header-container">
-        <h1>Summary Dashboard</h1>
-        <div className="tabs">
-          <button className="tab active" onClick={() => navigate("/summary")}>
-            Summary
-          </button>
-          <button className="tab" onClick={() => navigate("/report")}>
-            Report
-          </button>
-          <button className="tab" onClick={() => navigate("/data")}>
-            Data
-          </button>
-        </div>
-        <div className="reporting-date">
-          Reporting Date:
-          <input type="date" value={selectedDate} onChange={handleDateChange} />
-        </div>
-      </div>
-
-      <div className="cards-container">
-            <div className="summary-cards">
+      <div className="bg-white p-6 rounded-xl">
+        <h3 className="text-2xl font-semibold text-black mb-6">Summary</h3>
+        <div className="grid grid-cols-4 gap-4">
           {Object.keys(typeMap).map((key) => (
-            <Card
+            <SummaryCard
               key={key}
-              className="card"
-              onClick={() => handleCardClick(key)}
-              hoverable
-            >
-              <div className="card-inner">
-                <div className="content-wrapper">
-                  <CardHeader className="card-header">
-                    <CardTitle className="card-title">{key}</CardTitle>
-                  </CardHeader>
-                  <CardContent className="card-value">
-                      <span className="value-text">
-                        {selectedData ? selectedData[`Total Number of ${key}`] || 0 : 0}
-                      </span>
-                      <ArrowUpRight className="arrow-icon" size={20} />
-                    </CardContent>
-                </div>
-                <div className="icon-container" data-type={key}>
-                  {iconMap[key] || null}
-                </div>
-              </div>
-            </Card>
+              title={key}
+              icon={iconMap[key]}
+              value={Number(
+                selectedData ? selectedData[`Total Number of ${key}`] || 0 : 0
+              )}
+            />
           ))}
         </div>
       </div>

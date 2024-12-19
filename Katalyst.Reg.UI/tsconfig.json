@@ -1,13 +1,15 @@
-{  
-    "compilerOptions": {    
-        "lib": ["dom", "dom.iterable", "esnext"],    
-        "target": "ESNext",    
-        "types": ["vite/client"],
-        "isolatedModules": true,
-        "moduleResolution":"node",
-        "baseUrl": ".",
+{
+  "compilerOptions": {
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "target": "ESNext",
+    "types": ["vite/client"],
+    "isolatedModules": true,
+    "moduleResolution": "node",
+    "baseUrl": ".",
+    "jsx": "react",
+    "allowSyntheticDefaultImports": true,
     "paths": {
       "@/*": ["./*"]
     }
-    }
- }
+  }
+}
