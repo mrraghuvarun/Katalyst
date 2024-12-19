@@ -266,62 +266,68 @@ const Summary: React.FC = () => {
         </div>
       </div>
 
-      <div className="header-container">
-        <div
-          className="date-field"
-          style={{ display: "flex", alignItems: "center" }}
-        >
-          <span>Showing: </span>
-          <select
-            value={dateRange}
-            onChange={(e) => setDateRange(e.target.value)}
-            className="date-select"
+      <div className="bg-white p-6 rounded-xl mt-6">
+        <div className="flex gap-6">
+          <div
+            className="date-field"
+            style={{ display: "flex", alignItems: "center" }}
           >
-            <option value="1 Jan 2024 - 10 Jan 2024">
-              1 Jan 2024 - 10 Jan 2024
-            </option>
-          </select>
-        </div>
-        <div className="field-select">
-          <span>Showing info: </span>
-          <select
-            value={selectedField}
-            onChange={(e) => setSelectedField(e.target.value)}
-            className="info-select"
-          >
-            {Object.keys(typeMap).map((field) => (
-              <option key={field} value={field}>
-                {field}
+            <span>Showing: </span>
+            <select
+              value={dateRange}
+              onChange={(e) => setDateRange(e.target.value)}
+              className="date-select"
+            >
+              <option value="1 Jan 2024 - 10 Jan 2024">
+                1 Jan 2024 - 10 Jan 2024
               </option>
-            ))}
-          </select>
+            </select>
+          </div>
+          <div className="field-select">
+            <span>Showing info: </span>
+            <select
+              value={selectedField}
+              onChange={(e) => setSelectedField(e.target.value)}
+              className="info-select"
+            >
+              {Object.keys(typeMap).map((field) => (
+                <option key={field} value={field}>
+                  {field}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
-      </div>
 
-      <div className="chart-container">
-        <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
-          <BarChart
-            data={chartData}
-            width={isMobile ? 300 : 600}
-            height={isMobile ? 300 : 400}
-          >
-            <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="date"
-              tickLine={false}
-              tickMargin={10}
-              axisLine={false}
-              tickFormatter={(value) => {
-                const date = new Date(value);
-                return date.toLocaleDateString("en-GB", {
-                  day: "2-digit",
-                  month: "short",
-                });
-              }}
-            />
-            <Bar dataKey="value" fill={chartConfig.desktop.color} radius={4} />
-          </BarChart>
-        </ChartContainer>
+        <div className="chart-container">
+          <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+            <BarChart
+              data={chartData}
+              width={isMobile ? 300 : 600}
+              height={isMobile ? 300 : 400}
+            >
+              <CartesianGrid vertical={false} />
+              <XAxis
+                dataKey="date"
+                tickLine={false}
+                tickMargin={10}
+                axisLine={false}
+                tickFormatter={(value) => {
+                  const date = new Date(value);
+                  return date.toLocaleDateString("en-GB", {
+                    day: "2-digit",
+                    month: "short",
+                  });
+                }}
+              />
+              <Bar
+                dataKey="value"
+                fill={chartConfig.desktop.color}
+                radius={4}
+              />
+            </BarChart>
+          </ChartContainer>
+        </div>
       </div>
 
       <Modal

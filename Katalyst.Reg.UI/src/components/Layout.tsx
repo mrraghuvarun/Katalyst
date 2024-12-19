@@ -1,6 +1,6 @@
-import React, { useState, ReactNode } from 'react';
-import Sidebar from './Sidebar.tsx';
-import './Layout.css';
+import React, { useState, ReactNode } from "react";
+import Sidebar from "./Sidebar.tsx";
+import "./Layout.css";
 
 type LayoutProps = {
   collapsed: boolean;
@@ -15,11 +15,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   };
 
   return (
-    <div className={`layout-container ${collapsed ? 'collapsed' : ''}`}>
+    <div className={`layout-container ${collapsed ? "collapsed" : ""}`}>
       <Sidebar collapsed={collapsed} toggleSidebar={toggleSidebar} />
-      <div className="layout-content">
-        {children}
-      </div>
+      <div className="layout-content">{children}</div>
     </div>
   );
 };
