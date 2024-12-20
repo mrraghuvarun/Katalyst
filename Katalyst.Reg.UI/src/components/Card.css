@@ -75,17 +75,6 @@ body, h1, h2, h3, p {
   color: #111827;
 }
 
-/* Hover effects */
-.card:hover .card-title {
-  font-weight: 700; /* Makes the title bold */
-  color: #435EBE;
-}
-
-.card:hover .card-value {
-  text-decoration: underline; /* Adds underline to the value */
-  color: #435EBE;
-}
-
 /* Color-specific icon backgrounds */
 .purple .icon-container { background-color: #f3e8ff; }
 .green .icon-container { background-color: #dcfce7; }
