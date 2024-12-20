@@ -8,7 +8,12 @@ import "./Summary.css";
 import SummaryCard from "../components/SummaryCard.js";
 import { ChartContainer } from "@/src/components/ui/chart";
 import { BarChart, Bar, CartesianGrid, XAxis, YAxis } from "recharts";
-import { ChartLegend, ChartLegendContent,ChartTooltip, ChartTooltipContent } from "@/src/components/ui/chart";
+import {
+  ChartLegend,
+  ChartLegendContent,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/src/components/ui/chart";
 import {
   Table,
   TableBody,
@@ -33,9 +38,9 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "@/src/components/ui/pagination"
+} from "@/src/components/ui/pagination";
 
-import '../output.css';
+import "../output.css";
 interface TradeDataItem {
   "Reporting Date": string;
   [key: string]: string | number;
@@ -251,8 +256,6 @@ const Summary: React.FC = () => {
     "Trades No Fingerprint": "Total Number of Trade Events without Fingerprint",
   };
 
-
-
   const chartData = tradeDataTyped.map((item) => ({
     date: item["Reporting Date"],
     value:
@@ -261,7 +264,9 @@ const Summary: React.FC = () => {
       ],
   }));
 
-  const highestValue = Math.max(...chartData.map(item => parseFloat(item.value as string)));
+  const highestValue = Math.max(
+    ...chartData.map((item) => parseFloat(item.value as string))
+  );
   // Round off the highest value to the nearest 100 (or adjust this as needed)
   const roundedHighestValue = Math.ceil(highestValue / 100) * 100;
 
@@ -322,14 +327,13 @@ const Summary: React.FC = () => {
       accessorKey: "Total Number of Late Submission",
     },
   ];
-  
-  
-    const table = useReactTable({
-      data: tradeDataTyped,
-      columns,
-      getCoreRowModel: getCoreRowModel(),
-      getPaginationRowModel: getPaginationRowModel(),
-    });
+
+  const table = useReactTable({
+    data: tradeDataTyped,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+  });
 
   return (
     <Layout collapsed={collapsed}>
@@ -352,7 +356,9 @@ const Summary: React.FC = () => {
 
       <div className="bg-white p-6 rounded-xl mt-6">
         <div className="flex gap-6">
-        <h3 className="text-2xl font-semibold text-black mb-100">Trend Chart</h3>
+          <h3 className="text-2xl font-semibold text-black mb-100">
+            Trend Chart
+          </h3>
           <div
             className="date-field"
             style={{ display: "flex", alignItems: "center" }}
@@ -406,219 +412,289 @@ const Summary: React.FC = () => {
                 }}
               />
               <YAxis
-              dataKey="value"
-              domain={[0, roundedHighestValue]} // Dynamic scaling based on the rounded highest value
-              tickLine={false}
-              tickMargin={10}
-              axisLine={false}
-              tickFormatter={(value) => value.toLocaleString()} // Formatting numerical ticks with commas
-            />
+                dataKey="value"
+                domain={[0, roundedHighestValue]} // Dynamic scaling based on the rounded highest value
+                tickLine={false}
+                tickMargin={10}
+                axisLine={false}
+                tickFormatter={(value) => value.toLocaleString()} // Formatting numerical ticks with commas
+              />
               <ChartTooltip content={<ChartTooltipContent />} />
-            <ChartLegend content={<ChartLegendContent />} />
-            <Bar dataKey="value" fill={chartConfig.value.color} radius={4} />
+              <ChartLegend content={<ChartLegendContent />} />
+              <Bar dataKey="value" fill={chartConfig.value.color} radius={4} />
             </BarChart>
           </ChartContainer>
         </div>
-        <div className="flex gap-6">
-        <h3 className="text-2xl font-semibold text-black mb-1">Data Dashboard</h3>
-        <div
-            className="date-field"
-            style={{ display: "flex", alignItems: "center" }}
-          >
-            <span>Showing: </span>
-            <select
-              value={dateRange}
-              onChange={(e) => setDateRange(e.target.value)}
-              className="date-select"
+
+        <hr className="my-12 w-full border-b border-gray-200" />
+
+        <div className="data-container">
+          <div className="flex gap-6">
+            <h3 className="text-2xl font-semibold text-black mb-1">
+              Data Dashboard
+            </h3>
+            <div
+              className="date-field"
+              style={{ display: "flex", alignItems: "center" }}
             >
-              <option value="All">
-                All
-              </option>
+              <span>Showing: </span>
+              <select
+                value={dateRange}
+                onChange={(e) => setDateRange(e.target.value)}
+                className="date-select"
+              >
+                <option value="All">All</option>
+              </select>
+            </div>
+          </div>
+
+          <Table>
+            <TableHeader>
+              <TableRow>
+                {columns.map((column) => (
+                  <TableHead
+                    className="bg-[#EAF3FF] text-black border-0 border-r-2 border-white text-center"
+                    key={column.accessorKey}
+                  >
+                    {column.header}
+                  </TableHead>
+                ))}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {table.getRowModel().rows.map((row) => (
+                <TableRow key={row.id}>
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell
+                      key={cell.id}
+                      className="border-0 bg-white py-6 px-4 text-center min-w-32 border-b"
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+
+        <div style={{ display: "flex", alignItems: "center" }}>
+          {/* Pagination */}
+          {table.getPageCount() > 1 && (
+            <Pagination
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "flex-end",
+              }}
+            >
+              <PaginationContent>
+                {/* Previous Button */}
+                <PaginationItem>
+                  <PaginationPrevious
+                    as="button"
+                    onClick={() => table.previousPage()}
+                    disabled={!table.getCanPreviousPage()}
+                    style={{
+                      pointerEvents: table.getCanPreviousPage()
+                        ? "auto"
+                        : "none",
+                      opacity: table.getCanPreviousPage() ? 1 : 0.5,
+                      cursor: table.getCanPreviousPage()
+                        ? "pointer"
+                        : "not-allowed",
+                    }}
+                  >
+                    Previous
+                  </PaginationPrevious>
+                </PaginationItem>
+
+                {/* Page Numbers */}
+                {table.getPageCount() <= 3 ? (
+                  // If total pages are 3 or less, show all page numbers
+                  [...Array(table.getPageCount())].map((_, index) => (
+                    <PaginationItem key={index}>
+                      <PaginationLink
+                        as="button"
+                        isActive={
+                          table.getState().pagination.pageIndex === index
+                        }
+                        onClick={() => table.setPageIndex(index)}
+                        style={{
+                          cursor: "pointer",
+                          backgroundColor:
+                            table.getState().pagination.pageIndex === index
+                              ? "#007bff"
+                              : "transparent",
+                          color:
+                            table.getState().pagination.pageIndex === index
+                              ? "#fff"
+                              : "#000",
+                        }}
+                      >
+                        {index + 1}
+                      </PaginationLink>
+                    </PaginationItem>
+                  ))
+                ) : table.getState().pagination.pageIndex < 3 ? (
+                  // Show first 3 pages, then show "..."
+                  <>
+                    {[...Array(3)].map((_, index) => (
+                      <PaginationItem key={index}>
+                        <PaginationLink
+                          as="button"
+                          isActive={
+                            table.getState().pagination.pageIndex === index
+                          }
+                          onClick={() => table.setPageIndex(index)}
+                          style={{
+                            cursor: "pointer",
+                            backgroundColor:
+                              table.getState().pagination.pageIndex === index
+                                ? "#007bff"
+                                : "transparent",
+                            color:
+                              table.getState().pagination.pageIndex === index
+                                ? "#fff"
+                                : "#000",
+                          }}
+                        >
+                          {index + 1}
+                        </PaginationLink>
+                      </PaginationItem>
+                    ))}
+                    <PaginationItem>
+                      <PaginationEllipsis />
+                    </PaginationItem>
+                  </>
+                ) : table.getState().pagination.pageIndex >=
+                  table.getPageCount() - 2 ? (
+                  // Show last 2 pages with ellipsis
+                  <>
+                    <PaginationItem>
+                      <PaginationEllipsis />
+                    </PaginationItem>
+                    {[...Array(2)].map((_, index) => (
+                      <PaginationItem key={table.getPageCount() - 2 + index}>
+                        <PaginationLink
+                          as="button"
+                          isActive={
+                            table.getState().pagination.pageIndex ===
+                            table.getPageCount() - 2 + index
+                          }
+                          onClick={() =>
+                            table.setPageIndex(table.getPageCount() - 2 + index)
+                          }
+                          style={{
+                            cursor: "pointer",
+                            backgroundColor:
+                              table.getState().pagination.pageIndex ===
+                              table.getPageCount() - 2 + index
+                                ? "#007bff"
+                                : "transparent",
+                            color:
+                              table.getState().pagination.pageIndex ===
+                              table.getPageCount() - 2 + index
+                                ? "#fff"
+                                : "#000",
+                          }}
+                        >
+                          {table.getPageCount() - 2 + index + 1}
+                        </PaginationLink>
+                      </PaginationItem>
+                    ))}
+                  </>
+                ) : (
+                  // Pages between 4 and 3 pages before and after the current page
+                  <>
+                    <PaginationItem>
+                      <PaginationEllipsis />
+                    </PaginationItem>
+                    {[
+                      table.getState().pagination.pageIndex - 1,
+                      table.getState().pagination.pageIndex,
+                      table.getState().pagination.pageIndex + 1,
+                    ].map((page) => (
+                      <PaginationItem key={page}>
+                        <PaginationLink
+                          as="button"
+                          isActive={
+                            table.getState().pagination.pageIndex === page
+                          }
+                          onClick={() => table.setPageIndex(page)}
+                          style={{
+                            cursor: "pointer",
+                            backgroundColor:
+                              table.getState().pagination.pageIndex === page
+                                ? "#007bff"
+                                : "transparent",
+                            color:
+                              table.getState().pagination.pageIndex === page
+                                ? "#fff"
+                                : "#000",
+                          }}
+                        >
+                          {page + 1}
+                        </PaginationLink>
+                      </PaginationItem>
+                    ))}
+                    <PaginationItem>
+                      <PaginationEllipsis />
+                    </PaginationItem>
+                  </>
+                )}
+
+                {/* Next Button */}
+                <PaginationItem>
+                  <PaginationNext
+                    as="button"
+                    onClick={() => table.nextPage()}
+                    disabled={!table.getCanNextPage()}
+                    style={{
+                      pointerEvents: table.getCanNextPage() ? "auto" : "none",
+                      opacity: table.getCanNextPage() ? 1 : 0.5,
+                      cursor: table.getCanNextPage()
+                        ? "pointer"
+                        : "not-allowed",
+                    }}
+                  >
+                    Next
+                  </PaginationNext>
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          )}
+
+          {/* Rows Per Page Selector */}
+          <div
+            className="rows-per-page-selector"
+            style={{ marginLeft: "1rem" }}
+          >
+            <select
+              defaultValue={5}
+              value={table.getState().pagination.pageSize}
+              onChange={(e) => table.setPageSize(Number(e.target.value))}
+              style={{
+                height: "38px", // Match button height
+                width: "50px", // Adjust width to match buttons
+                padding: "0",
+                borderRadius: "4px",
+                border: "1px solid #ccc",
+                cursor: "pointer",
+                textAlign: "center", // Center align the text
+              }}
+            >
+              <option value={5}>5</option>
+              <option value={10}>10</option>
+              <option value={20}>20</option>
+              <option value={50}>50</option>
             </select>
           </div>
-          </div>
-          <Table>
-  <TableHeader>
-    <TableRow>
-      {columns.map((column) => (
-        <TableHead className="bg-sky-300" key={column.accessorKey}>
-          {column.header}
-        </TableHead>
-      ))}
-    </TableRow>
-  </TableHeader>
-  <TableBody>
-    {table.getRowModel().rows.map((row) => (
-      <TableRow key={row.id}>
-        {row.getVisibleCells().map((cell) => (
-          <TableCell key={cell.id}>
-            {flexRender(cell.column.columnDef.cell, cell.getContext())}
-          </TableCell>
-        ))}
-      </TableRow>
-    ))}
-  </TableBody>
-</Table>
-                
-<div style={{ display: "flex", alignItems: "center" }}>
-  {/* Pagination */}
-  {table.getPageCount() > 1 && (
-    <Pagination style={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
-      <PaginationContent>
-        {/* Previous Button */}
-        <PaginationItem>
-          <PaginationPrevious
-            as="button"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-            style={{
-              pointerEvents: table.getCanPreviousPage() ? "auto" : "none",
-              opacity: table.getCanPreviousPage() ? 1 : 0.5,
-              cursor: table.getCanPreviousPage() ? "pointer" : "not-allowed",
-            }}
-          >
-            Previous
-          </PaginationPrevious>
-        </PaginationItem>
-
-        {/* Page Numbers */}
-        {table.getPageCount() <= 3 ? (
-          // If total pages are 3 or less, show all page numbers
-          [...Array(table.getPageCount())].map((_, index) => (
-            <PaginationItem key={index}>
-              <PaginationLink
-                as="button"
-                isActive={table.getState().pagination.pageIndex === index}
-                onClick={() => table.setPageIndex(index)}
-                style={{
-                  cursor: "pointer",
-                  backgroundColor: table.getState().pagination.pageIndex === index ? "#007bff" : "transparent",
-                  color: table.getState().pagination.pageIndex === index ? "#fff" : "#000",
-                }}
-              >
-                {index + 1}
-              </PaginationLink>
-            </PaginationItem>
-          ))
-        ) : table.getState().pagination.pageIndex < 3 ? (
-          // Show first 3 pages, then show "..."
-          <>
-            {[...Array(3)].map((_, index) => (
-              <PaginationItem key={index}>
-                <PaginationLink
-                  as="button"
-                  isActive={table.getState().pagination.pageIndex === index}
-                  onClick={() => table.setPageIndex(index)}
-                  style={{
-                    cursor: "pointer",
-                    backgroundColor: table.getState().pagination.pageIndex === index ? "#007bff" : "transparent",
-                    color: table.getState().pagination.pageIndex === index ? "#fff" : "#000",
-                  }}
-                >
-                  {index + 1}
-                </PaginationLink>
-              </PaginationItem>
-            ))}
-            <PaginationItem>
-              <PaginationEllipsis />
-            </PaginationItem>
-          </>
-        ) : table.getState().pagination.pageIndex >= table.getPageCount() - 2 ? (
-          // Show last 2 pages with ellipsis
-          <>
-            <PaginationItem>
-              <PaginationEllipsis />
-            </PaginationItem>
-            {[...Array(2)].map((_, index) => (
-              <PaginationItem key={table.getPageCount() - 2 + index}>
-                <PaginationLink
-                  as="button"
-                  isActive={table.getState().pagination.pageIndex === table.getPageCount() - 2 + index}
-                  onClick={() => table.setPageIndex(table.getPageCount() - 2 + index)}
-                  style={{
-                    cursor: "pointer",
-                    backgroundColor: table.getState().pagination.pageIndex === table.getPageCount() - 2 + index ? "#007bff" : "transparent",
-                    color: table.getState().pagination.pageIndex === table.getPageCount() - 2 + index ? "#fff" : "#000",
-                  }}
-                >
-                  {table.getPageCount() - 2 + index + 1}
-                </PaginationLink>
-              </PaginationItem>
-            ))}
-          </>
-        ) : (
-          // Pages between 4 and 3 pages before and after the current page
-          <>
-            <PaginationItem>
-              <PaginationEllipsis />
-            </PaginationItem>
-            {[table.getState().pagination.pageIndex - 1, table.getState().pagination.pageIndex, table.getState().pagination.pageIndex + 1].map((page) => (
-              <PaginationItem key={page}>
-                <PaginationLink
-                  as="button"
-                  isActive={table.getState().pagination.pageIndex === page}
-                  onClick={() => table.setPageIndex(page)}
-                  style={{
-                    cursor: "pointer",
-                    backgroundColor: table.getState().pagination.pageIndex === page ? "#007bff" : "transparent",
-                    color: table.getState().pagination.pageIndex === page ? "#fff" : "#000",
-                  }}
-                >
-                  {page + 1}
-                </PaginationLink>
-              </PaginationItem>
-            ))}
-            <PaginationItem>
-              <PaginationEllipsis />
-            </PaginationItem>
-          </>
-        )}
-
-        {/* Next Button */}
-        <PaginationItem>
-          <PaginationNext
-            as="button"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-            style={{
-              pointerEvents: table.getCanNextPage() ? "auto" : "none",
-              opacity: table.getCanNextPage() ? 1 : 0.5,
-              cursor: table.getCanNextPage() ? "pointer" : "not-allowed",
-            }}
-          >
-            Next
-          </PaginationNext>
-        </PaginationItem>
-      </PaginationContent>
-    </Pagination>
-  )}
-
-  {/* Rows Per Page Selector */}
-  <div className="rows-per-page-selector" style={{ marginLeft: "1rem" }}>
-    <select
-      value={table.getState().pagination.pageSize}
-      onChange={(e) => table.setPageSize(Number(e.target.value))}
-      style={{
-        height: "38px", // Match button height
-        width: "50px", // Adjust width to match buttons
-        padding: "0",
-        borderRadius: "4px",
-        border: "1px solid #ccc",
-        cursor: "pointer",
-        textAlign: "center", // Center align the text
-      }}
-    >
-      <option value={5}>5</option>
-      <option value={10}>10</option>
-      <option value={20}>20</option>
-      <option value={50}>50</option>
-    </select>
-  </div>
-</div>
-
-
-
-                        </div>
+        </div>
+      </div>
 
       <Modal
         isOpen={isModalOpen}

@@ -20,7 +20,9 @@ const SummaryCard: React.FC<CardProps> = ({ title, value, icon, onClick }) => {
       onClick={onClick}
     >
       <CardHeader className="flex flex-row justify-between gap-4">
-        <CardTitle className="text-xl text-gray-500">{title}</CardTitle>
+        <CardTitle className="text-xl text-gray-500 font-normal">
+          {title}
+        </CardTitle>
 
         <div className="icon-container" data-type={title}>
           {icon}
