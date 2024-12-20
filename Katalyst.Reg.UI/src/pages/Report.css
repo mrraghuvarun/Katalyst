@@ -164,6 +164,7 @@ h3 {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  align-items: baseline;
 }
 
 .date-select,
@@ -175,7 +176,7 @@ h3 {
   color: #374151;
   font-size: 0.875rem;
   cursor: pointer;
-  min-width: 200px;
+  min-width: 100px;
 }
 
 .chart-container {

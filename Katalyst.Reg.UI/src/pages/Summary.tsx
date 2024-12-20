@@ -8,6 +8,7 @@ import "./Summary.css";
 import SummaryCard from "../components/SummaryCard.js";
 import { ChartContainer } from "@/src/components/ui/chart";
 import { BarChart, Bar, CartesianGrid, XAxis, YAxis } from "recharts";
+import PieChartComponent from './PieChartComponent.tsx'; // Adjust the path as needed
 import {
   ChartLegend,
   ChartLegendContent,
@@ -39,7 +40,17 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/src/components/ui/pagination";
-
+import { addDays, format } from "date-fns";
+import { Calendar as CalendarIcon } from "lucide-react";
+import { DateRange } from "react-day-picker";
+import { cn } from "@/src/lib/utils";
+import { Button } from "@/src/components/ui/button";
+import { Calendar } from "@/src/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/src/components/ui/popover"
 import "../output.css";
 interface TradeDataItem {
   "Reporting Date": string;
@@ -196,22 +207,26 @@ interface TradeDataItem {
 }
 const Summary: React.FC = () => {
   const navigate = useNavigate();
+  const [dateRange, setDateRange] = useState<DateRange | undefined>({
+    from: new Date("2024-01-01"),
+    to: new Date("2024-01-10"),
+  });
   const [collapsed] = useState<boolean>(false);
-  const [selectedDate, setSelectedDate] = useState<string>("2024-09-06");
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date("2024-09-06"));
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
   const [modalData, setModalData] = useState<DetailedDataItem[]>([]);
   const [modalTitle, setModalTitle] = useState<string>("");
   const [selectedField, setSelectedField] =
     useState<keyof TradeDataItem>("New Trades");
+  const formattedSelectedDate = format(selectedDate, "yyyy-MM-dd");
   const selectedData: TradeDataItem | undefined = typedTradeData.find(
-    (item: TradeDataItem) => item["Reporting Date"] === selectedDate
+    (item: TradeDataItem) => item["Reporting Date"] === formattedSelectedDate
   );
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-  const [dateRange, setDateRange] = useState("1 Jan 2024 - 10 Jan 2024");
+  // const [dateRange, setDateRange] = useState("1 Jan 2024 - 10 Jan 2024");
 
   const handleCardClick = (title: string): void => {
-    const [year, month, day] = selectedDate.split("-");
-    const formattedDate = `${day}/${month}/${year}`;
+    const formattedDate = format(selectedDate, "dd/MM/yyyy");
     const type = typeMap[title];
 
     let filteredData: DetailedDataItem[];
@@ -235,14 +250,84 @@ const Summary: React.FC = () => {
     setModalOpen(true);
   };
 
-  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    setSelectedDate(e.target.value);
+  const DateRangePicker = () => {
+    return (
+      <div className="grid gap-2">
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              id="date"
+              variant="outline"
+              className={cn(
+                "w-[220px] justify-start text-left font-normal",
+                !dateRange && "text-muted-foreground"
+              )}
+            >
+              <CalendarIcon className="mr-2 h-4 w-4" />
+              {dateRange?.from ? (
+                dateRange.to ? (
+                  <>
+                    {format(dateRange.from, "LLL dd, y")} -{" "}
+                    {format(dateRange.to, "LLL dd, y")}
+                  </>
+                ) : (
+                  format(dateRange.from, "LLL dd, y")
+                )
+              ) : (
+                <span>Pick a date range</span>
+              )}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0" align="start">
+            <Calendar
+              initialFocus
+              mode="range"
+              defaultMonth={dateRange?.from}
+              selected={dateRange}
+              onSelect={setDateRange}
+              numberOfMonths={2}
+            />
+          </PopoverContent>
+        </Popover>
+      </div>
+    );
+  };
+
+  const DatePicker = () => {
+    return (
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button
+            variant="outline"
+            className={cn(
+              "w-[200px] justify-start text-left font-normal",
+              !selectedDate && "text-muted-foreground"
+            )}
+          >
+            <CalendarIcon className="mr-2 h-4 w-4" />
+            {format(selectedDate, "PPP")}
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-auto p-0">
+          <Calendar
+            mode="single"
+            selected={selectedDate}
+            onSelect={(date) => date && setSelectedDate(date)}
+            initialFocus
+          />
+        </PopoverContent>
+      </Popover>
+    );
   };
 
   const closeModal = (): void => setModalOpen(false);
 
-  const formattedModalDate = selectedDate.split("-").reverse().join("/");
+  const formattedModalDate = format(selectedDate, "dd/MM/yyyy");
   const tradeDataTyped = tradeData as TradeDataItem[];
+
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    setSelectedDate(e.target.value);
+  };
 
   // Corrected typeMap that matches exact data field names
   const typeMap = {
@@ -333,12 +418,25 @@ const Summary: React.FC = () => {
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    initialState: {
+      pagination: {
+        pageSize: 5,
+        pageIndex: 0,
+      },
+    },
   });
+  
 
   return (
     <Layout collapsed={collapsed}>
       <div className="bg-white p-6 rounded-xl">
+      <div className="flex gap-6">
         <h3 className="text-2xl font-semibold text-black mb-6">Summary</h3>
+        <div className="date-field">
+        <span className="mr-2">Showing:</span>
+        <DatePicker />
+        </div>
+        </div>
         <div className="grid grid-cols-4 gap-4">
           {Object.keys(typeMap).map((key) => (
             <SummaryCard
@@ -353,27 +451,24 @@ const Summary: React.FC = () => {
           ))}
         </div>
       </div>
-
-      <div className="bg-white p-6 rounded-xl mt-6">
-        <div className="flex gap-6">
+      
+      <div className="bg-white p-6 rounded-xl mt-2">
+        <div className="flex gap-6  md:w-2/3">
           <h3 className="text-2xl font-semibold text-black mb-100">
             Trend Chart
           </h3>
-          <div
-            className="date-field"
-            style={{ display: "flex", alignItems: "center" }}
-          >
-            <span>Showing: </span>
-            <select
-              value={dateRange}
-              onChange={(e) => setDateRange(e.target.value)}
-              className="date-select"
-            >
-              <option value="1 Jan 2024 - 10 Jan 2024">
-                1 Jan 2024 - 10 Jan 2024
-              </option>
-            </select>
-          </div>
+          <div className="date-field">
+          <span className="mr-2">Showing:</span>
+          <DateRangePicker
+            className="ml-2"
+            onDateChange={(selectedDate) =>
+              setDateRange({
+                from: selectedDate?.from || null,
+                to: selectedDate?.to || null,
+              })
+            }
+          />
+        </div>
           <div className="field-select">
             <span>Showing info: </span>
             <select
@@ -389,43 +484,48 @@ const Summary: React.FC = () => {
             </select>
           </div>
         </div>
-
-        <div className="chart-container">
-          <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
-            <BarChart
-              data={chartData}
-              width={isMobile ? 300 : 600}
-              height={isMobile ? 300 : 400}
-            >
-              <CartesianGrid vertical={false} />
-              <XAxis
-                dataKey="date"
-                tickLine={false}
-                tickMargin={10}
-                axisLine={false}
-                tickFormatter={(value) => {
-                  const date = new Date(value);
-                  return date.toLocaleDateString("en-GB", {
-                    day: "2-digit",
-                    month: "short",
-                  });
-                }}
-              />
-              <YAxis
-                dataKey="value"
-                domain={[0, roundedHighestValue]} // Dynamic scaling based on the rounded highest value
-                tickLine={false}
-                tickMargin={10}
-                axisLine={false}
-                tickFormatter={(value) => value.toLocaleString()} // Formatting numerical ticks with commas
-              />
-              <ChartTooltip content={<ChartTooltipContent />} />
-              <ChartLegend content={<ChartLegendContent />} />
-              <Bar dataKey="value" fill={chartConfig.value.color} radius={4} />
-            </BarChart>
-          </ChartContainer>
-        </div>
-
+        <div className="flex flex-col md:flex-row gap-6 w-full">
+  {/* Bar Chart Container */}
+  <div className="flex-1">
+    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <BarChart
+        data={chartData}
+        width={isMobile ? 300 : 600}
+        height={isMobile ? 300 : 400}
+      >
+        <CartesianGrid vertical={false} />
+        <XAxis
+          dataKey="date"
+          tickLine={false}
+          tickMargin={10}
+          axisLine={false}
+          tickFormatter={(value) => {
+            const date = new Date(value);
+            return date.toLocaleDateString("en-GB", {
+              day: "2-digit",
+              month: "short",
+            });
+          }}
+        />
+        <YAxis
+          dataKey="value"
+          domain={[0, roundedHighestValue]}
+          tickLine={false}
+          tickMargin={10}
+          axisLine={false}
+          tickFormatter={(value) => value.toLocaleString()}
+        />
+        <ChartTooltip content={<ChartTooltipContent />} />
+        <ChartLegend content={<ChartLegendContent />} />
+        <Bar dataKey="value" fill={chartConfig.value.color} radius={4} />
+      </BarChart>
+    </ChartContainer>
+  </div>
+  {/* Pie Chart Container */}
+<div className="w-full md:w-1/3">
+    <PieChartComponent selectedData={selectedData} />
+  </div>
+</div>
         <hr className="my-12 w-full border-b border-gray-200" />
 
         <div className="data-container">
@@ -481,8 +581,7 @@ const Summary: React.FC = () => {
           </Table>
         </div>
 
-        <div style={{ display: "flex", alignItems: "center" }}>
-          {/* Pagination */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent:"flex-end" }}>
           {table.getPageCount() > 1 && (
             <Pagination
               style={{
@@ -492,7 +591,6 @@ const Summary: React.FC = () => {
               }}
             >
               <PaginationContent>
-                {/* Previous Button */}
                 <PaginationItem>
                   <PaginationPrevious
                     as="button"
@@ -512,9 +610,7 @@ const Summary: React.FC = () => {
                   </PaginationPrevious>
                 </PaginationItem>
 
-                {/* Page Numbers */}
                 {table.getPageCount() <= 3 ? (
-                  // If total pages are 3 or less, show all page numbers
                   [...Array(table.getPageCount())].map((_, index) => (
                     <PaginationItem key={index}>
                       <PaginationLink
@@ -540,7 +636,6 @@ const Summary: React.FC = () => {
                     </PaginationItem>
                   ))
                 ) : table.getState().pagination.pageIndex < 3 ? (
-                  // Show first 3 pages, then show "..."
                   <>
                     {[...Array(3)].map((_, index) => (
                       <PaginationItem key={index}>
@@ -572,7 +667,6 @@ const Summary: React.FC = () => {
                   </>
                 ) : table.getState().pagination.pageIndex >=
                   table.getPageCount() - 2 ? (
-                  // Show last 2 pages with ellipsis
                   <>
                     <PaginationItem>
                       <PaginationEllipsis />
@@ -608,7 +702,6 @@ const Summary: React.FC = () => {
                     ))}
                   </>
                 ) : (
-                  // Pages between 4 and 3 pages before and after the current page
                   <>
                     <PaginationItem>
                       <PaginationEllipsis />
@@ -647,7 +740,6 @@ const Summary: React.FC = () => {
                   </>
                 )}
 
-                {/* Next Button */}
                 <PaginationItem>
                   <PaginationNext
                     as="button"
@@ -668,7 +760,6 @@ const Summary: React.FC = () => {
             </Pagination>
           )}
 
-          {/* Rows Per Page Selector */}
           <div
             className="rows-per-page-selector"
             style={{ marginLeft: "1rem" }}
@@ -678,13 +769,13 @@ const Summary: React.FC = () => {
               value={table.getState().pagination.pageSize}
               onChange={(e) => table.setPageSize(Number(e.target.value))}
               style={{
-                height: "38px", // Match button height
-                width: "50px", // Adjust width to match buttons
+                height: "38px",
+                width: "50px",
                 padding: "0",
                 borderRadius: "4px",
                 border: "1px solid #ccc",
                 cursor: "pointer",
-                textAlign: "center", // Center align the text
+                textAlign: "center",
               }}
             >
               <option value={5}>5</option>
