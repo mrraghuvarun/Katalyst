@@ -609,6 +609,18 @@ body{
   -moz-osx-font-smoothing: grayscale;
 }
 
+.sr-only{
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
 .relative{
   position: relative;
 }
@@ -616,6 +628,11 @@ body{
 .my-0\.5{
   margin-top: 0.125rem;
   margin-bottom: 0.125rem;
+}
+
+.mx-auto{
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .mb-4{
@@ -694,6 +711,10 @@ body{
   height: 2.25rem;
 }
 
+.h-4{
+  height: 1rem;
+}
+
 .min-h-\[200px\]{
   min-height: 200px;
 }
@@ -724,6 +745,10 @@ body{
 
 .w-\[100px\]{
   width: 100px;
+}
+
+.w-4{
+  width: 1rem;
 }
 
 .min-w-\[8rem\]{
@@ -804,6 +829,10 @@ body{
 
 .gap-6{
   gap: 1.5rem;
+}
+
+.gap-1{
+  gap: 0.25rem;
 }
 
 .space-y-1\.5 > :not([hidden]) ~ :not([hidden]){
@@ -991,6 +1020,14 @@ body{
 
 .pt-3{
   padding-top: 0.75rem;
+}
+
+.pl-2\.5{
+  padding-left: 0.625rem;
+}
+
+.pr-2\.5{
+  padding-right: 0.625rem;
 }
 
 .text-left{
