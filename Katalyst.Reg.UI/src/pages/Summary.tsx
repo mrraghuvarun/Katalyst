@@ -8,7 +8,7 @@ import "./Summary.css";
 import SummaryCard from "../components/SummaryCard.js";
 import { ChartContainer } from "@/src/components/ui/chart";
 import { BarChart, Bar, CartesianGrid, XAxis, YAxis } from "recharts";
-import PieChartComponent from './PieChartComponent.tsx'; // Adjust the path as needed
+import PieChartComponent from "./PieChartComponent.tsx"; // Adjust the path as needed
 import {
   ChartLegend,
   ChartLegendContent,
@@ -50,7 +50,7 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/src/components/ui/popover"
+} from "@/src/components/ui/popover";
 import "../output.css";
 interface TradeDataItem {
   "Reporting Date": string;
@@ -212,7 +212,9 @@ const Summary: React.FC = () => {
     to: new Date("2024-01-10"),
   });
   const [collapsed] = useState<boolean>(false);
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date("2024-09-06"));
+  const [selectedDate, setSelectedDate] = useState<Date>(
+    new Date("2024-09-06")
+  );
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
   const [modalData, setModalData] = useState<DetailedDataItem[]>([]);
   const [modalTitle, setModalTitle] = useState<string>("");
@@ -425,17 +427,16 @@ const Summary: React.FC = () => {
       },
     },
   });
-  
 
   return (
-    <Layout collapsed={collapsed}>
+    <Layout>
       <div className="bg-white p-6 rounded-xl">
-      <div className="flex gap-6">
-        <h3 className="text-2xl font-semibold text-black mb-6">Summary</h3>
-        <div className="date-field">
-        <span className="mr-2">Showing:</span>
-        <DatePicker />
-        </div>
+        <div className="flex gap-6">
+          <h3 className="text-2xl font-semibold text-black mb-6">Summary</h3>
+          <div className="date-field">
+            <span className="mr-2">Showing:</span>
+            <DatePicker />
+          </div>
         </div>
         <div className="grid grid-cols-4 gap-4">
           {Object.keys(typeMap).map((key) => (
@@ -451,26 +452,23 @@ const Summary: React.FC = () => {
           ))}
         </div>
       </div>
-      
-      <div className="bg-white p-6 rounded-xl mt-2">
-        <div className="flex gap-6  md:w-2/3">
-          <h3 className="text-2xl font-semibold text-black mb-100">
-            Trend Chart
-          </h3>
-          <div className="date-field">
-          <span className="mr-2">Showing:</span>
-          <DateRangePicker
-            className="ml-2"
-            onDateChange={(selectedDate) =>
-              setDateRange({
-                from: selectedDate?.from || null,
-                to: selectedDate?.to || null,
-              })
-            }
-          />
-        </div>
-          <div className="field-select">
-            <span>Showing info: </span>
+
+      <div className="bg-white p-6 rounded-xl mt-4">
+        <div className="grid grid-cols-3 gap-8 md:w-2/3">
+          <h3 className="text-2xl font-semibold text-black">Trend Chart</h3>
+          <div className="flex flex-col">
+            <p className="text-sm text-gray-700">Showing:</p>
+            <DateRangePicker
+              onDateChange={(selectedDate) =>
+                setDateRange({
+                  from: selectedDate?.from || null,
+                  to: selectedDate?.to || null,
+                })
+              }
+            />
+          </div>
+          <div className="flex flex-col">
+            <p className="text-sm text-gray-700">Showing info: </p>
             <select
               value={selectedField}
               onChange={(e) => setSelectedField(e.target.value)}
@@ -485,47 +483,54 @@ const Summary: React.FC = () => {
           </div>
         </div>
         <div className="flex flex-col md:flex-row gap-6 w-full">
-  {/* Bar Chart Container */}
-  <div className="flex-1">
-    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
-      <BarChart
-        data={chartData}
-        width={isMobile ? 300 : 600}
-        height={isMobile ? 300 : 400}
-      >
-        <CartesianGrid vertical={false} />
-        <XAxis
-          dataKey="date"
-          tickLine={false}
-          tickMargin={10}
-          axisLine={false}
-          tickFormatter={(value) => {
-            const date = new Date(value);
-            return date.toLocaleDateString("en-GB", {
-              day: "2-digit",
-              month: "short",
-            });
-          }}
-        />
-        <YAxis
-          dataKey="value"
-          domain={[0, roundedHighestValue]}
-          tickLine={false}
-          tickMargin={10}
-          axisLine={false}
-          tickFormatter={(value) => value.toLocaleString()}
-        />
-        <ChartTooltip content={<ChartTooltipContent />} />
-        <ChartLegend content={<ChartLegendContent />} />
-        <Bar dataKey="value" fill={chartConfig.value.color} radius={4} />
-      </BarChart>
-    </ChartContainer>
-  </div>
-  {/* Pie Chart Container */}
-<div className="w-full md:w-1/3">
-    <PieChartComponent selectedData={selectedData} />
-  </div>
-</div>
+          {/* Bar Chart Container */}
+          <div className="flex-1">
+            <ChartContainer
+              config={chartConfig}
+              className="min-h-[200px] w-full"
+            >
+              <BarChart
+                data={chartData}
+                width={isMobile ? 300 : 600}
+                height={isMobile ? 300 : 400}
+              >
+                <CartesianGrid vertical={false} />
+                <XAxis
+                  dataKey="date"
+                  tickLine={false}
+                  tickMargin={10}
+                  axisLine={false}
+                  tickFormatter={(value) => {
+                    const date = new Date(value);
+                    return date.toLocaleDateString("en-GB", {
+                      day: "2-digit",
+                      month: "short",
+                    });
+                  }}
+                />
+                <YAxis
+                  dataKey="value"
+                  domain={[0, roundedHighestValue]}
+                  tickLine={false}
+                  tickMargin={10}
+                  axisLine={false}
+                  tickFormatter={(value) => value.toLocaleString()}
+                />
+                <ChartTooltip content={<ChartTooltipContent />} />
+                <ChartLegend content={<ChartLegendContent />} />
+                <Bar
+                  dataKey="value"
+                  fill={chartConfig.value.color}
+                  radius={4}
+                />
+              </BarChart>
+            </ChartContainer>
+          </div>
+          {/* Pie Chart Container */}
+          <div className="w-full md:w-1/3">
+            <PieChartComponent selectedData={selectedData} />
+          </div>
+        </div>
         <hr className="my-12 w-full border-b border-gray-200" />
 
         <div className="data-container">
@@ -581,7 +586,13 @@ const Summary: React.FC = () => {
           </Table>
         </div>
 
-        <div style={{ display: "flex", alignItems: "center", justifyContent:"flex-end" }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "flex-end",
+          }}
+        >
           {table.getPageCount() > 1 && (
             <Pagination
               style={{
