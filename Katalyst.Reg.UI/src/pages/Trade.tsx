@@ -7,6 +7,8 @@ import * as FileSaver from 'file-saver';
 import { Button } from "@/src/components/ui/button";
 import { ChevronDownIcon } from "@heroicons/react/solid";
 import { DocumentDownloadIcon } from "@heroicons/react/outline";
+import { Calendar } from "@/src/components/ui/calendar";
+import { Calendar as CalendarIcon } from "lucide-react";
 import './Trade.css'
 import {
   Table,
@@ -152,16 +154,20 @@ const Trade: React.FC = () => {
   const currentData = filteredData.slice(startIndex, endIndex);
 
   const renderFilterRow = () => (
-    <div className="filter-row bg-gray-50 p-4 rounded mb-4">
-      <div className="grid grid-cols-4 gap-4">
+    <div className="filter-row bg-gray-50 p-6 rounded-lg shadow-md mb-6">
+      <h3 className="text-2xl font-semibold text-black mb-6">Filter Report</h3>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {Object.entries(filters).map(([field, value]) => (
-          <div key={field} className="space-y-2">
-            <label className="text-sm font-medium">{field}</label>
+          <div
+            key={field}
+            className="p-4 border border-gray-300 rounded-lg bg-white shadow-sm space-y-3"
+          >
+            <label className="block text-sm font-medium text-gray-700">{field}</label>
             {field === "Trade Status" ? (
               <select
                 value={value}
                 onChange={(e) => handleFilterChange(field, e.target.value)}
-                className="w-full p-2 border rounded"
+                className="w-full p-2 border border-white rounded focus:ring-2 focus:ring-blue-400 focus:outline-none"
               >
                 <option value="">Choose an option</option>
                 <option value="New">New</option>
@@ -173,37 +179,37 @@ const Trade: React.FC = () => {
                 type="date"
                 value={value}
                 onChange={(e) => handleFilterChange(field, e.target.value)}
-                className="w-full p-2 border rounded"
+                className="w-full p-2 border border-white rounded focus:ring-2 focus:ring-blue-400 focus:outline-none"
               />
             ) : (
               <input
                 type="text"
                 value={value}
                 onChange={(e) => handleFilterChange(field, e.target.value)}
-                className="w-full p-2 border rounded"
+                className="w-full p-2 border border-white rounded focus:ring-2 focus:ring-blue-400 focus:outline-none"
                 placeholder={`Enter ${field}`}
               />
             )}
           </div>
         ))}
       </div>
-      <div className="flex justify-end gap-2 mt-4">
+      <div className="flex justify-end gap-4 mt-6">
         <button
           onClick={handleClearFilters}
-          className="px-4 py-2 border rounded hover:bg-gray-100"
+          className="px-4 py-2 border border-white rounded bg-gray-100 hover:bg-gray-200 focus:ring-2 focus:ring-gray-400"
         >
           Clear
         </button>
         <button
           onClick={handleApplyFilters}
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:ring-2 focus:ring-blue-400"
         >
-          Apply
+          Search
         </button>
       </div>
     </div>
   );
-
+  
   return (
     <Layout collapsed={false}>
       <div className="p-6">
