@@ -1,91 +1,134 @@
 import React, { useState, useEffect } from "react";
-import DataTable from "react-data-table-component";
 import Layout from "../components/Layout.tsx";
 import tradeData from "../assets/trade.json"; 
-import { FaFilter } from "react-icons/fa";
-import * as XLSX from 'xlsx'; 
+import * as XLSX from 'xlsx';
+import { Input } from "@/src/components/ui/input"
 import * as FileSaver from 'file-saver';
-import "./Trade.css";
+import { Button } from "@/src/components/ui/button";
+import { ChevronDownIcon } from "@heroicons/react/solid";
+import { DocumentDownloadIcon } from "@heroicons/react/outline";
+import './Trade.css'
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/src/components/ui/table";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/src/components/ui/pagination";
 
-type TradeData = {
-  "Order Number"?: string;
-  "Block Identifier"?: string;
-  "Security Group"?: string;
-  "Security Type"?: string;
-  "Transaction Type"?: string;
-  "Trade Status"?: string;
-  "Touch Count"?: string;
-  "Security ID"?: string;
-  ISIN?: string;
-  "Instrument Name"?: string;
-  "CFI Type"?: string;
-  Price?: string;
-  Quantity?: string;
-  Principal?: string;
-  "Trade Date"?: string;
-  "Settle Date"?: string;
-  Trader?: string;
-  "NCA Status"?: string;
-  "ARM Status"?: string;
-};
+const COLUMNS = [
+  { id: "orderNumber", label: "Order Number", key: "Order Number" },
+  { id: "blockIdentifier", label: "Block Identifier", key: "Block Identifier" },
+  { id: "securityGroup", label: "Security Group", key: "Security Group" },
+  { id: "securityType", label: "Security Type", key: "Security Type" },
+  { id: "transactionType", label: "Transaction Type", key: "Transaction Type" },
+  { id: "tradeStatus", label: "Trade Status", key: "Trade Status" },
+  { id: "touchCount", label: "Touch Count", key: "Touch Count" },
+  { id: "securityId", label: "Security ID", key: "Security ID" },
+  { id: "isin", label: "ISIN", key: "ISIN" },
+  { id: "instrumentName", label: "Instrument Name", key: "Instrument Name" },
+  { id: "cfiType", label: "CFI Type", key: "CFI Type" },
+  { id: "price", label: "Price", key: "Price" },
+  { id: "quantity", label: "Quantity", key: "Quantity" },
+  { id: "principal", label: "Principal", key: "Principal" },
+  { id: "tradeDate", label: "Trade Date", key: "Trade Date" },
+  { id: "settleDate", label: "Settle Date", key: "Settle Date" },
+  { id: "trader", label: "Trader", key: "Trader" },
+  { id: "ncaStatus", label: "NCA Status", key: "NCA Status" },
+  { id: "armStatus", label: "ARM Status", key: "ARM Status" }
+] as const;
 
 const Trade: React.FC = () => {
-  const [data, setData] = useState<TradeData[]>([]);
-  const [search, setSearch] = useState<string>("");
-  const [showFilters, setShowFilters] = useState<boolean>(false);
-  const [searchStates, setSearchStates] = useState<{
-    [key in keyof TradeData]?: string;
-  }>({
+  const [data, setData] = useState([]);
+  const [search, setSearch] = useState("");
+  const [showFilters, setShowFilters] = useState(false);
+  const [pageSize, setPageSize] = useState(5);
+  const [currentPage, setCurrentPage] = useState(0);
+  
+  const [filters, setFilters] = useState({
     "Order Number": "",
-    "Block Identifier": "",
-    "Security Group": "",
-    "Security Type": "",
-    "Transaction Type": "",
+    "Security ID": "",
+    "Trade Date": "",
+    "Settle Date": "",
     "Trade Status": "",
-    "Touch Count": "",
-    "Security ID": "",
-    ISIN: "",
-    "Instrument Name": "",
-    "CFI Type": "",
-    Price: "",
-    Quantity: "",
-    Principal: "",
-    "Trade Date": "",
-    "Settle Date": "",
-    Trader: "",
-    "NCA Status": "",
-    "ARM Status": "",
-  });
-  const [filters, setFilters] = useState<{ [key: string]: string }>({
-    "Order Number": "",
-    "Security ID": "",
-    "Trade Date": "",
-    "Settle Date": "",
-    "Trade Status":"",
     Trader: "",
     "NCA Status": "",
     "ARM Status": "",
   });
 
-  const [filteredData, setFilteredData] = useState<TradeData[]>([]);
-
-  useEffect(() => {
-    setData(tradeData as TradeData[]);
-    setFilteredData(tradeData as TradeData[]);
-  }, []);
-
-  const formatDate = (date: string) => {
-    if (!date) return "";
-    const parsedDate = new Date(date);
-    // Returning the date as a string in the format YYYY-MM-DD for accurate comparison
-    return `${parsedDate.getFullYear()}-${String(parsedDate.getMonth() + 1).padStart(2, '0')}-${String(parsedDate.getDate()).padStart(2, '0')}`;
+  const handleSearch = (value: string) => {
+    setSearch(value);
+    if (!value) {
+      setFilteredData(data);
+      return;
+    }
+    const lowercasedValue = value.toLowerCase();
+    const filtered = data.filter((item) =>
+      Object.values(item).some(
+        (val) =>
+          val &&
+          val.toString().toLowerCase().includes(lowercasedValue)
+      )
+    );
+    setFilteredData(filtered);
   };
 
-  const handleFilterChange = (field: string, value: string) => {
-    setFilters((prev) => ({
+  const [filteredData, setFilteredData] = useState([]);
+  const handleDownload = () => {
+      const workbook = XLSX.utils.book_new();
+      const worksheet = XLSX.utils.json_to_sheet(filteredData);
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Trade Data');
+      const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+      const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8' });
+      FileSaver.saveAs(blob, 'trade_data.xlsx');
+    };
+
+  useEffect(() => {
+    // Add unique ids to the data
+    const dataWithIds = tradeData.map((item, index) => ({
+      ...item,
+      id: `trade-${index}`
+    }));
+    setData(dataWithIds);
+    setFilteredData(dataWithIds);
+  }, []);
+
+  // Filter handlers
+  const handleFilterChange = (field, value) => {
+    setFilters(prev => ({
       ...prev,
       [field]: value,
     }));
+  };
+
+  const handleApplyFilters = () => {
+    const filtered = data.filter(row => {
+      return Object.entries(filters).every(([key, value]) => {
+        if (!value) return true;
+        
+        if (key.includes('Date')) {
+          const rowDate = formatDate(row[key]?.toString() || '');
+          return rowDate.includes(value);
+        }
+        
+        const rowValue = row[key]?.toString().toLowerCase() || '';
+        return rowValue.includes(value.toLowerCase());
+      });
+    });
+    
+    setFilteredData(filtered);
+    setCurrentPage(0);
   };
 
   const handleClearFilters = () => {
@@ -94,7 +137,7 @@ const Trade: React.FC = () => {
       "Security ID": "",
       "Trade Date": "",
       "Settle Date": "",
-      "Trade Status":"",
+      "Trade Status": "",
       Trader: "",
       "NCA Status": "",
       "ARM Status": "",
@@ -102,493 +145,289 @@ const Trade: React.FC = () => {
     setFilteredData(data);
   };
 
-  const handleApplyFilters = () => {
-    const formattedFilters = {
-      ...filters,
-      "Trade Date": formatDate(filters["Trade Date"]),
-      "Settle Date": formatDate(filters["Settle Date"]),
-    };
-
-    const filtered = data.filter((row) => {
-      return Object.keys(formattedFilters).every((key) => {
-        const filterValue = formattedFilters[key];
-        if (!filterValue) return true; // Skip empty filters
-        
-        if (key === "Trade Date" || key === "Settle Date") {
-          // Compare dates correctly by converting the row date to the same format (YYYY-MM-DD)
-          const rowDate = formatDate((row[key as keyof TradeData] ?? '').toString());
-
-          return rowDate.includes(filterValue); // Compare date string
-        }
-  
-        // For other fields, use a text comparison
-        return row[key as keyof TradeData]?.toString().toLowerCase().includes(filterValue.toLowerCase());
-      });
-    });
-  
-    setFilteredData(filtered);
-  };
+  // Pagination calculations
+  const pageCount = Math.ceil(filteredData.length / pageSize);
+  const startIndex = currentPage * pageSize;
+  const endIndex = startIndex + pageSize;
+  const currentData = filteredData.slice(startIndex, endIndex);
 
   const renderFilterRow = () => (
-    <div className="filter-row custom-bg p-4 rounded mb-4">
-      <div className="grid custom-grid">
-        {Object.keys(filters).map((field) => (
-          <div key={field} className="filter-field">
-            <label className="label-text">{field}</label>
+    <div className="filter-row bg-gray-50 p-4 rounded mb-4">
+      <div className="grid grid-cols-4 gap-4">
+        {Object.entries(filters).map(([field, value]) => (
+          <div key={field} className="space-y-2">
+            <label className="text-sm font-medium">{field}</label>
             {field === "Trade Status" ? (
               <select
-                value={filters[field] || ""}
+                value={value}
                 onChange={(e) => handleFilterChange(field, e.target.value)}
-                className="input-field"
+                className="w-full p-2 border rounded"
               >
                 <option value="">Choose an option</option>
                 <option value="New">New</option>
                 <option value="Amend">Amend</option>
                 <option value="Cancel">Cancel</option>
               </select>
-            ) : field === "Trade Date" || field === "Settle Date" ? (
+            ) : field.includes("Date") ? (
               <input
                 type="date"
-                value={filters[field] || ""}
+                value={value}
                 onChange={(e) => handleFilterChange(field, e.target.value)}
-                className="input-field"
+                className="w-full p-2 border rounded"
               />
             ) : (
               <input
                 type="text"
-                value={filters[field] || ""}
+                value={value}
                 onChange={(e) => handleFilterChange(field, e.target.value)}
-                className="input-field"
+                className="w-full p-2 border rounded"
                 placeholder={`Enter ${field}`}
               />
             )}
           </div>
         ))}
       </div>
-      <div className="filter-actions">
-        <button onClick={handleClearFilters} className="close-button">
+      <div className="flex justify-end gap-2 mt-4">
+        <button
+          onClick={handleClearFilters}
+          className="px-4 py-2 border rounded hover:bg-gray-100"
+        >
           Clear
         </button>
-        <button onClick={handleApplyFilters} className="apply-button">
+        <button
+          onClick={handleApplyFilters}
+          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        >
           Apply
         </button>
       </div>
     </div>
   );
-  
-  
-
-  useEffect(() => {
-    const filtered = data.filter((row) => {
-      const matchesGlobalSearch = Object.values(row).some(
-        (value) =>
-          value != null &&
-          value.toString().toLowerCase().includes(search.toLowerCase())
-      );
-  
-      const matchesFieldSearch = Object.keys(searchStates).every((key) => 
-        !searchStates[key as keyof TradeData] || 
-        row[key as keyof TradeData]?.toString().toLowerCase().includes(
-          searchStates[key as keyof TradeData]?.toLowerCase() || ""
-        )
-      );
-  
-      return matchesGlobalSearch && matchesFieldSearch;
-    });
-  
-    setFilteredData(filtered);
-  }, [search, searchStates, data]);
-
-  const handleSearchChange = (field: keyof TradeData) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchStates((prev) => ({
-      ...prev,
-      [field]: e.target.value,
-    }));
-  };
-
-  const handleDownload = () => {
-    const workbook = XLSX.utils.book_new();
-    const worksheet = XLSX.utils.json_to_sheet(filteredData);
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Trade Data');
-    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-    const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8' });
-    FileSaver.saveAs(blob, 'trade_data.xlsx');
-  };
-
-  const columns = [
-    {
-      name: (
-        <div>
-          Order Number
-          <input
-            type="text"
-            placeholder="Search Order Number..."
-            value={searchStates["Order Number"]}
-            onChange={handleSearchChange("Order Number")}
-            className="search"
-            style={{ display: "block", marginTop: "5px", fontSize: "12px", padding: "4px" }}
-          />
-        </div>
-      ),
-      selector: (row: TradeData) => row["Order Number"]|| "",
-      sortable: false,
-    },
-    {
-      name: (
-        <div>
-          Block Identifier
-          <input
-            type="text"
-            placeholder="Search Block Identifier..."
-            value={searchStates["Block Identifier"]}
-            onChange={handleSearchChange("Block Identifier")}
-            className="search"
-            style={{ display: "block", marginTop: "5px", fontSize: "12px", padding: "4px" }}
-          />
-        </div>
-      ),
-      selector: (row: TradeData) => row["Block Identifier"]|| "",
-      sortable: false,
-    },
-    {
-      name: (
-        <div>
-          Security Group
-          <input
-            type="text"
-            placeholder="Search Security Group..."
-            value={searchStates["Security Group"]}
-            onChange={handleSearchChange("Security Group")}
-            className="search"
-            style={{ display: "block", marginTop: "5px", fontSize: "12px", padding: "4px" }}
-          />
-        </div>
-      ),
-      selector: (row: TradeData) => row["Security Group"]|| "",
-      sortable: false,
-    },
-    {
-      name: (
-        <div>
-          Security Type
-          <input
-            type="text"
-            placeholder="Search Security Type..."
-            value={searchStates["Security Type"]}
-            onChange={handleSearchChange("Security Type")}
-            className="search"
-            style={{ display: "block", marginTop: "5px", fontSize: "12px", padding: "4px" }}
-          />
-        </div>
-      ),
-      selector: (row: TradeData) => row["Security Type"]|| "",
-      sortable: false,
-    },
-    {
-      name: (
-        <div>
-          Transaction Type
-          <input
-            type="text"
-            placeholder="Search Transaction Type..."
-            value={searchStates["Transaction Type"]}
-            onChange={handleSearchChange("Transaction Type")}
-            className="search"
-            style={{ display: "block", marginTop: "5px", fontSize: "12px", padding: "4px" }}
-          />
-        </div>
-      ),
-      selector: (row: TradeData) => row["Transaction Type"] || "",
-      sortable: false,
-    },
-    {
-      name: (
-        <div>
-          Trade Status
-          <input
-            type="text"
-            placeholder="Search Trade Status..."
-            value={searchStates["Trade Status"]}
-            onChange={handleSearchChange("Trade Status")}
-            className="search"
-            style={{ display: "block", marginTop: "5px", fontSize: "12px", padding: "4px" }}
-          />
-        </div>
-      ),
-      selector: (row: TradeData) => row["Trade Status"]|| "",
-      sortable: false,
-    },
-    {
-      name: (
-        <div>
-          Touch Count
-          <input
-            type="text"
-            placeholder="Search Touch Count..."
-            value={searchStates["Touch Count"]}
-            onChange={handleSearchChange("Touch Count")}
-            className="search"
-            style={{ display: "block", marginTop: "5px", fontSize: "12px", padding: "4px" }}
-          />
-        </div>
-      ),
-      selector: (row: TradeData) => row["Touch Count"]|| "",
-      sortable: false,
-    },
-    {
-      name: (
-        <div>
-          Security ID
-          <input
-            type="text"
-            placeholder="Search Security ID..."
-            value={searchStates["Security ID"]}
-            onChange={handleSearchChange("Security ID")}
-            className="search"
-            style={{ display: "block", marginTop: "5px", fontSize: "12px", padding: "4px" }}
-          />
-        </div>
-      ),
-      selector: (row: TradeData) => row["Security ID"]|| "",
-      sortable: false,
-    },
-    {
-      name: (
-        <div>
-          ISIN
-          <input
-            type="text"
-            placeholder="Search ISIN..."
-            value={searchStates["ISIN"]}
-            onChange={handleSearchChange("ISIN")}
-            className="search"
-            style={{ display: "block", marginTop: "5px", fontSize: "12px", padding: "4px" }}
-          />
-        </div>
-      ),
-      selector: (row: TradeData) => row["ISIN"]|| "",
-      sortable: false,
-    },
-    {
-      name: (
-        <div>
-          Instrument Name
-          <input
-            type="text"
-            placeholder="Search Instrument Name..."
-            value={searchStates["Instrument Name"]}
-            onChange={handleSearchChange("Instrument Name")}
-            className="search"
-            style={{ display: "block", marginTop: "5px", fontSize: "12px", padding: "4px" }}
-          />
-        </div>
-      ),
-      selector: (row: TradeData) => row["Instrument Name"]|| "",
-      sortable: false,
-    },
-    {
-      name: (
-        <div>
-          CFI Type
-          <input
-            type="text"
-            placeholder="Search CFI Type..."
-            value={searchStates["CFI Type"]}
-            onChange={handleSearchChange("CFI Type")}
-            className="search"
-            style={{ display: "block", marginTop: "5px", fontSize: "12px", padding: "4px" }}
-          />
-        </div>
-      ),
-      selector: (row: TradeData) => row["CFI Type"]|| "",
-      sortable: false,
-    },
-    {
-      name: (
-        <div>
-          Price
-          <input
-            type="text"
-            placeholder="Search Price..."
-            value={searchStates["Price"]}
-            onChange={handleSearchChange("Price")}
-            className="search"
-            style={{ display: "block", marginTop: "5px", fontSize: "12px", padding: "4px" }}
-          />
-        </div>
-      ),
-      selector: (row: TradeData) => row["Price"]|| "",
-      sortable: false,
-    },
-    {
-      name: (
-        <div>
-          Quantity
-          <input
-            type="text"
-            placeholder="Search Quantity..."
-            value={searchStates["Quantity"]}
-            onChange={handleSearchChange("Quantity")}
-            className="search"
-            style={{ display: "block", marginTop: "5px", fontSize: "12px", padding: "4px" }}
-          />
-        </div>
-      ),
-      selector: (row: TradeData) => row["Quantity"]|| "",
-      sortable: false,
-    },
-    {
-      name: (
-        <div>
-          Principal
-          <input
-            type="text"
-            placeholder="Search Principal..."
-            value={searchStates["Principal"]}
-            onChange={handleSearchChange("Principal")}
-            className="search"
-            style={{ display: "block", marginTop: "5px", fontSize: "12px", padding: "4px" }}
-          />
-        </div>
-      ),
-      selector: (row: TradeData) => row["Principal"]|| "",
-      sortable: false,
-    },
-    {
-      name: (
-        <div>
-          Trade Date
-          <input
-            type="text"
-            placeholder="Search Trade Date..."
-            value={searchStates["Trade Date"]}
-            onChange={handleSearchChange("Trade Date")}
-            className="search"
-            style={{ display: "block", marginTop: "5px", fontSize: "12px", padding: "4px" }}
-          />
-        </div>
-      ),
-      selector: (row: TradeData) => row["Trade Date"]|| "",
-      sortable: false,
-    },
-    {
-      name: (
-        <div>
-          Settle Date
-          <input
-            type="text"
-            placeholder="Search Settle Date..."
-            value={searchStates["Settle Date"]}
-            onChange={handleSearchChange("Settle Date")}
-            className="search"
-            style={{ display: "block", marginTop: "5px", fontSize: "12px", padding: "4px" }}
-          />
-        </div>
-      ),
-      selector: (row: TradeData) => row["Settle Date"]|| "",
-      sortable: false,
-    },
-    {
-      name: (
-        <div>
-          Trader
-          <input
-            type="text"
-            placeholder="Search Trader..."
-            value={searchStates["Trader"]}
-            onChange={handleSearchChange("Trader")}
-            className="search"
-            style={{ display: "block", marginTop: "5px", fontSize: "12px", padding: "4px" }}
-          />
-        </div>
-      ),
-      selector: (row: TradeData) => row["Trader"]|| "",
-      sortable: false,
-    },
-    {
-      name: (
-        <div>
-          NCA Status
-          <input
-            type="text"
-            placeholder="Search NCA Status..."
-            value={searchStates["NCA Status"]}
-            onChange={handleSearchChange("NCA Status")}
-            className="search"
-            style={{ display: "block", marginTop: "5px", fontSize: "12px", padding: "4px" }}
-          />
-        </div>
-      ),
-      selector: (row: TradeData) => row["NCA Status"]|| "",
-      sortable: false,
-    },
-    {
-      name: (
-        <div>
-          ARM Status
-          <input
-            type="text"
-            placeholder="Search ARM Status..."
-            value={searchStates["ARM Status"]}
-            onChange={handleSearchChange("ARM Status")}
-            className="search"
-            style={{ display: "block", marginTop: "5px", fontSize: "12px", padding: "4px" }}
-          />
-        </div>
-      ),
-      selector: (row) => row["ARM Status"] || "",
-      sortable: false,
-    },
-  ];
-  
 
   return (
-  <Layout collapsed={false}>
-    <div className="trade-content">
-      <div className="flex justify-between items-center mb-4">
-        <div className="flex items-center">
-          <h1 style={{ marginRight: "10px" }}>Trade Report</h1>
-          <FaFilter 
-            size={24} 
-            className="filter-icon cursor-pointer" 
-            onClick={() => setShowFilters(!showFilters)} 
-            style={{ color: showFilters ? 'blue' : 'black' }} 
-          />
+    <Layout collapsed={false}>
+      <div className="p-6">
+        <div className="flex justify-between items-center mb-4">
+          <div className="flex items-center">
+          <h3 className="text-2xl font-semibold text-black mb-6">Trade Report</h3>
+          </div>
+          <div className="flex items-center justify-between mb-4 space-x-4">
+  <div className="flex items-center space-x-2 rounded-lg border border-gray-300 bg-gray-50 dark:bg-gray-900 px-3.5 py-2">
+    <SearchIcon className="h-4 w-4" />
+    <Input
+      type="search"
+      placeholder="Search here"
+      value={search}
+      onChange={(e) => handleSearch(e.target.value)}
+      className="w-full border-0 h-8 font-semibold"
+    />
+  </div>
+  <Button
+      variant="outline"
+      className={`flex items-center space-x-2 py-6 ${showFilters ? "text-blue-500 border-blue-500 py-6" : "text-black border-gray-300 py-6"}`}
+      onClick={() => setShowFilters(!showFilters)}
+    >
+      <span>Filter Report</span>
+      <ChevronDownIcon className={`w-4 h-4 transform ${showFilters ? "rotate-180" : ""}`} />
+    </Button>
+    <button
+  onClick={handleDownload}
+  className="flex items-center px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 ml-4"
+>
+  <DocumentDownloadIcon className="h-5 w-5 mr-2" />
+  Download as Excel
+</button>
+
+</div>
         </div>
+        {showFilters && renderFilterRow()}
+        <div className="bg-white p-6 rounded-xl">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                {COLUMNS.map((column) => (
+                  <TableHead 
+                    key={column.id}
+                    className="bg-[#EAF3FF] text-black border-0 border-r-2 border-white text-center whitespace-nowrap"
+                  >
+                    {column.label}
+                  </TableHead>
+                ))}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {currentData.map((row) => (
+                <TableRow key={row.id}>
+                  {COLUMNS.map((column) => (
+                    <TableCell 
+                      key={`${row.id}-${column.id}`}
+                      className="border-0 bg-white py-6 px-4 text-center min-w-32 border-b whitespace-nowrap"
+                    >
+                      {row[column.key] || ""}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
+        {pageCount > 1 && (
+          <Pagination className="Pagination">
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  onClick={() => setCurrentPage(p => Math.max(0, p - 1))}
+                  disabled={currentPage === 0}
+                  className="cursor-pointer"
+                  style={{
+                    pointerEvents: currentPage > 0 ? "auto" : "none",
+                    opacity: currentPage > 0 ? 1 : 0.5,
+                  }}
+                />
+              </PaginationItem>
+
+              {pageCount <= 3 ? (
+                [...Array(pageCount)].map((_, index) => (
+                  <PaginationItem key={index}>
+                    <PaginationLink
+                      isActive={currentPage === index}
+                      onClick={() => setCurrentPage(index)}
+                      className="cursor-pointer"
+                      style={{
+                        backgroundColor: currentPage === index ? "#007bff" : "transparent",
+                        color: currentPage === index ? "#fff" : "#000",
+                      }}
+                    >
+                      {index + 1}
+                    </PaginationLink>
+                  </PaginationItem>
+                ))
+              ) : currentPage < 2 ? (
+                <>
+                  {[0, 1, 2].map((index) => (
+                    <PaginationItem key={index}>
+                      <PaginationLink
+                        isActive={currentPage === index}
+                        onClick={() => setCurrentPage(index)}
+                        className="cursor-pointer"
+                        style={{
+                          backgroundColor: currentPage === index ? "#007bff" : "transparent",
+                          color: currentPage === index ? "#fff" : "#000",
+                        }}
+                      >
+                        {index + 1}
+                      </PaginationLink>
+                    </PaginationItem>
+                  ))}
+                  <PaginationItem>
+                    <PaginationEllipsis />
+                  </PaginationItem>
+                </>
+              ) : currentPage >= pageCount - 3 ? (
+                <>
+                  <PaginationItem>
+                    <PaginationEllipsis />
+                  </PaginationItem>
+                  {[pageCount - 3, pageCount - 2, pageCount - 1].map((index) => (
+                    <PaginationItem key={index}>
+                      <PaginationLink
+                        isActive={currentPage === index}
+                        onClick={() => setCurrentPage(index)}
+                        className="cursor-pointer"
+                        style={{
+                          backgroundColor: currentPage === index ? "#007bff" : "transparent",
+                          color: currentPage === index ? "#fff" : "#000",
+                        }}
+                      >
+                        {index + 1}
+                      </PaginationLink>
+                    </PaginationItem>
+                  ))}
+                </>
+              ) : (
+                <>
+                  <PaginationItem>
+                    <PaginationEllipsis />
+                  </PaginationItem>
+                  {[currentPage - 1, currentPage, currentPage + 1].map((index) => (
+                    <PaginationItem key={index}>
+                      <PaginationLink
+                        isActive={currentPage === index}
+                        onClick={() => setCurrentPage(index)}
+                        className="cursor-pointer"
+                        style={{
+                          backgroundColor: currentPage === index ? "#007bff" : "transparent",
+                          color: currentPage === index ? "#fff" : "#000",
+                        }}
+                      >
+                        {index + 1}
+                      </PaginationLink>
+                    </PaginationItem>
+                  ))}
+                  <PaginationItem>
+                    <PaginationEllipsis />
+                  </PaginationItem>
+                </>
+              )}
+
+              <PaginationItem>
+                <PaginationNext
+                  onClick={() => setCurrentPage(p => Math.min(pageCount - 1, p + 1))}
+                  disabled={currentPage === pageCount - 1}
+                  className="cursor-pointer"
+                  style={{
+                    pointerEvents: currentPage < pageCount - 1 ? "auto" : "none",
+                    opacity: currentPage < pageCount - 1 ? 1 : 0.5,
+                  }}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        )}
+
+        <select
+          value={pageSize}
+          onChange={(e) => {
+            setPageSize(Number(e.target.value));
+            setCurrentPage(0);
+          }}
+          className="h-10 w-16 rounded border border-input bg-background px-3 ml-4"
+          style={{
+            cursor: "pointer",
+            textAlign: "center",
+          }}
+        >
+          <option value={5}>5</option>
+          <option value={10}>10</option>
+          <option value={20}>20</option>
+          <option value={50}>50</option>
+        </select>
       </div>
-
-      <div className="flex justify-between items-center mb-4">
-        <input 
-          type="text" 
-          placeholder="Search" 
-          value={search} 
-          onChange={(e) => setSearch(e.target.value)} 
-          className="search-bar" 
-        />
-        <button className="button" onClick={handleDownload}>
-          Download as Excel
-        </button>
       </div>
-
-      {/* Move filter row after search bar */}
-      {showFilters && (
-        <div className="filter-container">
-          {renderFilterRow()}
-        </div>
-      )}
-
-      <DataTable 
-        columns={columns} 
-        data={filteredData} 
-        pagination 
-        responsive 
-        striped 
-        highlightOnHover 
-        persistTableHead 
-      />
-    </div>
-  </Layout>
-);
+      </div>
+    </Layout>
+  );
 };
+
+function SearchIcon(props) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <circle cx="11" cy="11" r="8" />
+      <path d="m21 21-4.3-4.3" />
+    </svg>
+  );
+}
 
 export default Trade;
