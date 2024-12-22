@@ -212,7 +212,7 @@ const Trade: React.FC = () => {
   
   return (
     <Layout collapsed={false}>
-      <div className="p-6">
+      <div className="bg-white p-6 rounded-xl">
         <div className="flex justify-between items-center mb-4">
           <div className="flex items-center">
           <h3 className="text-2xl font-semibold text-black mb-6">Trade Report</h3>
@@ -247,7 +247,6 @@ const Trade: React.FC = () => {
 </div>
         </div>
         {showFilters && renderFilterRow()}
-        <div className="bg-white p-6 rounded-xl">
           <Table>
             <TableHeader>
               <TableRow>
@@ -409,7 +408,6 @@ const Trade: React.FC = () => {
           <option value={20}>20</option>
           <option value={50}>50</option>
         </select>
-      </div>
       </div>
       </div>
     </Layout>
