@@ -1,17 +1,6 @@
 import React from "react";
 import { useLocation } from "react-router-dom";
 import {
-  FaArrowLeft,
-  FaArrowRight,
-  FaTachometerAlt,
-  FaTable,
-  FaLayerGroup,
-  FaUndo,
-  FaArrowAltCircleRight,
-  FaSignOutAlt,
-  FaFileUpload,
-} from "react-icons/fa";
-import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
@@ -22,6 +11,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarTrigger,
+  useSidebar,
 } from "@/src/components/ui/sidebar";
 import "./Sidebar.css";
 import {
@@ -29,15 +19,10 @@ import {
   CalendarSearch,
   LayoutDashboard,
   ListChecks,
+  MenuIcon,
   Notebook,
-  SkipBack,
   Tag,
 } from "lucide-react";
-
-type SidebarProps = {
-  collapsed: boolean;
-  toggleSidebar: () => void;
-};
 
 const items = [
   { title: "Dashboard", url: "/summary", icon: LayoutDashboard },
@@ -49,6 +34,8 @@ const items = [
 ];
 
 const AppSidebar: React.FC = () => {
+  const { state } = useSidebar();
+
   return (
     <Sidebar
       className="p-4 rounded-lg border-0"
@@ -56,10 +43,19 @@ const AppSidebar: React.FC = () => {
       variant="floating"
     >
       <SidebarContent>
-        <SidebarHeader className="px-7 pt-6 flex flex-row justify-between items-center">
-          <h6 className="text-gray-600">Menu</h6>
-          <SidebarTrigger className="bg-blue-100 hover:bg-blue-200 rounded text-blue-600 hover:text-blue-600" />
-        </SidebarHeader>
+        {state === "expanded" && (
+          <SidebarHeader className="px-7 pt-6 flex flex-row justify-between items-center">
+            <h6 className="text-gray-600">Menu</h6>
+            <SidebarTrigger className="bg-blue-100 hover:bg-blue-200 rounded text-blue-600 hover:text-blue-600" />
+          </SidebarHeader>
+        )}
+
+        {state === "collapsed" && (
+          <SidebarHeader className="pt-6 flex justify-center items-center">
+            <SidebarTrigger className="bg-blue-100 hover:bg-blue-200 rounded text-blue-600 hover:text-blue-600" />
+          </SidebarHeader>
+        )}
+
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
