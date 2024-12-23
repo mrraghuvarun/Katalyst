@@ -594,13 +594,7 @@ const Summary: React.FC = () => {
           }}
         >
           {table.getPageCount() > 1 && (
-            <Pagination
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "flex-end",
-              }}
-            >
+            <Pagination>
               <PaginationContent>
                 <PaginationItem>
                   <PaginationPrevious
