@@ -12,6 +12,7 @@ import HomePage from "./pages/HomePage.tsx";
 import DataInjection from "./pages/DataInjection.tsx";
 import "boxicons";
 import "./App.css";
+import { SidebarProvider } from "./components/ui/sidebar.js";
 
 const App: React.FC = () => {
   const location = useLocation();
