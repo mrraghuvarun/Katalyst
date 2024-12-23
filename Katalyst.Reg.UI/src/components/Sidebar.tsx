@@ -40,12 +40,12 @@ type SidebarProps = {
 };
 
 const items = [
-  { title: "Dashboard", url: "/", icon: LayoutDashboard },
-  { title: "Trade Report", url: "/upload", icon: ListChecks },
-  { title: "Back Report", url: "/data", icon: CalendarSearch },
+  { title: "Dashboard", url: "/summary", icon: LayoutDashboard },
+  { title: "Trade Report", url: "/trade", icon: ListChecks },
+  { title: "Back Report", url: "/backreporting", icon: CalendarSearch },
   { title: "TRN Report", url: "/models", icon: Notebook },
   { title: "ARM Response", url: "/predictions", icon: Tag },
-  { title: "NCA Response", url: "/undo", icon: BookIcon },
+  { title: "NCA Response", url: "/nca-response", icon: BookIcon },
 ];
 
 const AppSidebar: React.FC = () => {

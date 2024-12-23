@@ -16,16 +16,14 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <SidebarProvider>
       <div className="flex">
-        <div className="max-w-[400px] px-6 rounded-lg">
+        <div className="w-[260px] rounded-lg">
           <AppSidebar />
         </div>
-        <main className="flex-1">{children}</main>
+        <main className="p-4 pl-0 flex-1 max-w-[calc(100vw-260px)]">
+          {children}
+        </main>
       </div>
     </SidebarProvider>
-    // <div className={`layout-container ${collapsed ? "collapsed" : ""}`}>
-    //   <Sidebar collapsed={collapsed} toggleSidebar={toggleSidebar} />
-    //   <div className="layout-content">{children}</div>
-    // </div>
   );
 };
 
