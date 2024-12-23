@@ -429,7 +429,7 @@ const Summary: React.FC = () => {
   });
 
   return (
-    <Layout collapsed={collapsed}>
+    <Layout>
       <div className="bg-white p-6 rounded-xl">
         <div className="flex gap-6">
           <h3 className="text-2xl font-semibold text-black mb-6">Summary</h3>
@@ -453,15 +453,12 @@ const Summary: React.FC = () => {
         </div>
       </div>
 
-      <div className="bg-white p-6 rounded-xl mt-2">
-        <div className="flex gap-6  md:w-2/3">
-          <h3 className="text-2xl font-semibold text-black mb-100">
-            Trend Chart
-          </h3>
-          <div className="date-field">
-            <span className="mr-2">Showing:</span>
+      <div className="bg-white p-6 rounded-xl mt-4">
+        <div className="grid grid-cols-3 gap-8 md:w-2/3">
+          <h3 className="text-2xl font-semibold text-black">Trend Chart</h3>
+          <div className="flex flex-col">
+            <p className="text-sm text-gray-700">Showing:</p>
             <DateRangePicker
-              className="ml-2"
               onDateChange={(selectedDate) =>
                 setDateRange({
                   from: selectedDate?.from || null,
@@ -470,8 +467,8 @@ const Summary: React.FC = () => {
               }
             />
           </div>
-          <div className="field-select">
-            <span>Showing info: </span>
+          <div className="flex flex-col">
+            <p className="text-sm text-gray-700">Showing info: </p>
             <select
               value={selectedField}
               onChange={(e) => setSelectedField(e.target.value)}
