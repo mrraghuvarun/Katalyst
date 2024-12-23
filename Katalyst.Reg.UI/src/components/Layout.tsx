@@ -1,9 +1,8 @@
-import React, { useState, ReactNode } from 'react';
-import Sidebar from './Sidebar.tsx';
-import './Layout.css';
+import React, { useState, ReactNode } from "react";
+import { SidebarProvider, SidebarTrigger } from "@/src/components/ui/sidebar";
+import AppSidebar from "@/src/components/Sidebar";
 
 type LayoutProps = {
-  collapsed: boolean;
   children: ReactNode;
 };
 
@@ -15,12 +14,16 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   };
 
   return (
-    <div className={`layout-container ${collapsed ? 'collapsed' : ''}`}>
-      <Sidebar collapsed={collapsed} toggleSidebar={toggleSidebar} />
-      <div className="layout-content">
-        {children}
+    <SidebarProvider>
+      <div className="flex">
+        <div className="w-[260px] rounded-lg">
+          <AppSidebar />
+        </div>
+        <main className="p-4 pl-0 flex-1 max-w-[calc(100vw-260px)]">
+          {children}
+        </main>
       </div>
-    </div>
+    </SidebarProvider>
   );
 };
 

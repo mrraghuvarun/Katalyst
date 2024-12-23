@@ -1,7 +1,6 @@
 .layout-container {
   display: flex;
-  height: 100vh;
-  background-color: #ffffff;
+  background-color: #f6f7f7;
   transition: all 0.3s ease;
 }
 
@@ -17,7 +16,7 @@
 }
 
 .toggle-sidebar {
-  background-color: #435EBE;
+  background-color: #435ebe;
   color: white;
   border: none;
   padding: 10px 15px;

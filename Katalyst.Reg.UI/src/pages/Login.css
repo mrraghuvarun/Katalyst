@@ -5,7 +5,14 @@
   align-items: center;
   justify-content: center;
   background-color: #f7f9fc;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
+}
+
+.error-message {
+  color: red; /* Red text color */
+  font-size: 1rem; /* Standard text size */
+  font-weight: 500; /* Medium weight for emphasis */
+  margin-top: 0.5rem; /* Spacing from the input/button */
 }
 
 .row {
@@ -23,7 +30,7 @@
 
 /* Right Section Styling */
 .auth-right {
-  background: #435EBE;
+  background: #435ebe;
   background-size: cover;
   background-position: center;
   height: 100vh;
@@ -131,17 +138,6 @@
 .text-center p {
   margin-top: 20px;
   color: #888;
-}
-
-.font-bold {
-  font-weight: bold;
-  color: #007bff;
-  transition: color 0.3s ease;
-}
-
-.font-bold:hover {
-  text-decoration: underline;
-  color: #0056b3;
 }
 
 /* Responsive Adjustments */

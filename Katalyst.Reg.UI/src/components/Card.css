@@ -1,5 +1,10 @@
-body, h1, h2, h3, p {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+body,
+h1,
+h2,
+h3,
+p {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
   margin: 0;
   padding: 0;
 }
@@ -23,12 +28,24 @@ body, h1, h2, h3, p {
 }
 
 /* Color variants with top border */
-.card.purple { border-top: 4px solid #9333ea; }
-.card.green { border-top: 4px solid #22c55e; }
-.card.blue { border-top: 4px solid #3b82f6; }
-.card.red { border-top: 4px solid #ef4444; }
-.card.orange { border-top: 4px solid #f97316; }
-.card.yellow { border-top: 4px solid #eab308; }
+.card.purple {
+  border-top: 4px solid #9333ea;
+}
+.card.green {
+  border-top: 4px solid #22c55e;
+}
+.card.blue {
+  border-top: 4px solid #3b82f6;
+}
+.card.red {
+  border-top: 4px solid #ef4444;
+}
+.card.orange {
+  border-top: 4px solid #f97316;
+}
+.card.yellow {
+  border-top: 4px solid #eab308;
+}
 
 .card-content {
   display: flex; /* Enables Flexbox */
@@ -75,32 +92,45 @@ body, h1, h2, h3, p {
   color: #111827;
 }
 
-/* Hover effects */
-.card:hover .card-title {
-  font-weight: 700; /* Makes the title bold */
-  color: #435EBE;
-}
-
-.card:hover .card-value {
-  text-decoration: underline; /* Adds underline to the value */
-  color: #435EBE;
-}
-
 /* Color-specific icon backgrounds */
-.purple .icon-container { background-color: #f3e8ff; }
-.green .icon-container { background-color: #dcfce7; }
-.blue .icon-container { background-color: #dbeafe; }
-.red .icon-container { background-color: #fee2e2; }
-.orange .icon-container { background-color: #ffedd5; }
-.yellow .icon-container { background-color: #fef9c3; }
+.purple .icon-container {
+  background-color: #f3e8ff;
+}
+.green .icon-container {
+  background-color: #dcfce7;
+}
+.blue .icon-container {
+  background-color: #dbeafe;
+}
+.red .icon-container {
+  background-color: #fee2e2;
+}
+.orange .icon-container {
+  background-color: #ffedd5;
+}
+.yellow .icon-container {
+  background-color: #fef9c3;
+}
 
 /* Color-specific icon colors */
-.purple .card-icon { color: #9333ea; }
-.green .card-icon { color: #22c55e; }
-.blue .card-icon { color: #3b82f6; }
-.red .card-icon { color: #ef4444; }
-.orange .card-icon { color: #f97316; }
-.yellow .card-icon { color: #eab308; }
+.purple .card-icon {
+  color: #9333ea;
+}
+.green .card-icon {
+  color: #22c55e;
+}
+.blue .card-icon {
+  color: #3b82f6;
+}
+.red .card-icon {
+  color: #ef4444;
+}
+.orange .card-icon {
+  color: #f97316;
+}
+.yellow .card-icon {
+  color: #eab308;
+}
 
 .card-footer {
   display: flex;

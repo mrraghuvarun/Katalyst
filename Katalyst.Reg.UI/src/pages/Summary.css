@@ -1,163 +1,256 @@
-body, h1, h2, h3, p {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+body,
+h1,
+h2,
+h3,
+p {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
   margin: 0;
   padding: 0;
- /* Light gray background to differentiate sections */
+  line-height: 1.6;
 }
 
 .header-container {
   display: flex;
   flex-direction: column;
-  align-items: left;
-  margin-bottom: 10px;
+  align-items: flex-start;
+  margin-bottom: 15px;
   background-color: #fffdfd;
-  padding: 10px;
+  padding: 15px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .header-container .tabs {
   display: flex;
+  flex-wrap: wrap;
   gap: 10px;
   margin-top: 10px;
+  width: 100%;
 }
-
-/* .header-container .reporting-date {
-  margin-top: 10px;
-} */
 
 h1 {
   color: #25396f;
+  font-size: 1.5rem;
+  margin-bottom: 10px;
 }
 
 .tabs {
   display: flex;
+  flex-wrap: wrap;
 }
 
 .tab {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  padding: 10px 20px;
+  font-family: inherit;
+  padding: 8px 15px;
   background-color: #e0e0e0;
   border: none;
   margin-right: 10px;
+  margin-bottom: 10px;
   cursor: pointer;
   transition: background-color 0.3s ease;
   border-radius: 4px;
+  font-size: 0.9rem;
 }
 
 .tab:hover {
-  background-color: #d3d3d3;
+  background-color: #8e8e8e;
 }
-
 
 .cards-container {
   display: flex;
   flex-direction: column;
   background-color: #ffffff;
-  padding: 10px;
+  padding: 15px;
   border: 1px solid #e2e8f0;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px; /* Adds spacing below the container */
+  margin-bottom: 20px;
 }
 
 .summary-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  /* grid-template-columns: repeat(5, 1fr); */
+  gap: 1.5rem;
+  padding: 1rem;
+  width: 100%;
 }
 
-.reporting-date {
-  font-size: 1rem;
+.summary-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.728);
+}
+
+.card-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  width: 100%;
+}
+
+.content-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.card-header {
+  padding: 0;
+}
+
+.icon-container {
   display: flex;
   align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  padding: 8px;
 }
 
-.reporting-date-label {
-  font-weight: bold;
-  color: #4a5568;
-  margin-right: 0.5rem;
+.card-title {
+  color: #626263;
+  font-size: 1.2rem;
+  font-weight: 400;
+  margin: 0;
 }
 
-input[type="date"] {
-  width: auto;
-  padding: 0.5rem;
-  font-size: 1rem;
-  border: 1px solid #cbd5e0;
-  border-radius: 4px;
-  background-color: #f7fafc;
-  color: #2d3748;
-  outline: none;
+.card-value {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #111827;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Create a wrapper for the number value */
+.value-text {
+  position: relative;
+}
+
+/* Move the underline to the value-text element */
+.value-text::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: currentColor;
+  transition: width 0.3s ease;
+}
+
+.summary-card:hover .value-text::after {
+  width: 100%;
+}
+
+/* Arrow icon styling */
+.arrow-icon {
+  opacity: 0;
+  transform: translateX(-10px) rotate(45deg);
   transition: all 0.3s ease;
+  color: #111827;
+  margin-left: 4px;
+  display: inline-flex;
 }
 
-input[type="date"]:focus {
-  border-color: #3182ce;
-  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
+.summary-card:hover .arrow-icon {
+  opacity: 1;
+  transform: translateX(0) rotate(0deg);
+}
+
+/* Keep your existing icon background colors */
+.icon-container[data-type="Transactions"] {
+  background-color: rgba(0, 184, 184, 0.1);
+  color: rgb(0, 184, 184);
+}
+
+.icon-container[data-type="Accepted TRNs"] {
+  background-color: rgba(72, 199, 142, 0.1);
+  color: rgb(72, 199, 142);
+}
+
+.icon-container[data-type="Submitted TRNs"] {
+  background-color: rgba(255, 159, 67, 0.1);
+  color: rgb(255, 159, 67);
+}
+
+.icon-container[data-type="Rejected TRNs"] {
+  background-color: rgba(255, 91, 92, 0.1);
+  color: rgb(255, 91, 92);
+}
+
+.icon-container[data-type="Trade Events"] {
+  background-color: rgba(82, 205, 117, 0.1);
+  color: rgb(82, 205, 117);
+}
+
+.icon-container[data-type="Late Submission TRNs"] {
+  background-color: rgba(255, 159, 67, 0.1);
+  color: rgb(255, 159, 67);
+}
+
+.icon-container[data-type="Trades No Fingerprint"] {
+  background-color: rgba(114, 132, 193, 0.1);
+  color: rgb(114, 132, 193);
+}
+
+.icon-container[data-type="New Trades"] {
+  background-color: rgba(72, 199, 142, 0.1);
+  color: rgb(72, 199, 142);
+}
+
+.icon-container[data-type="Amended Trades"] {
+  background-color: rgba(155, 89, 182, 0.1);
+  color: rgb(155, 89, 182);
+}
+
+.icon-container[data-type="Cancelled Trades"] {
+  background-color: rgba(155, 89, 182, 0.1);
+  color: rgb(239, 37, 40);
 }
 
 @media (max-width: 768px) {
-  .summary-content {
-    margin-left: 60px;
-  }
-
-  .tabs {
-    flex-wrap: wrap;
-  }
-
-  .tab {
-    margin-bottom: 10px;
-  }
-
   .summary-cards {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+
+  .card {
+    padding: 0.75rem;
+  }
+
+  .card-value {
+    font-size: 1.25rem;
   }
 }
 
-.layout-container {
+.report-container {
   display: flex;
-  transition: all 0.3s ease;
-  gap: 10px; /* Adds spacing between child elements */
+  flex-direction: column; /* Ensures vertical stacking */
+  gap: 1rem; /* Adds spacing between dropdown and chart */
 }
 
-.layout-content {
-  flex: 1;
-  padding: 10px;
-  transition: margin-left 0.3s ease;
-  background-color: #f9f9fc; /* Light background for layout content */
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.dropdown-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
-.sidebar-expanded .layout-content {
-  margin-left: 280px;
+.chart-container {
+  width: 100%;
+  text-align: center;
 }
 
-.sidebar-collapsed .layout-content {
-  margin-left: 80px;
-}
-
-@media (prefers-color-scheme: dark) {
-  body {
-    background-color: #1a202c;
-  }
-
-  .tab {
-    background-color: #4a5568;
-    color: #e2e8f0;
-  }
-
-  .tab:hover {
-    background-color: #2d3748;
-  }
-
-  input[type="date"] {
-    background-color: #374151;
-    color: #e2e8f0;
-  }
-
-  input[type="date"]:focus {
-    border-color: #63b3ed;
-    box-shadow: 0 0 0 3px rgba(99, 179, 237, 0.5);
+@layer base {
+  :root {
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
   }
 }
