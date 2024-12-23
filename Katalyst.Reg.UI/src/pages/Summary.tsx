@@ -261,11 +261,11 @@ const Summary: React.FC = () => {
               id="date"
               variant="outline"
               className={cn(
-                "w-[220px] justify-start text-left font-normal",
+                "justify-start text-left text-xs font-semibold",
                 !dateRange && "text-muted-foreground"
               )}
             >
-              <CalendarIcon className="mr-2 h-4 w-4" />
+              <CalendarIcon className="h-4 w-4" />
               {dateRange?.from ? (
                 dateRange.to ? (
                   <>
@@ -302,11 +302,11 @@ const Summary: React.FC = () => {
           <Button
             variant="outline"
             className={cn(
-              "w-[200px] justify-start text-left font-normal",
+              "justify-start text-left text-xs font-semibold",
               !selectedDate && "text-muted-foreground"
             )}
           >
-            <CalendarIcon className="mr-2 h-4 w-4" />
+            <CalendarIcon className=" h-4 w-4" />
             {format(selectedDate, "PPP")}
           </Button>
         </PopoverTrigger>
@@ -431,10 +431,11 @@ const Summary: React.FC = () => {
   return (
     <Layout>
       <div className="bg-white p-6 rounded-xl">
-        <div className="flex gap-6">
+        <div className="flex gap-12">
           <h3 className="text-2xl font-semibold text-black mb-6">Summary</h3>
           <div className="date-field">
-            <span className="mr-2">Showing:</span>
+            <p className="text-sm text-gray-700">Showing: </p>
+
             <DatePicker />
           </div>
         </div>
@@ -453,170 +454,195 @@ const Summary: React.FC = () => {
         </div>
       </div>
 
-      <div className="bg-white p-6 rounded-xl mt-4">
-        <div className="grid grid-cols-3 gap-8 md:w-2/3">
-          <h3 className="text-2xl font-semibold text-black">Trend Chart</h3>
-          <div className="flex flex-col">
-            <p className="text-sm text-gray-700">Showing:</p>
-            <DateRangePicker
-              onDateChange={(selectedDate) =>
-                setDateRange({
-                  from: selectedDate?.from || null,
-                  to: selectedDate?.to || null,
-                })
-              }
-            />
-          </div>
-          <div className="flex flex-col">
-            <p className="text-sm text-gray-700">Showing info: </p>
-            <select
-              value={selectedField}
-              onChange={(e) => setSelectedField(e.target.value)}
-              className="info-select"
-            >
-              {Object.keys(typeMap).map((field) => (
-                <option key={field} value={field}>
-                  {field}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-        <div className="flex flex-col md:flex-row gap-6 w-full">
-          {/* Bar Chart Container */}
-          <div className="flex-1">
-            <ChartContainer
-              config={chartConfig}
-              className="min-h-[200px] w-full"
-            >
-              <BarChart
-                data={chartData}
-                width={isMobile ? 300 : 600}
-                height={isMobile ? 300 : 400}
-              >
-                <CartesianGrid vertical={false} />
-                <XAxis
-                  dataKey="date"
-                  tickLine={false}
-                  tickMargin={10}
-                  axisLine={false}
-                  tickFormatter={(value) => {
-                    const date = new Date(value);
-                    return date.toLocaleDateString("en-GB", {
-                      day: "2-digit",
-                      month: "short",
-                    });
-                  }}
-                />
-                <YAxis
-                  dataKey="value"
-                  domain={[0, roundedHighestValue]}
-                  tickLine={false}
-                  tickMargin={10}
-                  axisLine={false}
-                  tickFormatter={(value) => value.toLocaleString()}
-                />
-                <ChartTooltip content={<ChartTooltipContent />} />
-                <ChartLegend content={<ChartLegendContent />} />
-                <Bar
-                  dataKey="value"
-                  fill={chartConfig.value.color}
-                  radius={4}
-                />
-              </BarChart>
-            </ChartContainer>
-          </div>
-          {/* Pie Chart Container */}
-          <div className="w-full md:w-1/3">
-            <PieChartComponent selectedData={selectedData} />
-          </div>
-        </div>
-        <hr className="my-12 w-full border-b border-gray-200" />
-
-        <div className="data-container">
-          <div className="flex gap-6">
-            <h3 className="text-2xl font-semibold text-black mb-1">
-              Data Dashboard
-            </h3>
-            <div
-              className="date-field"
-              style={{ display: "flex", alignItems: "center" }}
-            >
-              <span>Showing: </span>
+      <div className="grid grid-cols-3 gap-4 mt-4">
+        <div className="bg-white p-6 rounded-xl rounded-b-none col-span-2">
+          <div className="grid grid-cols-3 gap-4 mb-8">
+            <h3 className="text-2xl font-semibold text-black">Trend Chart</h3>
+            <div className="flex flex-col gap-2">
+              <p className="text-sm text-gray-700">Showing:</p>
+              <DateRangePicker
+                onDateChange={(selectedDate) =>
+                  setDateRange({
+                    from: selectedDate?.from || null,
+                    to: selectedDate?.to || null,
+                  })
+                }
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <p className="text-sm text-gray-700">Showing info: </p>
               <select
-                value={dateRange}
-                onChange={(e) => setDateRange(e.target.value)}
-                className="date-select"
+                value={selectedField}
+                onChange={(e) => setSelectedField(e.target.value)}
+                className="info-select"
               >
-                <option value="All">All</option>
+                {Object.keys(typeMap).map((field) => (
+                  <option key={field} value={field}>
+                    {field}
+                  </option>
+                ))}
               </select>
             </div>
           </div>
 
-          <Table>
-            <TableHeader>
-              <TableRow>
-                {columns.map((column) => (
-                  <TableHead
-                    className="bg-[#EAF3FF] text-black border-0 border-r-2 border-white text-center"
-                    key={column.accessorKey}
-                  >
-                    {column.header}
-                  </TableHead>
-                ))}
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id}>
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell
-                      key={cell.id}
-                      className="border-0 bg-white py-6 px-4 text-center min-w-32 border-b"
-                    >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          <div className="flex flex-col md:flex-row gap-6 w-full">
+            {/* Bar Chart Container */}
+            <div className="flex-1">
+              <ChartContainer
+                config={chartConfig}
+                className="min-h-[200px] max-h-[350px] w-full"
+              >
+                <BarChart
+                  data={chartData}
+                  width={isMobile ? 300 : 600}
+                  height={isMobile ? 300 : 400}
+                >
+                  <CartesianGrid vertical={false} />
+                  <XAxis
+                    dataKey="date"
+                    tickLine={false}
+                    tickMargin={10}
+                    axisLine={false}
+                    tickFormatter={(value) => {
+                      const date = new Date(value);
+                      return date.toLocaleDateString("en-GB", {
+                        day: "2-digit",
+                        month: "short",
+                      });
+                    }}
+                  />
+                  <YAxis
+                    dataKey="value"
+                    domain={[0, roundedHighestValue]}
+                    tickLine={false}
+                    tickMargin={10}
+                    axisLine={false}
+                    tickFormatter={(value) => value.toLocaleString()}
+                  />
+                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <ChartLegend content={<ChartLegendContent />} />
+                  <Bar
+                    dataKey="value"
+                    fill={chartConfig.value.color}
+                    radius={4}
+                  />
+                </BarChart>
+              </ChartContainer>
+            </div>
+          </div>
+
+          <hr className="mt-6 w-full border-b-1 border-gray-200" />
         </div>
 
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "flex-end",
-          }}
-        >
-          {table.getPageCount() > 1 && (
-            <Pagination>
-              <PaginationContent>
-                <PaginationItem>
-                  <PaginationPrevious
-                    as="button"
-                    onClick={() => table.previousPage()}
-                    disabled={!table.getCanPreviousPage()}
-                    style={{
-                      pointerEvents: table.getCanPreviousPage()
-                        ? "auto"
-                        : "none",
-                      opacity: table.getCanPreviousPage() ? 1 : 0.5,
-                      cursor: table.getCanPreviousPage()
-                        ? "pointer"
-                        : "not-allowed",
-                    }}
-                  >
-                    Previous
-                  </PaginationPrevious>
-                </PaginationItem>
+        <div className="bg-white p-6 rounded-xl col-span-1 mb-4">
+          <PieChartComponent selectedData={selectedData} />
+        </div>
+      </div>
 
-                {table.getPageCount() <= 3 ? (
-                  [...Array(table.getPageCount())].map((_, index) => (
+      <div className="bg-white rounded-xl p-6 pt-2 rounded-t-none">
+        <div className="flex gap-12">
+          <h3 className="text-2xl font-semibold text-black mb-1">
+            Data Dashboard
+          </h3>
+          <div
+            className="date-field"
+            style={{ display: "flex", alignItems: "center" }}
+          >
+            <p className="text-sm text-gray-700">Showing: </p>
+
+            <select
+              value={dateRange}
+              onChange={(e) => setDateRange(e.target.value)}
+              className="date-select"
+            >
+              <option value="All">All</option>
+            </select>
+          </div>
+        </div>
+
+        <Table>
+          <TableHeader>
+            <TableRow>
+              {columns.map((column) => (
+                <TableHead
+                  className="bg-[#EAF3FF] text-black border-0 border-r-2 border-white text-center"
+                  key={column.accessorKey}
+                >
+                  {column.header}
+                </TableHead>
+              ))}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows.map((row) => (
+              <TableRow key={row.id}>
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell
+                    key={cell.id}
+                    className="border-0 bg-white py-6 px-4 text-center min-w-32 border-b"
+                  >
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "flex-end",
+        }}
+      >
+        {table.getPageCount() > 1 && (
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  as="button"
+                  onClick={() => table.previousPage()}
+                  disabled={!table.getCanPreviousPage()}
+                  style={{
+                    pointerEvents: table.getCanPreviousPage() ? "auto" : "none",
+                    opacity: table.getCanPreviousPage() ? 1 : 0.5,
+                    cursor: table.getCanPreviousPage()
+                      ? "pointer"
+                      : "not-allowed",
+                  }}
+                >
+                  Previous
+                </PaginationPrevious>
+              </PaginationItem>
+
+              {table.getPageCount() <= 3 ? (
+                [...Array(table.getPageCount())].map((_, index) => (
+                  <PaginationItem key={index}>
+                    <PaginationLink
+                      as="button"
+                      isActive={table.getState().pagination.pageIndex === index}
+                      onClick={() => table.setPageIndex(index)}
+                      style={{
+                        cursor: "pointer",
+                        backgroundColor:
+                          table.getState().pagination.pageIndex === index
+                            ? "#007bff"
+                            : "transparent",
+                        color:
+                          table.getState().pagination.pageIndex === index
+                            ? "#fff"
+                            : "#000",
+                      }}
+                    >
+                      {index + 1}
+                    </PaginationLink>
+                  </PaginationItem>
+                ))
+              ) : table.getState().pagination.pageIndex < 3 ? (
+                <>
+                  {[...Array(3)].map((_, index) => (
                     <PaginationItem key={index}>
                       <PaginationLink
                         as="button"
@@ -639,156 +665,124 @@ const Summary: React.FC = () => {
                         {index + 1}
                       </PaginationLink>
                     </PaginationItem>
-                  ))
-                ) : table.getState().pagination.pageIndex < 3 ? (
-                  <>
-                    {[...Array(3)].map((_, index) => (
-                      <PaginationItem key={index}>
-                        <PaginationLink
-                          as="button"
-                          isActive={
-                            table.getState().pagination.pageIndex === index
-                          }
-                          onClick={() => table.setPageIndex(index)}
-                          style={{
-                            cursor: "pointer",
-                            backgroundColor:
-                              table.getState().pagination.pageIndex === index
-                                ? "#007bff"
-                                : "transparent",
-                            color:
-                              table.getState().pagination.pageIndex === index
-                                ? "#fff"
-                                : "#000",
-                          }}
-                        >
-                          {index + 1}
-                        </PaginationLink>
-                      </PaginationItem>
-                    ))}
-                    <PaginationItem>
-                      <PaginationEllipsis />
-                    </PaginationItem>
-                  </>
-                ) : table.getState().pagination.pageIndex >=
-                  table.getPageCount() - 2 ? (
-                  <>
-                    <PaginationItem>
-                      <PaginationEllipsis />
-                    </PaginationItem>
-                    {[...Array(2)].map((_, index) => (
-                      <PaginationItem key={table.getPageCount() - 2 + index}>
-                        <PaginationLink
-                          as="button"
-                          isActive={
+                  ))}
+                  <PaginationItem>
+                    <PaginationEllipsis />
+                  </PaginationItem>
+                </>
+              ) : table.getState().pagination.pageIndex >=
+                table.getPageCount() - 2 ? (
+                <>
+                  <PaginationItem>
+                    <PaginationEllipsis />
+                  </PaginationItem>
+                  {[...Array(2)].map((_, index) => (
+                    <PaginationItem key={table.getPageCount() - 2 + index}>
+                      <PaginationLink
+                        as="button"
+                        isActive={
+                          table.getState().pagination.pageIndex ===
+                          table.getPageCount() - 2 + index
+                        }
+                        onClick={() =>
+                          table.setPageIndex(table.getPageCount() - 2 + index)
+                        }
+                        style={{
+                          cursor: "pointer",
+                          backgroundColor:
                             table.getState().pagination.pageIndex ===
                             table.getPageCount() - 2 + index
-                          }
-                          onClick={() =>
-                            table.setPageIndex(table.getPageCount() - 2 + index)
-                          }
-                          style={{
-                            cursor: "pointer",
-                            backgroundColor:
-                              table.getState().pagination.pageIndex ===
-                              table.getPageCount() - 2 + index
-                                ? "#007bff"
-                                : "transparent",
-                            color:
-                              table.getState().pagination.pageIndex ===
-                              table.getPageCount() - 2 + index
-                                ? "#fff"
-                                : "#000",
-                          }}
-                        >
-                          {table.getPageCount() - 2 + index + 1}
-                        </PaginationLink>
-                      </PaginationItem>
-                    ))}
-                  </>
-                ) : (
-                  <>
-                    <PaginationItem>
-                      <PaginationEllipsis />
+                              ? "#007bff"
+                              : "transparent",
+                          color:
+                            table.getState().pagination.pageIndex ===
+                            table.getPageCount() - 2 + index
+                              ? "#fff"
+                              : "#000",
+                        }}
+                      >
+                        {table.getPageCount() - 2 + index + 1}
+                      </PaginationLink>
                     </PaginationItem>
-                    {[
-                      table.getState().pagination.pageIndex - 1,
-                      table.getState().pagination.pageIndex,
-                      table.getState().pagination.pageIndex + 1,
-                    ].map((page) => (
-                      <PaginationItem key={page}>
-                        <PaginationLink
-                          as="button"
-                          isActive={
+                  ))}
+                </>
+              ) : (
+                <>
+                  <PaginationItem>
+                    <PaginationEllipsis />
+                  </PaginationItem>
+                  {[
+                    table.getState().pagination.pageIndex - 1,
+                    table.getState().pagination.pageIndex,
+                    table.getState().pagination.pageIndex + 1,
+                  ].map((page) => (
+                    <PaginationItem key={page}>
+                      <PaginationLink
+                        as="button"
+                        isActive={
+                          table.getState().pagination.pageIndex === page
+                        }
+                        onClick={() => table.setPageIndex(page)}
+                        style={{
+                          cursor: "pointer",
+                          backgroundColor:
                             table.getState().pagination.pageIndex === page
-                          }
-                          onClick={() => table.setPageIndex(page)}
-                          style={{
-                            cursor: "pointer",
-                            backgroundColor:
-                              table.getState().pagination.pageIndex === page
-                                ? "#007bff"
-                                : "transparent",
-                            color:
-                              table.getState().pagination.pageIndex === page
-                                ? "#fff"
-                                : "#000",
-                          }}
-                        >
-                          {page + 1}
-                        </PaginationLink>
-                      </PaginationItem>
-                    ))}
-                    <PaginationItem>
-                      <PaginationEllipsis />
+                              ? "#007bff"
+                              : "transparent",
+                          color:
+                            table.getState().pagination.pageIndex === page
+                              ? "#fff"
+                              : "#000",
+                        }}
+                      >
+                        {page + 1}
+                      </PaginationLink>
                     </PaginationItem>
-                  </>
-                )}
+                  ))}
+                  <PaginationItem>
+                    <PaginationEllipsis />
+                  </PaginationItem>
+                </>
+              )}
 
-                <PaginationItem>
-                  <PaginationNext
-                    as="button"
-                    onClick={() => table.nextPage()}
-                    disabled={!table.getCanNextPage()}
-                    style={{
-                      pointerEvents: table.getCanNextPage() ? "auto" : "none",
-                      opacity: table.getCanNextPage() ? 1 : 0.5,
-                      cursor: table.getCanNextPage()
-                        ? "pointer"
-                        : "not-allowed",
-                    }}
-                  >
-                    Next
-                  </PaginationNext>
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
-          )}
+              <PaginationItem>
+                <PaginationNext
+                  as="button"
+                  onClick={() => table.nextPage()}
+                  disabled={!table.getCanNextPage()}
+                  style={{
+                    pointerEvents: table.getCanNextPage() ? "auto" : "none",
+                    opacity: table.getCanNextPage() ? 1 : 0.5,
+                    cursor: table.getCanNextPage() ? "pointer" : "not-allowed",
+                  }}
+                >
+                  Next
+                </PaginationNext>
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        )}
 
-          <div
-            className="rows-per-page-selector"
-            style={{ marginLeft: "1rem" }}
+        <div className="rows-per-page-selector" style={{ marginLeft: "1rem" }}>
+          <select
+            defaultValue={5}
+            value={table.getState().pagination.pageSize}
+            onChange={(e) => table.setPageSize(Number(e.target.value))}
+            style={{
+              height: "38px",
+              width: "50px",
+              padding: "0",
+              borderRadius: "4px",
+              border: "1px solid #ccc",
+              cursor: "pointer",
+              textAlign: "center",
+            }}
           >
-            <select
-              defaultValue={5}
-              value={table.getState().pagination.pageSize}
-              onChange={(e) => table.setPageSize(Number(e.target.value))}
-              style={{
-                height: "38px",
-                width: "50px",
-                padding: "0",
-                borderRadius: "4px",
-                border: "1px solid #ccc",
-                cursor: "pointer",
-                textAlign: "center",
-              }}
-            >
-              <option value={5}>5</option>
-              <option value={10}>10</option>
-              <option value={20}>20</option>
-              <option value={50}>50</option>
-            </select>
-          </div>
+            <option value={5}>5</option>
+            <option value={10}>10</option>
+            <option value={20}>20</option>
+            <option value={50}>50</option>
+          </select>
         </div>
       </div>
 

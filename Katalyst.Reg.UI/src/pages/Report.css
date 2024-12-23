@@ -176,7 +176,8 @@ h3 {
   color: #374151;
   font-size: 0.875rem;
   cursor: pointer;
-  min-width: 100px;
+  font-size: small;
+  font-weight: 600;
 }
 
 .chart-container {
