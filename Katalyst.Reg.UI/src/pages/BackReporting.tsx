@@ -144,34 +144,41 @@ const BackReporting: React.FC = () => {
 
   const handleConfirmUpload = async () => {
     if (!validateFields()) return;
-  
+
     setLoading(true);
-  
+
     try {
       const uploadedFile = file!;
       const fileExtension = uploadedFile.name.split(".").pop()?.toLowerCase();
-      
+
       let uploadedData;
       if (fileExtension === "csv") {
         const text = await uploadedFile.text();
-        const lines = text.split('\n');
-        const headers = lines[0].split(',').map(h => h.trim());
-        
-        uploadedData = lines.slice(1).map(line => {
-          const values = line.split(',').map(v => v.trim());
-          return headers.reduce((obj, header, index) => {
-            obj[header] = values[index];
-            return obj;
-          }, {});
-        }).filter(row => Object.values(row).some(value => value));
+        const lines = text.split("\n");
+        const headers = lines[0].split(",").map((h) => h.trim());
+
+        uploadedData = lines
+          .slice(1)
+          .map((line) => {
+            const values = line.split(",").map((v) => v.trim());
+            return headers.reduce((obj, header, index) => {
+              obj[header] = values[index];
+              return obj;
+            }, {});
+          })
+          .filter((row) => Object.values(row).some((value) => value));
       } else if (fileExtension === "xlsx" || fileExtension === "xls") {
         const buffer = await uploadedFile.arrayBuffer();
         const workbook = XLSX.read(buffer, { type: "array" });
-        uploadedData = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
+        uploadedData = XLSX.utils.sheet_to_json(
+          workbook.Sheets[workbook.SheetNames[0]]
+        );
       } else {
-        throw new Error("Unsupported file type. Please upload either a CSV or Excel file.");
+        throw new Error(
+          "Unsupported file type. Please upload either a CSV or Excel file."
+        );
       }
-  
+
       const emailParams = {
         to_name: "Recipient Name",
         file_name: uploadedFile.name,
@@ -180,17 +187,17 @@ const BackReporting: React.FC = () => {
         table_name: tableName,
         changed_rows: uploadedData.length,
       };
-  
+
       await emailjs.send(
         "service_wwbo9w7",
         "template_c7yghon",
         emailParams,
         "zcZkGQ35dZ0552hi-"
       );
-  
+
       alert("Upload confirmed and email sent successfully!");
-  
-      setUploadHistory(prevHistory => [
+
+      setUploadHistory((prevHistory) => [
         ...prevHistory,
         {
           filename: uploadedFile.name,
@@ -206,19 +213,20 @@ const BackReporting: React.FC = () => {
       setDatabaseName("");
       setTableName("");
       setCurrentStep(1);
-    } 
-    catch (error) {
+    } catch (error) {
       console.error("Error during file comparison or email sending:", error);
       alert("An error occurred.");
     } finally {
       setLoading(false);
     }
   };
-  
 
   const toggleHistoryModal = () => {
     setIsHistoryModalOpen(!isHistoryModalOpen);
   };
+
+  const borderColor = (step) =>
+    currentStep > step ? "border-green-500" : "border-gray-500";
 
   return (
     <Layout collapsed={collapsed}>
@@ -250,7 +258,7 @@ const BackReporting: React.FC = () => {
             <h2 className="text-lg font-bold mb-6">Upload Process</h2>
 
             {/* Stepper */}
-            <div className="stepper flex justify-between mb-8">
+            <div className="stepper flex justify-between items-center mb-8">
               <div
                 className={`step ${currentStep > 1 ? "completed" : ""} ${
                   currentStep === 1 ? "active" : ""
@@ -268,6 +276,17 @@ const BackReporting: React.FC = () => {
                 >
                   Upload CSV File
                 </p>
+              </div>
+              <div className="flex items-center w-full mx-6 mb-6">
+                <div
+                  className={`h-2 w-2 rounded-full border ${borderColor(1)}`}
+                ></div>
+                <hr
+                  className={`border-1 border-dashed ${borderColor(1)} w-full`}
+                />
+                <div
+                  className={`h-2 w-2 rounded-full border ${borderColor(1)}`}
+                ></div>
               </div>
 
               <div
@@ -288,7 +307,17 @@ const BackReporting: React.FC = () => {
                   Data Process
                 </p>
               </div>
-
+              <div className="flex items-center w-full mx-6 mb-6">
+                <div
+                  className={`h-2 w-2 rounded-full border ${borderColor(2)}`}
+                ></div>
+                <hr
+                  className={`border-1 border-dashed ${borderColor(2)} w-full`}
+                />
+                <div
+                  className={`h-2 w-2 rounded-full border ${borderColor(2)}`}
+                ></div>
+              </div>
               <div
                 className={`step ${
                   currentStep === 3 ? "active" : ""
@@ -578,7 +607,10 @@ const BackReporting: React.FC = () => {
                 </div>
               </div>
             )}
-            <SuccessModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+            <SuccessModal
+              isOpen={isModalOpen}
+              onClose={() => setIsModalOpen(false)}
+            />
             <div className="navigation-buttons">
               <button
                 onClick={handlePreviousStep}
