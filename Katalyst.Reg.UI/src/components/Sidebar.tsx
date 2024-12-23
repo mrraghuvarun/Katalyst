@@ -46,7 +46,9 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, toggleSidebar }) => {
         <li>
           <a
             href="/trade"
-            className={`nav-item ${location.pathname === "/trade" ? "active" : ""}`}
+            className={`nav-item ${
+              location.pathname === "/trade" ? "active" : ""
+            }`}
           >
             <FaTable className="icon" />
             <span className="nav-text">{!collapsed && "Trade Report"}</span>
@@ -55,7 +57,9 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, toggleSidebar }) => {
         <li>
           <a
             href="/backreporting"
-            className={`nav-item ${location.pathname === "/backreporting" ? "active" : ""}`}
+            className={`nav-item ${
+              location.pathname === "/backreporting" ? "active" : ""
+            }`}
           >
             <FaFileUpload className="icon" />
             <span className="nav-text">{!collapsed && "Back Reporting"}</span>

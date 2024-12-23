@@ -8,6 +8,8 @@ module.exports = {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
+        success: "#22C55E",
+        primary: "#2563EB",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         primary: {
@@ -38,6 +40,9 @@ module.exports = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+      },
+      fontFamily: {
+        'instrument-sans': ['"Instrument Sans"', 'sans-serif'],
       },
       borderRadius: {
         lg: `var(--radius)`,

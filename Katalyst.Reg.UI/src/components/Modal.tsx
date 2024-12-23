@@ -9,8 +9,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/src/components/ui/table"
- // Replace with your ShadCN imports
+} from "@/src/components/ui/table";
+// Replace with your ShadCN imports
 import { flexRender } from "@tanstack/react-table"; // Ensure this is installed and correctly imported
 
 type ModalProps = {
@@ -21,28 +21,35 @@ type ModalProps = {
   date: string;
 };
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, data, title, date }) => {
+const Modal: React.FC<ModalProps> = ({
+  isOpen,
+  onClose,
+  data,
+  title,
+  date,
+}) => {
   const navigate = useNavigate();
 
-  const handleTradeReportRedirect = () => {
-    navigate("/trade");
-  };
+  // const handleTradeReportRedirect = () => {
+  //   navigate("/trade");
+  // };
 
   if (!isOpen) return null;
 
   // Generate columns based on data keys
-  const columns = data.length > 0 
-    ? Object.keys(data[0]).map((key) => ({
-        header: key,
-        accessorKey: key,
-      }))
-    : [];
+  const columns =
+    data.length > 0
+      ? Object.keys(data[0]).map((key) => ({
+          header: key,
+          accessorKey: key,
+        }))
+      : [];
 
   return (
     <div className="modal-overlay">
       <div className="modal-content">
         {/* <div className="modal-header"> */}
-          {/* <button onClick={onClose} className="close-button">Close</button>
+        {/* <button onClick={onClose} className="close-button">Close</button>
           <img
             src={logo}
             alt="Logo"
@@ -55,18 +62,20 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, data, title, date }) => 
         {/* <h2 className="modal-title">
           {title} Details - {date}
         </h2> */}
-        
+
         <div className="flex items-center justify-between px-6 py-4">
           <div className="text-center w-full">
-            <h4 className="text-2xl font-semibold text-gray-800">{title} Details</h4>
+            <h4 className="text-2xl font-semibold text-gray-800">
+              {title} Details
+            </h4>
             <p className="text-sm text-gray-600 mt-2">
-              Date: {new Date(date).toLocaleDateString("en-GB", {
+              Date:{" "}
+              {new Date(date).toLocaleDateString("en-GB", {
                 day: "2-digit",
                 month: "short",
                 year: "numeric",
               })}
             </p>
-
           </div>
           <button
             onClick={onClose}
@@ -79,7 +88,9 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, data, title, date }) => 
 
         <div className="modal-table-container">
           {data.length === 0 ? (
-            <p className="text-center text-gray-500">No data available for the selected card.</p>
+            <p className="text-center text-gray-500">
+              No data available for the selected card.
+            </p>
           ) : (
             <Table>
               <TableHeader>

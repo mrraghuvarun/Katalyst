@@ -18,7 +18,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/src/components/ui/table";
-import '../output.css';
+import "../output.css";
 
 interface TradeDataItem {
   "Reporting Date": string;
@@ -131,7 +131,9 @@ const Data: React.FC = () => {
             {table.getRowModel().rows.map((row) => (
               <TableRow key={row.id}>
                 {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+                  <TableCell key={cell.id}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
                 ))}
               </TableRow>
             ))}

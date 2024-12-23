@@ -1,23 +1,17 @@
 "use client";
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { 
-  DollarSign, 
-  CheckCircle, 
-  Clock, 
-  XCircle, 
-  Calendar,
-  Fingerprint,
-  FileText,
-  PenTool 
-} from 'lucide-react';
 import tradeData from "../assets/data.json";
 import Layout from "../components/Layout.tsx";
 import { ChartContainer } from "@/src/components/ui/chart";
 import { BarChart, Bar, CartesianGrid, XAxis, YAxis } from "recharts";
 import "./Report.css";
-import { ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent } from "@/src/components/ui/chart"
+import {
+  ChartLegend,
+  ChartLegendContent,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/src/components/ui/chart";
 
 interface TradeDataItem {
   "Reporting Date": string;
@@ -34,14 +28,14 @@ interface TradeDataItem {
 const tradeDataTyped = tradeData as TradeDataItem[];
 
 const typeMap = {
-  "Transactions": "Total Number of TRN",
+  Transactions: "Total Number of TRN",
   "Accepted TRNs": "Total Number of TRN Accepted",
   "Submitted TRNs": "Total Number of TRN in Submitted Status",
   "Rejected TRNs": "Total Number of TRN Rejected",
   "Trade Events": "Total Number of Trade Events",
   "Trades No Fingerprint": "Total Number of Trade Events without Fingerprint",
   "New Trades": "Total Number of New Trades",
-  "Amended Trades": "Total Number of Trades in Amended Status"
+  "Amended Trades": "Total Number of Trades in Amended Status",
 };
 
 const Report: React.FC = () => {
@@ -61,13 +55,13 @@ const Report: React.FC = () => {
 
   const chartData = tradeDataTyped.map((item) => ({
     date: item["Reporting Date"],
-    value: item[typeMap[selectedField as keyof typeof typeMap] as keyof TradeDataItem],
+    value:
+      item[
+        typeMap[selectedField as keyof typeof typeMap] as keyof TradeDataItem
+      ],
   }));
 
-  const highestValue = Math.max(...chartData.map(item => Number(item.value)));
-
-
-  // Round off the highest value to the nearest 100 (or adjust this as needed)
+  const highestValue = Math.max(...chartData.map((item) => Number(item.value)));
   const roundedHighestValue = Math.ceil(highestValue / 100) * 100;
 
   const chartConfig = {
@@ -80,17 +74,25 @@ const Report: React.FC = () => {
   return (
     <Layout collapsed={collapsed}>
       <div className="header-container">
-        <div className="date-field" style={{ display: 'flex', alignItems: 'center' }}>
+        <div
+          className="date-field"
+          style={{ display: "flex", alignItems: "center" }}
+        >
           <span>Showing: </span>
-          <select 
+          <select
             value={dateRange}
             onChange={(e) => setDateRange(e.target.value)}
             className="date-select"
           >
-            <option value="1 Jan 2024 - 10 Jan 2024">1 Jan 2024 - 10 Jan 2024</option>
+            <option value="1 Jan 2024 - 10 Jan 2024">
+              1 Jan 2024 - 10 Jan 2024
+            </option>
           </select>
         </div>
-        <div className="field-select" style={{ display: 'flex', alignItems: 'center' }}>
+        <div
+          className="field-select"
+          style={{ display: "flex", alignItems: "center" }}
+        >
           <span>Showing info: </span>
           <select
             value={selectedField}
@@ -108,7 +110,11 @@ const Report: React.FC = () => {
 
       <div className="chart-container">
         <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
-          <BarChart data={chartData} width={isMobile ? 300 : 600} height={isMobile ? 300 : 400}>
+          <BarChart
+            data={chartData}
+            width={isMobile ? 300 : 600}
+            height={isMobile ? 300 : 400}
+          >
             <CartesianGrid vertical={true} />
             <XAxis
               dataKey="date"
@@ -117,9 +123,9 @@ const Report: React.FC = () => {
               axisLine={false}
               tickFormatter={(value) => {
                 const date = new Date(value);
-                return date.toLocaleDateString('en-GB', { 
-                  day: '2-digit', 
-                  month: 'short' 
+                return date.toLocaleDateString("en-GB", {
+                  day: "2-digit",
+                  month: "short",
                 });
               }}
             />

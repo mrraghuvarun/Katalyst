@@ -1,5 +1,10 @@
-body, h1, h2, h3, p {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+body,
+h1,
+h2,
+h3,
+p {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
 }
 
 /* BackReporting.css */
@@ -26,7 +31,7 @@ h2 {
 .step .circle {
   width: 120px; /* Rectangle width */
   height: 43px; /* Rectangle height */
-  background-color: #D0D0D0; /* Default color */
+  background-color: #d0d0d0; /* Default color */
   color: white;
   display: flex;
   align-items: center;
@@ -44,17 +49,16 @@ h2 {
   color: black; /* Highlighted text color for active or completed steps */
 }
 
-
 .step.completed .circle {
-  background-color: #56AD7E; /* Background color for completed steps */
+  background-color: #56ad7e; /* Background color for completed steps */
   color: white; /* Text color for completed steps */
-  border: 2px solid #56AD7E; /* Border for completed steps */
+  border: 2px solid #56ad7e; /* Border for completed steps */
 }
 
 .step.active .circle {
-  background-color: #D8FCE8; /* Background color for active step */
-  color: #56AD7E; /* Text color for active step */
-  border: 2px solid #56AD7E; /* Border for active step */
+  background-color: #d8fce8; /* Background color for active step */
+  color: #56ad7e; /* Text color for active step */
+  border: 2px solid #56ad7e; /* Border for active step */
 }
 
 .step p {
@@ -102,7 +106,6 @@ h2 {
   color: #dc2626;
 }
 
-
 /* Button Styles */
 .upload-button,
 .next-button,
@@ -116,7 +119,7 @@ h2 {
 }
 
 .upload-button {
-  background-color: #435EBE;
+  background-color: #435ebe;
   color: white;
   margin-right: 10px;
 }
@@ -141,7 +144,7 @@ h2 {
 
 .previous-button,
 .next-button {
-  background-color: #435EBE;
+  background-color: #435ebe;
   color: white;
   margin-right: 10px;
 }
@@ -222,7 +225,7 @@ input[type="file"]:disabled {
 
 .data-input-container input:focus {
   outline: none;
-  border-color: #435EBE;
+  border-color: #435ebe;
   box-shadow: 0 0 5px rgba(67, 94, 190, 0.5);
 }
 
@@ -259,4 +262,3 @@ input[type="file"]:disabled {
   font-size: 14px;
   margin-top: 5px;
 }
-
