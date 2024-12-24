@@ -7,6 +7,7 @@ import * as FileSaver from "file-saver";
 import { Button } from "@/src/components/ui/button";
 import { ChevronDownIcon } from "@heroicons/react/solid";
 import { DocumentDownloadIcon } from "@heroicons/react/outline";
+import { Badge } from "@/src/components/ui/badge";
 import { Calendar } from "@/src/components/ui/calendar";
 import { Calendar as CalendarIcon } from "lucide-react";
 import "./Trade.css";
@@ -109,6 +110,20 @@ const Trade: React.FC = () => {
     setFilteredData(dataWithIds);
   }, []);
 
+  const [appliedFilters, setAppliedFilters] = useState({});
+
+  const handleRemoveFilter = (field: string) => {
+    // Remove the filter from the filters state
+    const updatedFilters = { ...filters };
+    updatedFilters[field] = ""; // Reset the filter value for the given field
+  
+    setFilters(updatedFilters); // Update the filter state
+    setAppliedFilters(updatedFilters); // Update the applied filters state for badges
+  
+    handleApplyFilters(); // Reapply the filters after removing one
+  };
+  
+
   // Filter handlers
   const handleFilterChange = (field, value) => {
     setFilters((prev) => ({
@@ -118,23 +133,29 @@ const Trade: React.FC = () => {
   };
 
   const handleApplyFilters = () => {
+    // Update appliedFilters to reflect current filter values
+    setAppliedFilters({ ...filters });
+  
     const filtered = data.filter((row) => {
       return Object.entries(filters).every(([key, value]) => {
-        if (!value) return true;
-
+        if (!value) return true; // Skip filter if value is empty or null
+  
+        // Handle Date fields separately
         if (key.includes("Date")) {
-          const rowDate = formatDate(row[key]?.toString() || "");
-          return rowDate.includes(value);
+          const rowDate = row[key] ? formatDate(row[key].toString()) : "";
+          return rowDate.includes(value); // Check if row date contains filter date value
         }
-
+  
+        // Handle non-date fields
         const rowValue = row[key]?.toString().toLowerCase() || "";
-        return rowValue.includes(value.toLowerCase());
+        return rowValue.includes(value.toLowerCase()); // Case-insensitive matching
       });
     });
-
-    setFilteredData(filtered);
-    setCurrentPage(0);
+  
+    setFilteredData(filtered); // Set the filtered data
+    setCurrentPage(0); // Reset pagination to the first page
   };
+  
 
   const handleClearFilters = () => {
     setFilters({
@@ -150,7 +171,6 @@ const Trade: React.FC = () => {
     setFilteredData(data);
   };
 
-  // Pagination calculations
   const pageCount = Math.ceil(filteredData.length / pageSize);
   const startIndex = currentPage * pageSize;
   const endIndex = startIndex + pageSize;
@@ -207,9 +227,32 @@ const Trade: React.FC = () => {
     </div>
   );
 
+  const renderBadges = () => (
+    <div className="flex gap-2 flex-wrap mb-6">
+      {Object.entries(appliedFilters)
+        .filter(([_, value]) => value) // Only display non-empty filters
+        .map(([field, value]) => (
+          <Badge
+            key={field}
+            variant="outline"
+            className="flex items-center gap-2"
+          >
+            {field}: {value}
+            <button
+              onClick={() => handleRemoveFilter(field)}
+              className="ml-2 text-red-500"
+            >
+              ×
+            </button>
+          </Badge>
+        ))}
+    </div>
+  );
+  
   return (
     <Layout collapsed={false}>
       <div className="bg-white p-6 rounded-xl">
+        <div className="p-6"></div>
         <div className="flex justify-between items-center mb-4">
           <div className="flex items-center">
             <h3 className="text-2xl font-semibold text-black mb-6">
@@ -252,6 +295,7 @@ const Trade: React.FC = () => {
             </button>
           </div>
         </div>
+        {renderBadges()}
         {showFilters && renderFilterRow()}
         <Table>
           <TableHeader>
@@ -463,5 +507,4 @@ function SearchIcon(props) {
     </svg>
   );
 }
-
 export default Trade;
