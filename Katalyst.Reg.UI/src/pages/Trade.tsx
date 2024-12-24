@@ -113,16 +113,12 @@ const Trade: React.FC = () => {
   const [appliedFilters, setAppliedFilters] = useState({});
 
   const handleRemoveFilter = (field: string) => {
-    // Remove the filter from the filters state
     const updatedFilters = { ...filters };
-    updatedFilters[field] = ""; // Reset the filter value for the given field
-  
-    setFilters(updatedFilters); // Update the filter state
+    delete updatedFilters[field]; // Remove the filter from the object
     setAppliedFilters(updatedFilters); // Update the applied filters state for badges
-  
-    handleApplyFilters(); // Reapply the filters after removing one
+    setFilters({ ...filters, [field]: "" }); // Reapply the filters after removing one
+    handleApplyFilters();
   };
-  
 
   // Filter handlers
   const handleFilterChange = (field, value) => {
@@ -132,30 +128,38 @@ const Trade: React.FC = () => {
     }));
   };
 
+  const handleFilterBadges = (filters) => {
+    const fieldsWithValue = {};
+    Object.keys(filters).forEach((field) => {
+      if (filters[field]) {
+        fieldsWithValue[field] = filters[field];
+      }
+    });
+
+    setAppliedFilters(fieldsWithValue);
+  };
+
   const handleApplyFilters = () => {
-    // Update appliedFilters to reflect current filter values
-    setAppliedFilters({ ...filters });
-  
     const filtered = data.filter((row) => {
       return Object.entries(filters).every(([key, value]) => {
         if (!value) return true; // Skip filter if value is empty or null
-  
+
         // Handle Date fields separately
         if (key.includes("Date")) {
           const rowDate = row[key] ? formatDate(row[key].toString()) : "";
           return rowDate.includes(value); // Check if row date contains filter date value
         }
-  
+
         // Handle non-date fields
         const rowValue = row[key]?.toString().toLowerCase() || "";
         return rowValue.includes(value.toLowerCase()); // Case-insensitive matching
       });
     });
-  
+
     setFilteredData(filtered); // Set the filtered data
     setCurrentPage(0); // Reset pagination to the first page
+    setShowFilters(false); // Close the filter dropdown
   };
-  
 
   const handleClearFilters = () => {
     setFilters({
@@ -169,6 +173,9 @@ const Trade: React.FC = () => {
       "ARM Status": "",
     });
     setFilteredData(data);
+    setAppliedFilters({});
+    setCurrentPage(0);
+    setShowFilters(false);
   };
 
   const pageCount = Math.ceil(filteredData.length / pageSize);
@@ -220,7 +227,13 @@ const Trade: React.FC = () => {
         <Button onClick={handleClearFilters} variant="outline" size="lg">
           Clear
         </Button>
-        <Button onClick={handleApplyFilters} size="lg">
+        <Button
+          onClick={() => {
+            handleFilterBadges(filters);
+            handleApplyFilters();
+          }}
+          size="lg"
+        >
           Search
         </Button>
       </div>
@@ -234,8 +247,8 @@ const Trade: React.FC = () => {
         .map(([field, value]) => (
           <Badge
             key={field}
-            variant="outline"
-            className="flex items-center gap-2"
+            variant="secondary"
+            className="flex items-center gap-2 font-normal"
           >
             {field}: {value}
             <button
@@ -248,16 +261,18 @@ const Trade: React.FC = () => {
         ))}
     </div>
   );
-  
+
+  console.log("Applied Filters:", appliedFilters);
+
   return (
-    <Layout collapsed={false}>
+    <Layout>
       <div className="bg-white p-6 rounded-xl">
-        <div className="p-6"></div>
         <div className="flex justify-between items-center mb-4">
-          <div className="flex items-center">
-            <h3 className="text-2xl font-semibold text-black mb-6">
+          <div className="flex flex-col items-center">
+            <h3 className="text-2xl font-semibold text-black mb-4">
               Trade Report
             </h3>
+            {renderBadges()}
           </div>
           <div className="flex items-center justify-between mb-4 space-x-4">
             <div className="flex items-center space-x-2 rounded-lg border border-gray-300 dark:bg-gray-900 px-3.5 py-2">
@@ -295,7 +310,6 @@ const Trade: React.FC = () => {
             </button>
           </div>
         </div>
-        {renderBadges()}
         {showFilters && renderFilterRow()}
         <Table>
           <TableHeader>
