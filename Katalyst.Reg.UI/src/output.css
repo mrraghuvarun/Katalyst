@@ -845,6 +845,10 @@ body{
   margin-top: 1.5rem;
 }
 
+.ml-2{
+  margin-left: 0.5rem;
+}
+
 .block{
   display: block;
 }
@@ -1476,6 +1480,10 @@ body{
 .border-white{
   --tw-border-opacity: 1;
   border-color: rgb(255 255 255 / var(--tw-border-opacity, 1));
+}
+
+.border-transparent{
+  border-color: transparent;
 }
 
 .bg-\[\#EAF3FF\]{
@@ -2253,6 +2261,14 @@ body {
 
 .hover\:bg-secondary\/80:hover{
   background-color: hsl(var(--secondary) / 0.8);
+}
+
+.hover\:bg-destructive\/80:hover{
+  background-color: hsl(var(--destructive) / 0.8);
+}
+
+.hover\:bg-primary\/80:hover{
+  background-color: hsl(var(--primary) / 0.8);
 }
 
 .hover\:text-accent-foreground:hover{
