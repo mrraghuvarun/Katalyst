@@ -208,8 +208,8 @@ interface TradeDataItem {
 const Summary: React.FC = () => {
   const navigate = useNavigate();
   const [dateRange, setDateRange] = useState<DateRange | undefined>({
-    from: new Date("2024-01-01"),
-    to: new Date("2024-01-10"),
+    from: new Date("2024-09-06"),
+    to: new Date("2024-12-10"),
   });
   const [collapsed] = useState<boolean>(false);
   const [selectedDate, setSelectedDate] = useState<Date>(
@@ -343,18 +343,22 @@ const Summary: React.FC = () => {
     "Trades No Fingerprint": "Total Number of Trade Events without Fingerprint",
   };
 
-  const chartData = tradeDataTyped.map((item) => ({
+  const chartData = tradeDataTyped
+  .filter(item => {
+    const date = new Date(item["Reporting Date"]);
+    return dateRange?.from && dateRange?.to 
+      ? date >= dateRange.from && date <= dateRange.to 
+      : true;
+  })
+  .map(item => ({
     date: item["Reporting Date"],
-    value:
-      item[
-        typeMap[selectedField as keyof typeof typeMap] as keyof TradeDataItem
-      ],
+    value: item[typeMap[selectedField as keyof typeof typeMap] as keyof TradeDataItem]
   }));
 
   const highestValue = Math.max(
     ...chartData.map((item) => parseFloat(item.value as string))
   );
-  // Round off the highest value to the nearest 100 (or adjust this as needed)
+  
   const roundedHighestValue = Math.ceil(highestValue / 100) * 100;
 
   const chartConfig = {
@@ -535,7 +539,7 @@ const Summary: React.FC = () => {
         </div>
 
         <div className="bg-white p-6 rounded-xl col-span-1 mb-4">
-          <PieChartComponent selectedData={selectedData} />
+          <PieChartComponent/>
         </div>
       </div>
 
