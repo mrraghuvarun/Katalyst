@@ -76,7 +76,7 @@ const PieChartComponent: React.FC = () => {
       {
         category: "New Trades",
         value: selectedData["Total Number of New Trades"] || 0,
-        fill: "#589CF0",
+        fill: "#FBD4AC",
       },
       {
         category: "Amended Trades",
@@ -86,7 +86,7 @@ const PieChartComponent: React.FC = () => {
       {
         category: "Cancelled Trades",
         value: selectedData["Total Number of Trades in Cancelled Status"] || 0,
-        fill: "#FBD4AC",
+        fill: "#FF9274",
       },
     ];
   }, [selectedData]);
@@ -100,7 +100,7 @@ const PieChartComponent: React.FC = () => {
     },
     newTrades: {
       label: "New Trades",
-      color: "#589CF0",
+      color: "#FBD4AC",
     },
     amendedTrades: {
       label: "Amended Trades",
@@ -108,7 +108,7 @@ const PieChartComponent: React.FC = () => {
     },
     cancelledTrades: {
       label: "Cancelled Trades",
-      color: "#FBD4AC",
+      color: "#FF9274",
     },
   };
 
