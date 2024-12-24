@@ -25,7 +25,7 @@ import {
 const items = [
   { title: "Dashboard", url: "/summary", icon: LayoutDashboard },
   { title: "Trade Report", url: "/trade", icon: ListChecks },
-  { title: "Back Report", url: "/backreporting", icon: CalendarSearch },
+  { title: "Back Reporting", url: "/backreporting", icon: CalendarSearch },
   { title: "TRN Report", url: "/models", icon: Notebook },
   { title: "ARM Response", url: "/predictions", icon: Tag },
   { title: "NCA Response", url: "/nca-response", icon: BookIcon },
