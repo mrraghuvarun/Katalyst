@@ -32,12 +32,12 @@ const typedTradeData = tradeData as TradeDataItem[];
 
 const PieChartComponent: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(
-      new Date("2024-09-06")
-    );
+    new Date("2024-09-06")
+  );
   const formattedSelectedDate = format(selectedDate, "yyyy-MM-dd");
-    const selectedData: TradeDataItem | undefined = typedTradeData.find(
-      (item: TradeDataItem) => item["Reporting Date"] === formattedSelectedDate
-    );
+  const selectedData: TradeDataItem | undefined = typedTradeData.find(
+    (item: TradeDataItem) => item["Reporting Date"] === formattedSelectedDate
+  );
   const DatePicker = () => {
     return (
       <Popover>
@@ -69,7 +69,8 @@ const PieChartComponent: React.FC = () => {
     if (!selectedData) return [];
 
     return [
-      {category: "Total Trades",
+      {
+        category: "Total Trades",
         value: selectedData["Total Number of Trade Events"] || 0,
         fill: "#76DAE5",
       },
@@ -90,8 +91,6 @@ const PieChartComponent: React.FC = () => {
       },
     ];
   }, [selectedData]);
-
-
 
   const chartConfig = {
     value: {
@@ -116,14 +115,14 @@ const PieChartComponent: React.FC = () => {
     <Card className="shadow-none border-none">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
         <div className="flex items-center justify-between gap-x-4">
-  <h3 className="text-2xl font-semibold text-black">Key Status</h3>
-  <div className="flex items-center gap-x-2">
-    <p className="text-sm text-gray-700">Showing:</p>
-    <DatePicker />
-  </div>
-</div>
-
-          
+          <div className="flex items-center justify-between">
+            <h3 className="text-2xl font-semibold text-black">Key Status</h3>
+            <div className="flex items-center gap-x-2">
+              <p className="text-sm text-gray-700">Showing:</p>
+              <DatePicker />
+            </div>
+          </div>
+        </div>
       </div>
       {selectedData ? (
         <div className="flex-1 pb-0">
@@ -144,35 +143,36 @@ const PieChartComponent: React.FC = () => {
                 strokeWidth={5}
               >
                 <Label
-  content={({ viewBox }) => {
-    if (viewBox && "cx" in viewBox && "cy" in viewBox) {
-      return (
-        <text
-          x={viewBox.cx}
-          y={viewBox.cy}
-          textAnchor="middle"
-          dominantBaseline="middle"
-        >
-          <tspan
-            x={viewBox.cx}
-            y={viewBox.cy}
-            className="fill-foreground text-3xl font-bold"
-          >
-            {selectedData ? selectedData["Total Number of Trade Events"] : 0}
-          </tspan>
-          <tspan
-            x={viewBox.cx}
-            y={(viewBox.cy || 0) + 24}
-            className="fill-muted-foreground text-sm"
-          >
-            Total Trades
-          </tspan>
-        </text>
-      );
-    }
-  }}
-/>
-
+                  content={({ viewBox }) => {
+                    if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+                      return (
+                        <text
+                          x={viewBox.cx}
+                          y={viewBox.cy}
+                          textAnchor="middle"
+                          dominantBaseline="middle"
+                        >
+                          <tspan
+                            x={viewBox.cx}
+                            y={viewBox.cy}
+                            className="fill-foreground text-3xl font-bold"
+                          >
+                            {selectedData
+                              ? selectedData["Total Number of Trade Events"]
+                              : 0}
+                          </tspan>
+                          <tspan
+                            x={viewBox.cx}
+                            y={(viewBox.cy || 0) + 24}
+                            className="fill-muted-foreground text-sm"
+                          >
+                            Total Trades
+                          </tspan>
+                        </text>
+                      );
+                    }
+                  }}
+                />
               </Pie>
             </PieChart>
           </ChartContainer>
