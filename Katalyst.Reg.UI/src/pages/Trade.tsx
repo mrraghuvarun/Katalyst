@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 import Layout from "../components/Layout.tsx";
-import tradeData from "../assets/trade.json"; 
-import * as XLSX from 'xlsx';
-import { Input } from "@/src/components/ui/input"
-import * as FileSaver from 'file-saver';
+import tradeData from "../assets/trade.json";
+import * as XLSX from "xlsx";
+import { Input } from "@/src/components/ui/input";
+import * as FileSaver from "file-saver";
 import { Button } from "@/src/components/ui/button";
 import { ChevronDownIcon } from "@heroicons/react/solid";
 import { DocumentDownloadIcon } from "@heroicons/react/outline";
 import { Calendar } from "@/src/components/ui/calendar";
 import { Calendar as CalendarIcon } from "lucide-react";
-import './Trade.css'
+import "./Trade.css";
 import {
   Table,
   TableBody,
@@ -48,7 +48,7 @@ const COLUMNS = [
   { id: "settleDate", label: "Settle Date", key: "Settle Date" },
   { id: "trader", label: "Trader", key: "Trader" },
   { id: "ncaStatus", label: "NCA Status", key: "NCA Status" },
-  { id: "armStatus", label: "ARM Status", key: "ARM Status" }
+  { id: "armStatus", label: "ARM Status", key: "ARM Status" },
 ] as const;
 
 const Trade: React.FC = () => {
@@ -57,7 +57,7 @@ const Trade: React.FC = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [pageSize, setPageSize] = useState(5);
   const [currentPage, setCurrentPage] = useState(0);
-  
+
   const [filters, setFilters] = useState({
     "Order Number": "",
     "Security ID": "",
@@ -78,9 +78,7 @@ const Trade: React.FC = () => {
     const lowercasedValue = value.toLowerCase();
     const filtered = data.filter((item) =>
       Object.values(item).some(
-        (val) =>
-          val &&
-          val.toString().toLowerCase().includes(lowercasedValue)
+        (val) => val && val.toString().toLowerCase().includes(lowercasedValue)
       )
     );
     setFilteredData(filtered);
@@ -88,19 +86,24 @@ const Trade: React.FC = () => {
 
   const [filteredData, setFilteredData] = useState([]);
   const handleDownload = () => {
-      const workbook = XLSX.utils.book_new();
-      const worksheet = XLSX.utils.json_to_sheet(filteredData);
-      XLSX.utils.book_append_sheet(workbook, worksheet, 'Trade Data');
-      const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-      const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8' });
-      FileSaver.saveAs(blob, 'trade_data.xlsx');
-    };
+    const workbook = XLSX.utils.book_new();
+    const worksheet = XLSX.utils.json_to_sheet(filteredData);
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Trade Data");
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
+    const blob = new Blob([excelBuffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8",
+    });
+    FileSaver.saveAs(blob, "trade_data.xlsx");
+  };
 
   useEffect(() => {
     // Add unique ids to the data
     const dataWithIds = tradeData.map((item, index) => ({
       ...item,
-      id: `trade-${index}`
+      id: `trade-${index}`,
     }));
     setData(dataWithIds);
     setFilteredData(dataWithIds);
@@ -108,27 +111,27 @@ const Trade: React.FC = () => {
 
   // Filter handlers
   const handleFilterChange = (field, value) => {
-    setFilters(prev => ({
+    setFilters((prev) => ({
       ...prev,
       [field]: value,
     }));
   };
 
   const handleApplyFilters = () => {
-    const filtered = data.filter(row => {
+    const filtered = data.filter((row) => {
       return Object.entries(filters).every(([key, value]) => {
         if (!value) return true;
-        
-        if (key.includes('Date')) {
-          const rowDate = formatDate(row[key]?.toString() || '');
+
+        if (key.includes("Date")) {
+          const rowDate = formatDate(row[key]?.toString() || "");
           return rowDate.includes(value);
         }
-        
-        const rowValue = row[key]?.toString().toLowerCase() || '';
+
+        const rowValue = row[key]?.toString().toLowerCase() || "";
         return rowValue.includes(value.toLowerCase());
       });
     });
-    
+
     setFilteredData(filtered);
     setCurrentPage(0);
   };
@@ -154,20 +157,20 @@ const Trade: React.FC = () => {
   const currentData = filteredData.slice(startIndex, endIndex);
 
   const renderFilterRow = () => (
-    <div className="filter-row bg-gray-50 p-6 rounded-lg shadow-md mb-6">
+    <div className="filter-row p-6 rounded-lg border border-gray-300 mb-6">
       <h3 className="text-2xl font-semibold text-black mb-6">Filter Report</h3>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {Object.entries(filters).map(([field, value]) => (
           <div
             key={field}
-            className="p-4 border border-gray-300 rounded-lg bg-white shadow-sm space-y-3"
+            className="p-2 border border-gray-300 rounded-lg bg-white"
           >
-            <label className="block text-sm font-medium text-gray-700">{field}</label>
+            <label className="block text-sm text-gray-700">{field}</label>
             {field === "Trade Status" ? (
               <select
                 value={value}
                 onChange={(e) => handleFilterChange(field, e.target.value)}
-                className="w-full p-2 border border-white rounded focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                className="w-full border border-white rounded focus:outline-none"
               >
                 <option value="">Choose an option</option>
                 <option value="New">New</option>
@@ -179,14 +182,14 @@ const Trade: React.FC = () => {
                 type="date"
                 value={value}
                 onChange={(e) => handleFilterChange(field, e.target.value)}
-                className="w-full p-2 border border-white rounded focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                className="w-full border border-white rounded focus:outline-none"
               />
             ) : (
               <input
                 type="text"
                 value={value}
                 onChange={(e) => handleFilterChange(field, e.target.value)}
-                className="w-full p-2 border border-white rounded focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                className="w-full border border-white rounded focus:outline-none"
                 placeholder={`Enter ${field}`}
               />
             )}
@@ -194,221 +197,248 @@ const Trade: React.FC = () => {
         ))}
       </div>
       <div className="flex justify-end gap-4 mt-6">
-        <button
-          onClick={handleClearFilters}
-          className="px-4 py-2 border border-white rounded bg-gray-100 hover:bg-gray-200 focus:ring-2 focus:ring-gray-400"
-        >
+        <Button onClick={handleClearFilters} variant="outline" size="lg">
           Clear
-        </button>
-        <button
-          onClick={handleApplyFilters}
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:ring-2 focus:ring-blue-400"
-        >
+        </Button>
+        <Button onClick={handleApplyFilters} size="lg">
           Search
-        </button>
+        </Button>
       </div>
     </div>
   );
-  
+
   return (
     <Layout collapsed={false}>
       <div className="bg-white p-6 rounded-xl">
         <div className="flex justify-between items-center mb-4">
           <div className="flex items-center">
-          <h3 className="text-2xl font-semibold text-black mb-6">Trade Report</h3>
+            <h3 className="text-2xl font-semibold text-black mb-6">
+              Trade Report
+            </h3>
           </div>
           <div className="flex items-center justify-between mb-4 space-x-4">
-  <div className="flex items-center space-x-2 rounded-lg border border-gray-300 bg-gray-50 dark:bg-gray-900 px-3.5 py-2">
-    <SearchIcon className="h-4 w-4" />
-    <Input
-      type="search"
-      placeholder="Search here"
-      value={search}
-      onChange={(e) => handleSearch(e.target.value)}
-      className="w-full border-0 h-8 font-semibold"
-    />
-  </div>
-  <Button
-      variant="outline"
-      className={`flex items-center space-x-2 py-6 ${showFilters ? "text-blue-500 border-blue-500 py-6" : "text-black border-gray-300 py-6"}`}
-      onClick={() => setShowFilters(!showFilters)}
-    >
-      <span>Filter Report</span>
-      <ChevronDownIcon className={`w-4 h-4 transform ${showFilters ? "rotate-180" : ""}`} />
-    </Button>
-    <button
-  onClick={handleDownload}
-  className="flex items-center px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 ml-4"
->
-  <DocumentDownloadIcon className="h-5 w-5 mr-2" />
-  Download as Excel
-</button>
-
-</div>
+            <div className="flex items-center space-x-2 rounded-lg border border-gray-300 dark:bg-gray-900 px-3.5 py-2">
+              <SearchIcon className="h-4 w-4" />
+              <Input
+                type="search"
+                placeholder="Search here"
+                value={search}
+                onChange={(e) => handleSearch(e.target.value)}
+                className="w-full border-0 outline-none shadow-none focus-visible:ring-0"
+              />
+            </div>
+            <Button
+              variant="outline"
+              className={`flex items-center space-x-2 py-6 ${
+                showFilters
+                  ? "text-blue-500 border-blue-500 py-6"
+                  : "text-black border-gray-300 py-6"
+              }`}
+              onClick={() => setShowFilters(!showFilters)}
+            >
+              <span>Filter Report</span>
+              <ChevronDownIcon
+                className={`w-4 h-4 transform ${
+                  showFilters ? "rotate-180" : ""
+                }`}
+              />
+            </Button>
+            <button
+              onClick={handleDownload}
+              className="flex items-center px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 ml-4"
+            >
+              <DocumentDownloadIcon className="h-5 w-5 mr-2" />
+              Download as Excel
+            </button>
+          </div>
         </div>
         {showFilters && renderFilterRow()}
-          <Table>
-            <TableHeader>
-              <TableRow>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              {COLUMNS.map((column) => (
+                <TableHead
+                  key={column.id}
+                  className="bg-[#EAF3FF] text-black border-0 border-r-2 border-white text-center whitespace-nowrap"
+                >
+                  {column.label}
+                </TableHead>
+              ))}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {currentData.map((row) => (
+              <TableRow key={row.id}>
                 {COLUMNS.map((column) => (
-                  <TableHead 
-                    key={column.id}
-                    className="bg-[#EAF3FF] text-black border-0 border-r-2 border-white text-center whitespace-nowrap"
+                  <TableCell
+                    key={`${row.id}-${column.id}`}
+                    className="border-0 bg-white py-6 px-4 text-center min-w-32 border-b whitespace-nowrap"
                   >
-                    {column.label}
-                  </TableHead>
+                    {row[column.key] || ""}
+                  </TableCell>
                 ))}
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {currentData.map((row) => (
-                <TableRow key={row.id}>
-                  {COLUMNS.map((column) => (
-                    <TableCell 
-                      key={`${row.id}-${column.id}`}
-                      className="border-0 bg-white py-6 px-4 text-center min-w-32 border-b whitespace-nowrap"
-                    >
-                      {row[column.key] || ""}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+            ))}
+          </TableBody>
+        </Table>
 
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
-        {pageCount > 1 && (
-          <Pagination className="Pagination">
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious
-                  onClick={() => setCurrentPage(p => Math.max(0, p - 1))}
-                  disabled={currentPage === 0}
-                  className="cursor-pointer"
-                  style={{
-                    pointerEvents: currentPage > 0 ? "auto" : "none",
-                    opacity: currentPage > 0 ? 1 : 0.5,
-                  }}
-                />
-              </PaginationItem>
+        <div className="ml-auto max-w-[700px] flex items-center justify-end gap-2 mt-4">
+          <p className="text-xs text-gray-500">
+            Showing {startIndex + 1} to {endIndex} of {filteredData.length}{" "}
+            entries
+          </p>
 
-              {pageCount <= 3 ? (
-                [...Array(pageCount)].map((_, index) => (
-                  <PaginationItem key={index}>
-                    <PaginationLink
-                      isActive={currentPage === index}
-                      onClick={() => setCurrentPage(index)}
+          <div>
+            {pageCount > 1 && (
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious
+                      onClick={() => setCurrentPage((p) => Math.max(0, p - 1))}
+                      disabled={currentPage === 0}
                       className="cursor-pointer"
                       style={{
-                        backgroundColor: currentPage === index ? "#007bff" : "transparent",
-                        color: currentPage === index ? "#fff" : "#000",
+                        pointerEvents: currentPage > 0 ? "auto" : "none",
+                        opacity: currentPage > 0 ? 1 : 0.5,
                       }}
-                    >
-                      {index + 1}
-                    </PaginationLink>
+                    />
                   </PaginationItem>
-                ))
-              ) : currentPage < 2 ? (
-                <>
-                  {[0, 1, 2].map((index) => (
-                    <PaginationItem key={index}>
-                      <PaginationLink
-                        isActive={currentPage === index}
-                        onClick={() => setCurrentPage(index)}
-                        className="cursor-pointer"
-                        style={{
-                          backgroundColor: currentPage === index ? "#007bff" : "transparent",
-                          color: currentPage === index ? "#fff" : "#000",
-                        }}
-                      >
-                        {index + 1}
-                      </PaginationLink>
-                    </PaginationItem>
-                  ))}
-                  <PaginationItem>
-                    <PaginationEllipsis />
-                  </PaginationItem>
-                </>
-              ) : currentPage >= pageCount - 3 ? (
-                <>
-                  <PaginationItem>
-                    <PaginationEllipsis />
-                  </PaginationItem>
-                  {[pageCount - 3, pageCount - 2, pageCount - 1].map((index) => (
-                    <PaginationItem key={index}>
-                      <PaginationLink
-                        isActive={currentPage === index}
-                        onClick={() => setCurrentPage(index)}
-                        className="cursor-pointer"
-                        style={{
-                          backgroundColor: currentPage === index ? "#007bff" : "transparent",
-                          color: currentPage === index ? "#fff" : "#000",
-                        }}
-                      >
-                        {index + 1}
-                      </PaginationLink>
-                    </PaginationItem>
-                  ))}
-                </>
-              ) : (
-                <>
-                  <PaginationItem>
-                    <PaginationEllipsis />
-                  </PaginationItem>
-                  {[currentPage - 1, currentPage, currentPage + 1].map((index) => (
-                    <PaginationItem key={index}>
-                      <PaginationLink
-                        isActive={currentPage === index}
-                        onClick={() => setCurrentPage(index)}
-                        className="cursor-pointer"
-                        style={{
-                          backgroundColor: currentPage === index ? "#007bff" : "transparent",
-                          color: currentPage === index ? "#fff" : "#000",
-                        }}
-                      >
-                        {index + 1}
-                      </PaginationLink>
-                    </PaginationItem>
-                  ))}
-                  <PaginationItem>
-                    <PaginationEllipsis />
-                  </PaginationItem>
-                </>
-              )}
 
-              <PaginationItem>
-                <PaginationNext
-                  onClick={() => setCurrentPage(p => Math.min(pageCount - 1, p + 1))}
-                  disabled={currentPage === pageCount - 1}
-                  className="cursor-pointer"
-                  style={{
-                    pointerEvents: currentPage < pageCount - 1 ? "auto" : "none",
-                    opacity: currentPage < pageCount - 1 ? 1 : 0.5,
-                  }}
-                />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
-        )}
+                  {pageCount <= 3 ? (
+                    [...Array(pageCount)].map((_, index) => (
+                      <PaginationItem key={index}>
+                        <PaginationLink
+                          isActive={currentPage === index}
+                          onClick={() => setCurrentPage(index)}
+                          className="cursor-pointer"
+                          style={{
+                            backgroundColor:
+                              currentPage === index ? "#007bff" : "transparent",
+                            color: currentPage === index ? "#fff" : "#000",
+                          }}
+                        >
+                          {index + 1}
+                        </PaginationLink>
+                      </PaginationItem>
+                    ))
+                  ) : currentPage < 2 ? (
+                    <>
+                      {[0, 1, 2].map((index) => (
+                        <PaginationItem key={index}>
+                          <PaginationLink
+                            isActive={currentPage === index}
+                            onClick={() => setCurrentPage(index)}
+                            className="cursor-pointer"
+                            style={{
+                              backgroundColor:
+                                currentPage === index
+                                  ? "#007bff"
+                                  : "transparent",
+                              color: currentPage === index ? "#fff" : "#000",
+                            }}
+                          >
+                            {index + 1}
+                          </PaginationLink>
+                        </PaginationItem>
+                      ))}
+                      <PaginationItem>
+                        <PaginationEllipsis />
+                      </PaginationItem>
+                    </>
+                  ) : currentPage >= pageCount - 3 ? (
+                    <>
+                      <PaginationItem>
+                        <PaginationEllipsis />
+                      </PaginationItem>
+                      {[pageCount - 3, pageCount - 2, pageCount - 1].map(
+                        (index) => (
+                          <PaginationItem key={index}>
+                            <PaginationLink
+                              isActive={currentPage === index}
+                              onClick={() => setCurrentPage(index)}
+                              className="cursor-pointer"
+                              style={{
+                                backgroundColor:
+                                  currentPage === index
+                                    ? "#007bff"
+                                    : "transparent",
+                                color: currentPage === index ? "#fff" : "#000",
+                              }}
+                            >
+                              {index + 1}
+                            </PaginationLink>
+                          </PaginationItem>
+                        )
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      <PaginationItem>
+                        <PaginationEllipsis />
+                      </PaginationItem>
+                      {[currentPage - 1, currentPage, currentPage + 1].map(
+                        (index) => (
+                          <PaginationItem key={index}>
+                            <PaginationLink
+                              isActive={currentPage === index}
+                              onClick={() => setCurrentPage(index)}
+                              className="cursor-pointer"
+                              style={{
+                                backgroundColor:
+                                  currentPage === index
+                                    ? "#007bff"
+                                    : "transparent",
+                                color: currentPage === index ? "#fff" : "#000",
+                              }}
+                            >
+                              {index + 1}
+                            </PaginationLink>
+                          </PaginationItem>
+                        )
+                      )}
+                      <PaginationItem>
+                        <PaginationEllipsis />
+                      </PaginationItem>
+                    </>
+                  )}
 
-        <select
-          value={pageSize}
-          onChange={(e) => {
-            setPageSize(Number(e.target.value));
-            setCurrentPage(0);
-          }}
-          className="h-10 w-16 rounded border border-input bg-background px-3 ml-4"
-          style={{
-            cursor: "pointer",
-            textAlign: "center",
-          }}
-        >
-          <option value={5}>5</option>
-          <option value={10}>10</option>
-          <option value={20}>20</option>
-          <option value={50}>50</option>
-        </select>
-      </div>
+                  <PaginationItem>
+                    <PaginationNext
+                      onClick={() =>
+                        setCurrentPage((p) => Math.min(pageCount - 1, p + 1))
+                      }
+                      disabled={currentPage === pageCount - 1}
+                      className="cursor-pointer"
+                      style={{
+                        pointerEvents:
+                          currentPage < pageCount - 1 ? "auto" : "none",
+                        opacity: currentPage < pageCount - 1 ? 1 : 0.5,
+                      }}
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            )}
+          </div>
+
+          <select
+            value={pageSize}
+            onChange={(e) => {
+              setPageSize(Number(e.target.value));
+              setCurrentPage(0);
+            }}
+            className="h-10 w-16 rounded border border-input bg-background px-3 ml-4"
+            style={{
+              cursor: "pointer",
+              textAlign: "center",
+            }}
+          >
+            <option value={5}>5</option>
+            <option value={10}>10</option>
+            <option value={20}>20</option>
+            <option value={50}>50</option>
+          </select>
+        </div>
       </div>
     </Layout>
   );

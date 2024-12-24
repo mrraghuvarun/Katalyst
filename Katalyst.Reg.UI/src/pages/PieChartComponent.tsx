@@ -49,8 +49,8 @@ const PieChartComponent: React.FC = () => {
               !selectedDate && "text-muted-foreground"
             )}
           >
-            <CalendarIcon className=" h-4 w-4" />
-            {format(selectedDate, "PPP")}
+            <CalendarIcon className="h-4 w-4" />
+            {format(selectedDate, "PP")}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0">
@@ -114,14 +114,10 @@ const PieChartComponent: React.FC = () => {
   return (
     <Card className="shadow-none border-none">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-        <div className="flex items-center justify-between gap-x-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-2xl font-semibold text-black">Key Status</h3>
-            <div className="flex items-center gap-x-2">
-              <p className="text-sm text-gray-700">Showing:</p>
-              <DatePicker />
-            </div>
-          </div>
+        <h3 className="text-2xl flex-1 font-semibold text-black">Key Status</h3>
+        <div className="flex flex-col gap-2">
+          <p className="text-sm text-gray-700">Showing:</p>
+          <DatePicker />
         </div>
       </div>
       {selectedData ? (
@@ -133,7 +129,7 @@ const PieChartComponent: React.FC = () => {
             <PieChart>
               <ChartTooltip
                 cursor={false}
-                content={<ChartTooltipContent hideLabel />}
+                content={<ChartTooltipContent hideLabel className="bg-white" />}
               />
               <Pie
                 data={chartData}
@@ -164,7 +160,7 @@ const PieChartComponent: React.FC = () => {
                           <tspan
                             x={viewBox.cx}
                             y={(viewBox.cy || 0) + 24}
-                            className="fill-muted-foreground text-sm"
+                            className="fill-muted-foreground text-sm mr-2"
                           >
                             Total Trades
                           </tspan>

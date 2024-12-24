@@ -307,7 +307,7 @@ const Summary: React.FC = () => {
             )}
           >
             <CalendarIcon className=" h-4 w-4" />
-            {format(selectedDate, "PPP")}
+            {format(selectedDate, "PP")}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0">
@@ -344,21 +344,24 @@ const Summary: React.FC = () => {
   };
 
   const chartData = tradeDataTyped
-  .filter(item => {
-    const date = new Date(item["Reporting Date"]);
-    return dateRange?.from && dateRange?.to 
-      ? date >= dateRange.from && date <= dateRange.to 
-      : true;
-  })
-  .map(item => ({
-    date: item["Reporting Date"],
-    value: item[typeMap[selectedField as keyof typeof typeMap] as keyof TradeDataItem]
-  }));
+    .filter((item) => {
+      const date = new Date(item["Reporting Date"]);
+      return dateRange?.from && dateRange?.to
+        ? date >= dateRange.from && date <= dateRange.to
+        : true;
+    })
+    .map((item) => ({
+      date: item["Reporting Date"],
+      value:
+        item[
+          typeMap[selectedField as keyof typeof typeMap] as keyof TradeDataItem
+        ],
+    }));
 
   const highestValue = Math.max(
     ...chartData.map((item) => parseFloat(item.value as string))
   );
-  
+
   const roundedHighestValue = Math.ceil(highestValue / 100) * 100;
 
   const chartConfig = {
@@ -523,7 +526,9 @@ const Summary: React.FC = () => {
                     axisLine={false}
                     tickFormatter={(value) => value.toLocaleString()}
                   />
-                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <ChartTooltip
+                    content={<ChartTooltipContent className="bg-white" />}
+                  />
                   <ChartLegend content={<ChartLegendContent />} />
                   <Bar
                     dataKey="value"
@@ -539,7 +544,7 @@ const Summary: React.FC = () => {
         </div>
 
         <div className="bg-white p-6 rounded-xl col-span-1 mb-4">
-          <PieChartComponent/>
+          <PieChartComponent />
         </div>
       </div>
 

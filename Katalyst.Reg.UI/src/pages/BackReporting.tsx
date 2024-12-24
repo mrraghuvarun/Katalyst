@@ -233,7 +233,7 @@ const BackReporting: React.FC = () => {
       {loading ? ( // Show loading page if loading state is true
         <Loading />
       ) : (
-        <div className="bg-white p-6 rounded-xl">
+        <div className="bg-white w-full p-6 rounded-xl">
           {/* Toggle Buttons */}
           <div className="toggle-buttons flex gap-4 mb-6">
             <button

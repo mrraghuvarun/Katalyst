@@ -36,7 +36,11 @@ const AppSidebar: React.FC = () => {
   const location = useLocation();
 
   return (
-    <Sidebar className="p-4 rounded-lg border-0 bg-white shadow-lg" collapsible="icon" variant="floating">
+    <Sidebar
+      className="p-4 rounded-lg border-0"
+      collapsible="icon"
+      variant="floating"
+    >
       <SidebarContent>
         {state === "expanded" && (
           <SidebarHeader className="px-7 pt-6 flex flex-row justify-between items-center">
