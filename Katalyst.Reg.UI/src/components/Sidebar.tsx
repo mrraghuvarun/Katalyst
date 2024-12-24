@@ -13,13 +13,11 @@ import {
   SidebarTrigger,
   useSidebar,
 } from "@/src/components/ui/sidebar";
-import "./Sidebar.css";
 import {
   BookIcon,
   CalendarSearch,
   LayoutDashboard,
   ListChecks,
-  MenuIcon,
   Notebook,
   Tag,
 } from "lucide-react";
@@ -35,13 +33,10 @@ const items = [
 
 const AppSidebar: React.FC = () => {
   const { state } = useSidebar();
+  const location = useLocation();
 
   return (
-    <Sidebar
-      className="p-4 rounded-lg border-0"
-      collapsible="icon"
-      variant="floating"
-    >
+    <Sidebar className="p-4 rounded-lg border-0 bg-white shadow-lg" collapsible="icon" variant="floating">
       <SidebarContent>
         {state === "expanded" && (
           <SidebarHeader className="px-7 pt-6 flex flex-row justify-between items-center">
@@ -63,11 +58,21 @@ const AppSidebar: React.FC = () => {
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
                     asChild
-                    className="hover:bg-blue-200 rounded"
+                    className={`flex items-center px-4 py-2 transition-all ${
+                      location.pathname === item.url
+                        ? "bg-[#EAF3FF] text-blue-600 font-semibold border-l-4 border-blue-600 rounded-none"
+                        : "hover:bg-gray-100 text-gray-600 rounded-lg"
+                    }`}
                   >
-                    <a href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
+                    <a href={item.url} className="flex items-center gap-3">
+                      <item.icon
+                        className={`w-5 h-5 ${
+                          location.pathname === item.url
+                            ? "text-blue-600"
+                            : "text-gray-400"
+                        }`}
+                      />
+                      {state === "expanded" && <span>{item.title}</span>}
                     </a>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -78,71 +83,6 @@ const AppSidebar: React.FC = () => {
       </SidebarContent>
       <SidebarFooter />
     </Sidebar>
-    // <div className={`sidebar ${collapsed ? "collapsed" : ""}`}>
-    //   <div className="sidebar-header">
-    //     <h1 className="sidebar-title">{collapsed ? "M" : "MIFID"}</h1>
-    //     <button className="toggle-sidebar" onClick={toggleSidebar}>
-    //       {collapsed ? <FaArrowRight /> : <FaArrowLeft />}
-    //     </button>
-    //   </div>
-    //   <ul className="nav-links">
-    //     <li>
-    //       <a
-    //         href="/summary"
-    //         className={`nav-item ${
-    //           ["/summary", "/report", "/data"].includes(location.pathname)
-    //             ? "active"
-    //             : ""
-    //         }`}
-    //       >
-    //         <FaTachometerAlt className="icon" />
-    //         <span className="nav-text">{!collapsed && "Summary Report"}</span>
-    //       </a>
-    //     </li>
-    //     <li>
-    //       <a
-    //         href="/trade"
-    //         className={`nav-item ${location.pathname === "/trade" ? "active" : ""}`}
-    //       >
-    //         <FaTable className="icon" />
-    //         <span className="nav-text">{!collapsed && "Trade Report"}</span>
-    //       </a>
-    //     </li>
-    //     <li>
-    //       <a
-    //         href="/backreporting"
-    //         className={`nav-item ${location.pathname === "/backreporting" ? "active" : ""}`}
-    //       >
-    //         <FaFileUpload className="icon" />
-    //         <span className="nav-text">{!collapsed && "Back Reporting"}</span>
-    //       </a>
-    //     </li>
-    //     <li>
-    //       <a href="#trn" className="nav-item">
-    //         <FaLayerGroup className="icon" />
-    //         <span className="nav-text">{!collapsed && "TRN Report"}</span>
-    //       </a>
-    //     </li>
-    //     <li>
-    //       <a href="#arm" className="nav-item">
-    //         <FaUndo className="icon" />
-    //         <span className="nav-text">{!collapsed && "ARM Response"}</span>
-    //       </a>
-    //     </li>
-    //     <li>
-    //       <a href="/nca-response" className="nav-item">
-    //         <FaArrowAltCircleRight className="icon" />
-    //         <span className="nav-text">{!collapsed && "NCA Response"}</span>
-    //       </a>
-    //     </li>
-    //     <li>
-    //       <a href="/" className="nav-item logout">
-    //         <FaSignOutAlt className="icon" />
-    //         <span className="nav-text">{!collapsed && "Logout"}</span>
-    //       </a>
-    //     </li>
-    //   </ul>
-    // </div>
   );
 };
 

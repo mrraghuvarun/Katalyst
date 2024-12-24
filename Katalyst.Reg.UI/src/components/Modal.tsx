@@ -68,14 +68,28 @@ const Modal: React.FC<ModalProps> = ({
             <h4 className="text-2xl font-semibold text-gray-800">
               {title} Details
             </h4>
-            <p className="text-sm text-gray-600 mt-2">
-              Date:{" "}
-              {new Date(date).toLocaleDateString("en-GB", {
-                day: "2-digit",
-                month: "short",
-                year: "numeric",
-              })}
-            </p>
+            {date ? (
+              <>
+                {console.log("Raw date value:", date)}
+                <p className="text-sm text-gray-600 mt-2">
+                  Date:{" "}
+                  {(() => {
+                    const [day, month, year] = date.split("/");
+                    return new Date(
+                      `${year}-${month}-${day}`
+                    ).toLocaleDateString("en-GB", {
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric",
+                    });
+                  })()}
+                </p>
+              </>
+            ) : (
+              <p className="text-sm text-red-500 mt-2">
+                Date is not provided or invalid.
+              </p>
+            )}
           </div>
           <button
             onClick={onClose}
