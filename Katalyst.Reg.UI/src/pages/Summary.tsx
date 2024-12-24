@@ -438,15 +438,15 @@ const Summary: React.FC = () => {
   return (
     <Layout>
       <div className="bg-white p-6 rounded-xl">
-        <div className="flex gap-12">
-          <h3 className="text-2xl font-semibold text-black mb-6">Summary</h3>
+        <div className="flex flex-col md:flex-row gap-2 md:gap-12 mb-6">
+          <h3 className="text-2xl font-semibold text-black">Summary</h3>
           <div className="date-field">
             <p className="text-sm text-gray-700">Showing: </p>
 
             <DatePicker />
           </div>
         </div>
-        <div className="grid grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {Object.keys(typeMap).map((key) => (
             <SummaryCard
               onClick={() => handleCardClick(key)}

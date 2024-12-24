@@ -1,6 +1,7 @@
 import React, { ReactNode } from "react";
 import { SidebarProvider, useSidebar } from "@/src/components/ui/sidebar";
 import AppSidebar from "@/src/components/Sidebar";
+import { useIsMobile } from "../hooks/use-mobile";
 
 type LayoutProps = {
   children: ReactNode;
@@ -8,12 +9,13 @@ type LayoutProps = {
 
 const DashboardLayout: React.FC<LayoutProps> = ({ children }) => {
   const { state } = useSidebar();
+  const isMobile = useIsMobile();
 
   const menuWidth = state === "collapsed" ? "72px" : "260px";
-  const menuSpace = state === "collapsed" ? "80px" : "260px";
+  const menuSpace = state === "collapsed" || isMobile ? "80px" : "260px";
 
   return (
-    <div className="flex relative">
+    <div className="flex relative w-full">
       <div
         className="rounded-lg absolute"
         style={{
