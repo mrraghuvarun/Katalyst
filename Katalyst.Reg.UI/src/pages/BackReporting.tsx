@@ -297,9 +297,9 @@ const BackReporting: React.FC = () => {
                   currentStep === 1 ? "active" : ""
                 } flex flex-col items-center`}
               >
-                <div className="circle bg-blue-100 text-blue-700 w-12 h-12 flex items-center justify-center rounded-full">
+                <Button className="circle bg-blue-100 text-blue-700 w-12 h-12 flex items-center justify-center rounded-full">
                   STEP 1
-                </div>
+                </Button>
                 <p
                   className={`textColor mt-2 ${
                     currentStep >= 1
@@ -327,9 +327,9 @@ const BackReporting: React.FC = () => {
                   currentStep === 2 ? "active" : ""
                 } flex flex-col items-center`}
               >
-                <div className="circle bg-blue-100 text-blue-700 w-12 h-12 flex items-center justify-center rounded-full">
+                <Button className="circle bg-blue-100 text-blue-700 w-12 h-12 flex items-center justify-center rounded-full">
                   STEP 2
-                </div>
+                </Button>
                 <p
                   className={`textColor mt-2 ${
                     currentStep >= 2
@@ -356,9 +356,9 @@ const BackReporting: React.FC = () => {
                   currentStep === 3 ? "active" : ""
                 } flex flex-col items-center`}
               >
-                <div className="circle bg-blue-100 text-blue-700 w-12 h-12 flex items-center justify-center rounded-full">
+                <Button className="circle bg-blue-100 text-blue-700 w-12 h-12 flex items-center justify-center rounded-full">
                   STEP 3
-                </div>
+                </Button>
                 <p
                   className={`textColor mt-2 ${
                     currentStep === 3
@@ -371,7 +371,7 @@ const BackReporting: React.FC = () => {
               </div>
             </div>
 
-            <hr className="my-8 w-full border-gray-200" />
+            <hr className="my-2 w-full border-gray-200" />
 
             {/* Step 1: File Upload */}
             {currentStep === 1 && (
@@ -562,10 +562,12 @@ const BackReporting: React.FC = () => {
                                   Math.max(0, prev - 1)
                                 )
                               }
-                              disabled={
-                                table.getState().pagination.pageIndex === 1
-                              }
-                              className="cursor-pointer"
+                              disabled={!table.getCanPreviousPage()}
+                              className={`${
+                                !table.getCanPreviousPage()
+                                  ? "cursor-not-allowed opacity-50"
+                                  : "cursor-pointer"
+                              }`}
                             />
                           </PaginationItem>
 
@@ -699,11 +701,12 @@ const BackReporting: React.FC = () => {
                                   Math.min(table.getPageCount() - 1, prev + 1)
                                 )
                               }
-                              disabled={
-                                table.getState().pagination.pageIndex ===
-                                table.getPageCount() - 1
-                              }
-                              className="cursor-pointer"
+                              disabled={!table.getCanNextPage()}
+                              className={`${
+                                !table.getCanNextPage()
+                                  ? "cursor-not-allowed opacity-50"
+                                  : "cursor-pointer"
+                              }`}
                             />
                           </PaginationItem>
                         </PaginationContent>
