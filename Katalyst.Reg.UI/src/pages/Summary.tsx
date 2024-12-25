@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Modal from "../components/Modal.tsx";
 import tradeData from "../assets/data.json";
@@ -206,12 +206,10 @@ interface TradeDataItem {
   "Total Number of Late Submission": number;
 }
 const Summary: React.FC = () => {
-  const navigate = useNavigate();
   const [dateRange, setDateRange] = useState<DateRange | undefined>({
     from: new Date("2024-09-06"),
     to: new Date("2024-12-10"),
   });
-  const [collapsed] = useState<boolean>(false);
   const [selectedDate, setSelectedDate] = useState<Date>(
     new Date("2024-09-06")
   );
@@ -251,6 +249,10 @@ const Summary: React.FC = () => {
     setModalTitle(title);
     setModalOpen(true);
   };
+  const [filteredData, setFilteredData] = useState([]);
+  const [startIndex, setStartIndex] = useState(0);
+  const [endIndex, setEndIndex] = useState(0);
+
 
   const DateRangePicker = () => {
     return (
@@ -435,6 +437,17 @@ const Summary: React.FC = () => {
     },
   });
 
+  useEffect(() => {
+    // Fetch or filter your data here and set it to filteredData
+    const data = tradeDataTyped; // Replace with your data fetching logic
+    setFilteredData(data);
+
+    // Set startIndex and endIndex based on your pagination logic
+    const { pageIndex, pageSize } = table.getState().pagination;
+    setStartIndex(pageIndex * pageSize);
+    setEndIndex(Math.min((pageIndex + 1) * pageSize, data.length));
+  }, [table.getState().pagination]);
+
   return (
     <Layout>
       <div className="bg-white p-6 rounded-xl">
@@ -599,14 +612,12 @@ const Summary: React.FC = () => {
         </Table>
       </div>
 
-      <div
-        className="mt-4"
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "flex-end",
-        }}
-      >
+      <div className="ml-auto max-w-[700px] flex flex-col md:flex-row lg:flex-row items-center justify-end gap-2 mt-4">
+      <p className="text-xs text-gray-500">
+            Showing {startIndex + 1} to {endIndex} of {filteredData.length}{" "}
+            entries
+          </p>
+          <div>
         {table.getPageCount() > 1 && (
           <Pagination>
             <PaginationContent>
@@ -772,6 +783,7 @@ const Summary: React.FC = () => {
             </PaginationContent>
           </Pagination>
         )}
+        </div>
 
         <div className="rows-per-page-selector" style={{ marginLeft: "1rem" }}>
           <select
