@@ -379,11 +379,11 @@ const BackReporting: React.FC = () => {
                 <h3 className="text-xl font-semibold text-black mb-4">
                   Select the CSV or XLSX File
                 </h3>
-                <div className="flex flex-row items-start gap-4">
+                  <div className="flex flex-col md:flext-row lg:flex-row items-start gap-4">
                   {/* File Drop Zone */}
                   <label
                     htmlFor="file-upload"
-                    className="border-2 border-dashed border-blue-500 bg-blue-50 text-blue-700 rounded-lg flex items-center justify-between h-[81px] w-[535px] p-4 cursor-pointer hover:bg-blue-100"
+                    className="border-2 border-dashed border-blue-500 bg-blue-50 text-blue-700 rounded-lg flex sm:h-auto sm:w-auto items-center justify-between p-4 h-[81px] w-[535px] cursor-pointer hover:bg-blue-100"
                   >
                     <div className="flex flex-col gap-1">
                       <span className="text-sm font-medium">
@@ -757,11 +757,12 @@ const BackReporting: React.FC = () => {
                 <p className="text-sm text-gray-600">
                   Are you sure you want to upload this CSV file?
                 </p>
-                <div className="flex justify-center mt-6 space-x-4">
+                <div className="flex flex-col md:flex-row lg:flext-row justify-center mt-6 space-x-4">
                   <Button
                     onClick={handlePreviousStep}
                     size="lg"
                     variant="outline"
+                    className="mb-2 align-start"
                   >
                     Previous
                   </Button>

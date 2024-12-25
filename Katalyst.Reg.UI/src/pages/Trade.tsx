@@ -246,7 +246,7 @@ const Trade: React.FC = () => {
       ))}
     </div>
 
-      <div className="flex justify-end gap-4 mt-6">
+      <div className="flex flex-col md:flex-row lg:flext-row justify-end gap-4 mt-6">
         <Button onClick={handleClearFilters} variant="outline" size="lg">
           Clear
         </Button>
@@ -362,7 +362,7 @@ const Trade: React.FC = () => {
             ))}
           </TableBody>
         </Table>
-
+        </div>
         <div className="ml-auto max-w-[700px] flex flex-col md:flex-row lg:flex-row items-center justify-end gap-2 mt-4">
           <p className="text-xs text-gray-500">
             Showing {startIndex + 1} to {endIndex} of {filteredData.length}{" "}
@@ -520,7 +520,6 @@ const Trade: React.FC = () => {
             <option value={50}>50</option>
           </select>
         </div>
-      </div>
     </Layout>
   );
 };
