@@ -39,6 +39,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "../components/ui/tabs.js";
+import { Cross, X, XCircleIcon } from "lucide-react";
 
 interface UploadHistory {
   originalIndex: number;
@@ -283,163 +284,160 @@ const BackReporting: React.FC = () => {
           <TabsTrigger value="update_report">Update Report</TabsTrigger>
           <TabsTrigger value="back_report">Back Report History</TabsTrigger>
         </TabsList>
-        <TabsContent
-          value="update_report"
-          className="bg-white w-full p-6 rounded-xl"
-        >
-          <h3 className="text-xl font-semibold text-black mb-6">
-            Upload Process
-          </h3>
-
-          {/* Stepper */}
-          <div className="stepper flex justify-between items-center mb-8 max-w-[800px] mx-auto">
-            <div
-              className={`step ${currentStep > 1 ? "completed" : ""} ${
-                currentStep === 1 ? "active" : ""
-              } flex flex-col items-center`}
-            >
-              <div className="circle bg-blue-100 text-blue-700 w-12 h-12 flex items-center justify-center rounded-full">
-                STEP 1
-              </div>
-              <p
-                className={`textColor mt-2 ${
-                  currentStep >= 1
-                    ? "text-blue-700 font-medium"
-                    : "text-gray-500"
-                }`}
-              >
-                Upload CSV File
-              </p>
-            </div>
-            <div className="flex items-center w-full mx-6 mb-6">
-              <div
-                className={`h-2 w-2 rounded-full border ${borderColor(1)}`}
-              ></div>
-              <hr
-                className={`border-1 border-dashed ${borderColor(1)} w-full`}
-              />
-              <div
-                className={`h-2 w-2 rounded-full border ${borderColor(1)}`}
-              ></div>
-            </div>
-
-            <div
-              className={`step ${currentStep > 2 ? "completed" : ""} ${
-                currentStep === 2 ? "active" : ""
-              } flex flex-col items-center`}
-            >
-              <div className="circle bg-blue-100 text-blue-700 w-12 h-12 flex items-center justify-center rounded-full">
-                STEP 2
-              </div>
-              <p
-                className={`textColor mt-2 ${
-                  currentStep >= 2
-                    ? "text-blue-700 font-medium"
-                    : "text-gray-500"
-                }`}
-              >
-                Data Process
-              </p>
-            </div>
-            <div className="flex items-center w-full mx-6 mb-6">
-              <div
-                className={`h-2 w-2 rounded-full border ${borderColor(2)}`}
-              ></div>
-              <hr
-                className={`border-1 border-dashed ${borderColor(2)} w-full`}
-              />
-              <div
-                className={`h-2 w-2 rounded-full border ${borderColor(2)}`}
-              ></div>
-            </div>
-            <div
-              className={`step ${
-                currentStep === 3 ? "active" : ""
-              } flex flex-col items-center`}
-            >
-              <div className="circle bg-blue-100 text-blue-700 w-12 h-12 flex items-center justify-center rounded-full">
-                STEP 3
-              </div>
-              <p
-                className={`textColor mt-2 ${
-                  currentStep === 3
-                    ? "text-blue-700 font-medium"
-                    : "text-gray-500"
-                }`}
-              >
-                Confirm Upload
-              </p>
-            </div>
-          </div>
-
-          <hr className="my-8 w-full border-gray-200" />
-
-          <div className="bg-white p-1 rounded-xl">
+        <TabsContent value="update_report">
+          <div className="bg-white w-full p-6 mb-6 rounded-xl">
             <h3 className="text-xl font-semibold text-black mb-6">
-              Select the CSV or XLSX File
+              Upload Process
             </h3>
+
+            {/* Stepper */}
+            <div className="stepper flex justify-between items-center mb-8 max-w-[800px] mx-auto">
+              <div
+                className={`step ${currentStep > 1 ? "completed" : ""} ${
+                  currentStep === 1 ? "active" : ""
+                } flex flex-col items-center`}
+              >
+                <div className="circle bg-blue-100 text-blue-700 w-12 h-12 flex items-center justify-center rounded-full">
+                  STEP 1
+                </div>
+                <p
+                  className={`textColor mt-2 ${
+                    currentStep >= 1
+                      ? "text-blue-700 font-medium"
+                      : "text-gray-500"
+                  }`}
+                >
+                  Upload CSV File
+                </p>
+              </div>
+              <div className="flex items-center w-full mx-6 mb-6">
+                <div
+                  className={`h-2 w-2 rounded-full border ${borderColor(1)}`}
+                ></div>
+                <hr
+                  className={`border-1 border-dashed ${borderColor(1)} w-full`}
+                />
+                <div
+                  className={`h-2 w-2 rounded-full border ${borderColor(1)}`}
+                ></div>
+              </div>
+
+              <div
+                className={`step ${currentStep > 2 ? "completed" : ""} ${
+                  currentStep === 2 ? "active" : ""
+                } flex flex-col items-center`}
+              >
+                <div className="circle bg-blue-100 text-blue-700 w-12 h-12 flex items-center justify-center rounded-full">
+                  STEP 2
+                </div>
+                <p
+                  className={`textColor mt-2 ${
+                    currentStep >= 2
+                      ? "text-blue-700 font-medium"
+                      : "text-gray-500"
+                  }`}
+                >
+                  Data Process
+                </p>
+              </div>
+              <div className="flex items-center w-full mx-6 mb-6">
+                <div
+                  className={`h-2 w-2 rounded-full border ${borderColor(2)}`}
+                ></div>
+                <hr
+                  className={`border-1 border-dashed ${borderColor(2)} w-full`}
+                />
+                <div
+                  className={`h-2 w-2 rounded-full border ${borderColor(2)}`}
+                ></div>
+              </div>
+              <div
+                className={`step ${
+                  currentStep === 3 ? "active" : ""
+                } flex flex-col items-center`}
+              >
+                <div className="circle bg-blue-100 text-blue-700 w-12 h-12 flex items-center justify-center rounded-full">
+                  STEP 3
+                </div>
+                <p
+                  className={`textColor mt-2 ${
+                    currentStep === 3
+                      ? "text-blue-700 font-medium"
+                      : "text-gray-500"
+                  }`}
+                >
+                  Confirm Upload
+                </p>
+              </div>
+            </div>
+
+            <hr className="my-8 w-full border-gray-200" />
+
             {/* Step 1: File Upload */}
             {currentStep === 1 && (
-              <div className="flex flex-row items-center gap-4">
-                {/* File Drop Zone */}
-                <label
-                  htmlFor="file-upload"
-                  className="border-2 border-dashed border-blue-500 bg-blue-50 text-blue-700 rounded-lg flex items-center justify-between h-[81px] w-[535px] p-4 cursor-pointer hover:bg-blue-100"
-                >
-                  <div className="flex flex-col gap-1">
-                    <span className="text-sm font-medium">
-                      Click to{" "}
-                      <span className="text-blue-500 font-semibold">
-                        Upload File
+              <>
+                <h3 className="text-xl font-semibold text-black mb-4">
+                  Select the CSV or XLSX File
+                </h3>
+                <div className="flex flex-row items-start gap-4">
+                  {/* File Drop Zone */}
+                  <label
+                    htmlFor="file-upload"
+                    className="border-2 border-dashed border-blue-500 bg-blue-50 text-blue-700 rounded-lg flex items-center justify-between h-[81px] w-[535px] p-4 cursor-pointer hover:bg-blue-100"
+                  >
+                    <div className="flex flex-col gap-1">
+                      <span className="text-sm font-medium">
+                        Click to{" "}
+                        <span className="text-blue-500 font-semibold">
+                          Upload File
+                        </span>
                       </span>
-                    </span>
-                    <span className="text-xs text-gray-500">
-                      Supported files: XLSX or CSV
-                    </span>
-                  </div>
-                  <FileIcon className="w-6 h-6 text-blue-500" />
-                  <input
-                    id="file-upload"
-                    type="file"
-                    accept=".pdf, .csv"
-                    onChange={handleFileChange}
-                    className="hidden"
-                    ref={fileInputRef}
-                  />
-                </label>
+                      <span className="text-xs text-gray-500">
+                        Supported files: XLSX or CSV
+                      </span>
+                    </div>
+                    <FileIcon className="w-6 h-6 text-blue-500" />
+                    <input
+                      id="file-upload"
+                      type="file"
+                      accept=".pdf, .csv"
+                      onChange={handleFileChange}
+                      className="hidden"
+                      ref={fileInputRef}
+                    />
+                  </label>
 
-                {/* Upload Button */}
-                <Button
-                  size="lg"
-                  className={`bg-black text-white hover:bg-gray-800 h-[52px] w-[231px] ${
-                    !file ? "opacity-50 cursor-not-allowed" : ""
-                  }`}
-                  onClick={handleUpload}
-                  disabled={!file}
-                >
-                  Upload
-                </Button>
-              </div>
+                  {/* Upload Button */}
+                  <Button
+                    size="lg"
+                    className={`bg-black text-white hover:bg-gray-800 px-16 py-6 ${
+                      !file ? "opacity-50 cursor-not-allowed" : ""
+                    }`}
+                    onClick={handleUpload}
+                    disabled={!file}
+                  >
+                    Upload
+                  </Button>
+                </div>
+              </>
             )}
 
             {/* Uploaded File Name Display */}
             {file && (
-              <div className="uploaded-file-display flex items-center justify-between border border-blue-500 bg-blue-50 text-blue-700 rounded-lg w-[535px] h-auto p-2">
+              <div className="rounded-lg mt-4 flex items-center justify-between border border-blue-500 bg-blue-50 text-blue-700  w-[535px] h-auto p-2">
                 <span className="text-sm font-medium truncate">
                   {file.name}
                 </span>
-                <button
+                <XCircleIcon
                   onClick={handleRemoveFile}
-                  className="text-red-500 hover:text-red-700 font-bold text-lg"
-                >
-                  ×
-                </button>
+                  className="w-4 h-4 text-blue-500 cursor-pointer"
+                />
               </div>
             )}
           </div>
 
-          <div className="bg-white p-4 rounded-xl">
-            {currentStep === 2 && (
+          {currentStep === 2 && (
+            <div className="bg-white p-6 rounded-xl">
               <div className="step-content space-y-6">
                 <div className="mb-6">
                   <h3 className="text-lg font-medium text-gray-700 mb-4">
@@ -725,30 +723,47 @@ const BackReporting: React.FC = () => {
                   </select>
                 </div>
               </div>
-            )}
-          </div>
 
-          {currentStep === 3 && (
-            <div className="step-content text-center p-6">
-              <h1 className="text-[36px] font-bold text-gray-700 font-instrument-sans">
-                Are you sure?
-              </h1>
-              <p className="text-sm text-gray-600 mt-2">
-                Are you sure you want to upload this CSV file?
-              </p>
-              <div className="flex justify-center mt-6 space-x-4">
-                <button
+              <div className="flex justify-end gap-4 mt-8">
+                <Button
+                  variant="outline"
                   onClick={handlePreviousStep}
-                  className="px-4 py-2 border border-blue-500 text-blue-500 rounded-md hover:bg-blue-50 transition duration-200"
+                  size="lg"
                 >
                   Previous
-                </button>
-                <button
-                  onClick={handleConfirmUpload}
-                  className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-200"
-                >
-                  Confirm Upload
-                </button>
+                </Button>
+                <Button onClick={handleNextStep} size="lg">
+                  Next
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {currentStep === 3 && (
+            <div className="step-content p-6 bg-white rounded-xl">
+              <h3 className="text-lg font-medium text-gray-700 mb-8">
+                Data Preview
+              </h3>
+
+              <div className="text-center">
+                <h1 className="text-4xl font-bold text-gray-700 font-instrument-sans">
+                  Are you sure?
+                </h1>
+                <p className="text-sm text-gray-600">
+                  Are you sure you want to upload this CSV file?
+                </p>
+                <div className="flex justify-center mt-6 space-x-4">
+                  <Button
+                    onClick={handlePreviousStep}
+                    size="lg"
+                    variant="outline"
+                  >
+                    Previous
+                  </Button>
+                  <Button onClick={handleConfirmUpload} size="lg">
+                    Confirm Upload
+                  </Button>
+                </div>
               </div>
             </div>
           )}
@@ -757,25 +772,6 @@ const BackReporting: React.FC = () => {
             isOpen={isModalOpen}
             onClose={() => setIsModalOpen(false)}
           />
-          {currentStep > 1 && (
-            <div className="flex justify-end gap-4">
-              <Button
-                variant="outline"
-                onClick={handlePreviousStep}
-                disabled={currentStep === 1}
-                className="text-blue-600 h-12 w-40"
-              >
-                Previous
-              </Button>
-              <Button
-                onClick={handleNextStep}
-                disabled={currentStep === 3}
-                className="bg-blue-600 text-white h-12 w-40"
-              >
-                Next
-              </Button>
-            </div>
-          )}
         </TabsContent>
         <TabsContent
           value="back_report"

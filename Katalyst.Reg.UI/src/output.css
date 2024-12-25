@@ -850,6 +850,10 @@ body{
   margin-top: 1.5rem;
 }
 
+.mt-8{
+  margin-top: 2rem;
+}
+
 .block{
   display: block;
 }
@@ -1206,6 +1210,10 @@ body{
 
 .grid-cols-3{
   grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.grid-cols-4{
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .flex-row{
@@ -1587,11 +1595,6 @@ body{
   background-color: rgb(37 99 235 / var(--tw-bg-opacity, 1));
 }
 
-.bg-blue-300{
-  --tw-bg-opacity: 1;
-  background-color: rgb(147 197 253 / var(--tw-bg-opacity, 1));
-}
-
 .fill-foreground{
   fill: hsl(var(--foreground));
 }
@@ -1626,6 +1629,10 @@ body{
 
 .p-6{
   padding: 1.5rem;
+}
+
+.p-10{
+  padding: 2.5rem;
 }
 
 .px-1{
@@ -1701,6 +1708,31 @@ body{
 .py-6{
   padding-top: 1.5rem;
   padding-bottom: 1.5rem;
+}
+
+.px-12{
+  padding-left: 3rem;
+  padding-right: 3rem;
+}
+
+.px-24{
+  padding-left: 6rem;
+  padding-right: 6rem;
+}
+
+.py-8{
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+.px-20{
+  padding-left: 5rem;
+  padding-right: 5rem;
+}
+
+.px-16{
+  padding-left: 4rem;
+  padding-right: 4rem;
 }
 
 .pb-0{
@@ -1812,6 +1844,11 @@ body{
 .text-xs{
   font-size: 0.75rem;
   line-height: 1rem;
+}
+
+.text-4xl{
+  font-size: 2.25rem;
+  line-height: 2.5rem;
 }
 
 .font-bold{
@@ -2403,11 +2440,6 @@ body {
   cursor: not-allowed;
 }
 
-.disabled\:bg-blue-300:disabled{
-  --tw-bg-opacity: 1;
-  background-color: rgb(147 197 253 / var(--tw-bg-opacity, 1));
-}
-
 .disabled\:opacity-50:disabled{
   opacity: 0.5;
 }
@@ -2484,8 +2516,8 @@ body {
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 
-.data-\[state\=active\]\:bg-background[data-state="active"]{
-  background-color: hsl(var(--background));
+.data-\[state\=active\]\:bg-primary[data-state="active"]{
+  background-color: hsl(var(--primary));
 }
 
 .data-\[state\=open\]\:bg-accent[data-state="open"]{
@@ -2500,25 +2532,17 @@ body {
   background-color: hsl(var(--muted));
 }
 
-.data-\[state\=active\]\:bg-primary[data-state="active"]{
-  background-color: hsl(var(--primary));
-}
-
 .data-\[active\=true\]\:font-medium[data-active="true"]{
   font-weight: 500;
-}
-
-.data-\[state\=active\]\:text-foreground[data-state="active"]{
-  color: hsl(var(--foreground));
-}
-
-.data-\[state\=open\]\:text-muted-foreground[data-state="open"]{
-  color: hsl(var(--muted-foreground));
 }
 
 .data-\[state\=active\]\:text-white[data-state="active"]{
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity, 1));
+}
+
+.data-\[state\=open\]\:text-muted-foreground[data-state="open"]{
+  color: hsl(var(--muted-foreground));
 }
 
 .data-\[disabled\]\:opacity-50[data-disabled]{
@@ -2527,12 +2551,6 @@ body {
 
 .data-\[state\=open\]\:opacity-100[data-state="open"]{
   opacity: 1;
-}
-
-.data-\[state\=active\]\:shadow[data-state="active"]{
-  --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-  --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
-  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 
 .data-\[state\=closed\]\:duration-300[data-state="closed"]{
@@ -2761,10 +2779,6 @@ body {
 }
 
 @media (min-width: 640px){
-  .sm\:col-span-2{
-    grid-column: span 2 / span 2;
-  }
-
   .sm\:flex{
     display: flex;
   }
@@ -2773,16 +2787,8 @@ body {
     max-width: 24rem;
   }
 
-  .sm\:grid-cols-2{
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
   .sm\:flex-row{
     flex-direction: row;
-  }
-
-  .sm\:items-center{
-    align-items: center;
   }
 
   .sm\:justify-end{
@@ -2811,17 +2817,8 @@ body {
     border-radius: var(--radius);
   }
 
-  .sm\:p-6{
-    padding: 1.5rem;
-  }
-
   .sm\:text-left{
     text-align: left;
-  }
-
-  .sm\:text-2xl{
-    font-size: 1.5rem;
-    line-height: 2rem;
   }
 }
 
@@ -2840,10 +2837,6 @@ body {
 
   .md\:flex-row{
     flex-direction: row;
-  }
-
-  .md\:items-center{
-    align-items: center;
   }
 
   .md\:gap-12{
@@ -2898,6 +2891,10 @@ body {
 
   .lg\:flex-row{
     flex-direction: row;
+  }
+
+  .lg\:gap-12{
+    gap: 3rem;
   }
 }
 

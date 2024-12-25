@@ -461,9 +461,9 @@ const Summary: React.FC = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-4 mt-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
         <div className="bg-white p-6 rounded-xl rounded-b-none col-span-2">
-          <div className="grid grid-cols-3 gap-4 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
             <h3 className="text-2xl font-semibold text-black">Trend Chart</h3>
             <div className="flex flex-col gap-2">
               <p className="text-sm text-gray-700">Showing:</p>
@@ -549,7 +549,7 @@ const Summary: React.FC = () => {
       </div>
 
       <div className="bg-white rounded-xl p-6 pt-2 rounded-t-none">
-        <div className="flex gap-12">
+        <div className="flex flex-col lg:flex-row gap-4 lg:gap-12">
           <h3 className="text-2xl font-semibold text-black mb-1">
             Data Dashboard
           </h3>
@@ -600,6 +600,7 @@ const Summary: React.FC = () => {
       </div>
 
       <div
+        className="mt-4"
         style={{
           display: "flex",
           alignItems: "center",
