@@ -424,19 +424,19 @@ const BackReporting: React.FC = () => {
 
             {/* Uploaded File Name Display */}
             {file && (
-              <div>
-              <div className="rounded-lg mt-4 flex items-center justify-between border border-blue-500 bg-blue-50 text-blue-700 h-auto p-2">
-                <span className="text-sm font-medium truncate">
-                  {file.name}
-                </span>
-                <XCircleIcon
-                  onClick={handleRemoveFile}
-                  className="w-4 h-4 text-blue-500 cursor-pointer"
-                />
-              </div>
+              <div className="inline-block">
+                <div className="rounded-lg mt-4 flex items-center justify-between border border-blue-500 bg-blue-50 text-blue-700 h-auto p-2 gap-4">
+                  <span className="text-sm font-medium truncate">
+                    {file.name}
+                  </span>
+                  <XCircleIcon
+                    onClick={handleRemoveFile}
+                    className="w-4 h-4 text-blue-500 cursor-pointer"
+                  />
+                </div>
               </div>
             )}
-            </div>
+          </div>
 
           {currentStep === 2 && (
             <div className="bg-white p-6 rounded-xl">
