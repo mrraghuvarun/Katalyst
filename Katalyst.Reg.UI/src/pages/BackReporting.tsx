@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef } from "react";
+import React, { useEffect, useState, useMemo, useRef } from "react";
 import * as XLSX from "xlsx";
 import emailjs from "emailjs-com";
 import Layout from "../components/Layout.tsx";
@@ -6,6 +6,7 @@ import Modal from "../components/HistoryModal.tsx";
 import SuccessModal from "../components/SuccessModal.tsx";
 import "./BackReporting.css";
 import Loading from "../components/Loading.tsx";
+import { Input } from "@/src/components/ui/input";
 import { Button } from "@/src/components/ui/button";
 import {
   ColumnDef,
@@ -40,19 +41,21 @@ import {
 } from "../components/ui/tabs.js";
 
 interface UploadHistory {
+  originalIndex: number;
   filename: string;
   date: string;
   status: string;
 }
 
 const BackReporting: React.FC = () => {
-  const [collapsed] = useState<boolean>(false);
+  const [search, setSearch] = useState("");
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [csvData, setCsvData] = useState<any[]>([]);
   const [uploadHistory, setUploadHistory] = useState<UploadHistory[]>([]);
   const [isHistoryModalOpen, setIsHistoryModalOpen] = useState<boolean>(false);
   const [databaseName, setDatabaseName] = useState<string>("");
   const [tableName, setTableName] = useState<string>("");
+
   const [errors, setErrors] = useState<{
     databaseName?: string;
     tableName?: string;
@@ -60,7 +63,7 @@ const BackReporting: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   // Pagination state
-  const [currentPage, setCurrentPage] = useState<number>(1);
+  // const [currentPage, setCurrentPage] = useState<number>(1);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [file, setFile] = useState<File | null>(null);
@@ -70,6 +73,17 @@ const BackReporting: React.FC = () => {
       setFile(e.target.files[0]);
     }
   };
+
+  const [currentPage, setCurrentPage] = useState(0); // Initial page set to 0
+  const pageSize = 5; // Number of entries per page
+
+  // Data to be displayed based on current page
+  const pagedData = csvData.slice(
+    currentPage * pageSize,
+    (currentPage + 1) * pageSize
+  );
+
+  const pageCount = Math.ceil(csvData.length / pageSize);
 
   const columns = useMemo<ColumnDef<any>[]>(() => {
     if (csvData.length === 0) return [];
@@ -148,6 +162,35 @@ const BackReporting: React.FC = () => {
     }
   };
 
+  const [filteredHistory, setFilteredHistory] = useState(uploadHistory);
+
+  useEffect(() => {
+    if (!search.trim()) {
+      setFilteredHistory(uploadHistory);
+    } else {
+      handleSearch(search);
+    }
+  }, [uploadHistory, search]);
+
+  const handleSearch = (searchValue: string) => {
+    setSearch(searchValue);
+
+    if (!searchValue.trim()) {
+      setFilteredHistory(uploadHistory);
+      return;
+    }
+
+    const filtered = uploadHistory.filter(
+      (history, index) =>
+        history.originalIndex.toString().includes(searchValue) ||
+        Object.values(history).some((value) =>
+          value.toString().toLowerCase().includes(searchValue.toLowerCase())
+        )
+    );
+
+    setFilteredHistory(filtered);
+  };
+
   const handleConfirmUpload = async () => {
     if (!validateFields()) return;
 
@@ -201,19 +244,18 @@ const BackReporting: React.FC = () => {
         "zcZkGQ35dZ0552hi-"
       );
 
-      alert("Upload confirmed and email sent successfully!");
+      // alert("Upload confirmed and email sent successfully!");
 
       setUploadHistory((prevHistory) => [
         ...prevHistory,
         {
+          originalIndex: prevHistory.length + 1,
           filename: uploadedFile.name,
           date: new Date().toLocaleDateString(),
           status: "Uploaded",
         },
       ]);
-      setTimeout(() => {
-        setIsModalOpen(true);
-      }, 1000);
+      setIsModalOpen(true);
       setFile(null);
       setCsvData([]);
       setDatabaseName("");
@@ -225,10 +267,6 @@ const BackReporting: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const toggleHistoryModal = () => {
-    setIsHistoryModalOpen(!isHistoryModalOpen);
   };
 
   const borderColor = (step) =>
@@ -337,6 +375,9 @@ const BackReporting: React.FC = () => {
           <hr className="my-8 w-full border-gray-200" />
 
           <div className="bg-white p-1 rounded-xl">
+            <h3 className="text-xl font-semibold text-black mb-6">
+              Select the CSV or XLSX File
+            </h3>
             {/* Step 1: File Upload */}
             {currentStep === 1 && (
               <div className="flex flex-row items-center gap-4">
@@ -353,7 +394,7 @@ const BackReporting: React.FC = () => {
                       </span>
                     </span>
                     <span className="text-xs text-gray-500">
-                      Supported files: PDF or CSV
+                      Supported files: XLSX or CSV
                     </span>
                   </div>
                   <FileIcon className="w-6 h-6 text-blue-500" />
@@ -444,6 +485,7 @@ const BackReporting: React.FC = () => {
                 </div>
 
                 <Table>
+                  {/* Table Header */}
                   <TableHeader>
                     <TableRow>
                       {table.getHeaderGroups().map((headerGroup) =>
@@ -461,28 +503,41 @@ const BackReporting: React.FC = () => {
                       )}
                     </TableRow>
                   </TableHeader>
+
+                  {/* Table Body */}
                   <TableBody>
-                    {table.getRowModel().rows.map((row) => (
-                      <TableRow key={row.id}>
-                        {row.getVisibleCells().map((cell) => (
-                          <TableCell
-                            key={cell.id}
-                            className="border-0 bg-white py-6 px-4 text-center min-w-32 border-b"
-                          >
-                            {flexRender(
-                              cell.column.columnDef.cell,
-                              cell.getContext()
-                            )}
-                          </TableCell>
-                        ))}
+                    {table.getRowModel().rows.length > 0 ? (
+                      table.getRowModel().rows.map((row) => (
+                        <TableRow key={row.id}>
+                          {row.getVisibleCells().map((cell) => (
+                            <TableCell
+                              key={cell.id}
+                              className="border-0 bg-white py-6 px-4 text-center min-w-32 border-b"
+                            >
+                              {flexRender(
+                                cell.column.columnDef.cell,
+                                cell.getContext()
+                              )}
+                            </TableCell>
+                          ))}
+                        </TableRow>
+                      ))
+                    ) : (
+                      <TableRow>
+                        <TableCell
+                          colSpan={columns.length}
+                          className="text-center py-6"
+                        >
+                          No data available
+                        </TableCell>
                       </TableRow>
-                    ))}
+                    )}
                   </TableBody>
                 </Table>
 
                 {/* Pagination Controls */}
                 <div className="flex items-center justify-end gap-4 mt-4">
-                  <div className="text-sm text-gray-500 justify-end">
+                  <div className="text-sm text-gray-500">
                     Showing{" "}
                     {table.getState().pagination.pageIndex *
                       table.getState().pagination.pageSize +
@@ -495,70 +550,166 @@ const BackReporting: React.FC = () => {
                     )}{" "}
                     from {csvData.length} entries
                   </div>
-                  <Pagination>
-                    <PaginationContent>
-                      {/* Previous Button */}
-                      <PaginationItem>
-                        <PaginationPrevious
-                          onClick={() => table.previousPage()}
-                          disabled={!table.getCanPreviousPage()}
-                          style={{
-                            pointerEvents: table.getCanPreviousPage()
-                              ? "auto"
-                              : "none",
-                            opacity: table.getCanPreviousPage() ? 1 : 0.5,
-                            cursor: table.getCanPreviousPage()
-                              ? "pointer"
-                              : "not-allowed",
-                          }}
-                        />
-                      </PaginationItem>
+                  <div>
+                    {table.getPageCount() > 1 && (
+                      <Pagination>
+                        <PaginationContent>
+                          {/* Previous Button */}
+                          <PaginationItem>
+                            <PaginationPrevious
+                              onClick={() =>
+                                table.setPageIndex((prev) =>
+                                  Math.max(0, prev - 1)
+                                )
+                              }
+                              disabled={
+                                table.getState().pagination.pageIndex === 1
+                              }
+                              className="cursor-pointer"
+                            />
+                          </PaginationItem>
 
-                      {/* Page Numbers */}
-                      {Array.from({ length: table.getPageCount() }, (_, i) => (
-                        <PaginationItem key={i}>
-                          <PaginationLink
-                            onClick={() => table.setPageIndex(i)}
-                            isActive={
-                              table.getState().pagination.pageIndex === i
-                            }
-                            style={{
-                              backgroundColor:
-                                table.getState().pagination.pageIndex === i
-                                  ? "rgb(0, 123, 255)"
-                                  : "transparent",
-                              color:
-                                table.getState().pagination.pageIndex === i
-                                  ? "white"
-                                  : "black",
-                              borderRadius: "4px",
-                              padding: "0.5rem",
-                              cursor: "pointer",
-                            }}
-                          >
-                            {i + 1}
-                          </PaginationLink>
-                        </PaginationItem>
-                      ))}
+                          {/* Page Numbers with Active Page */}
+                          {table.getPageCount() <= 3 ? (
+                            [...Array(table.getPageCount())].map((_, index) => (
+                              <PaginationItem key={index}>
+                                <PaginationLink
+                                  isActive={
+                                    table.getState().pagination.pageIndex ===
+                                    index
+                                  }
+                                  onClick={() => table.setPageIndex(index)}
+                                  className={`cursor-pointer ${
+                                    table.getState().pagination.pageIndex ===
+                                    index
+                                      ? "bg-blue-500 text-white"
+                                      : "bg-transparent text-black"
+                                  }`}
+                                  style={{
+                                    pointerEvents:
+                                      table.getState().pagination.pageIndex ===
+                                      index
+                                        ? "none"
+                                        : "auto",
+                                    opacity:
+                                      table.getState().pagination.pageIndex ===
+                                      index
+                                        ? 1
+                                        : 0.7,
+                                  }}
+                                >
+                                  {index + 1}
+                                </PaginationLink>
+                              </PaginationItem>
+                            ))
+                          ) : table.getState().pagination.pageIndex < 2 ? (
+                            <>
+                              {[0, 1, 2].map((index) => (
+                                <PaginationItem key={index}>
+                                  <PaginationLink
+                                    isActive={
+                                      table.getState().pagination.pageIndex ===
+                                      index
+                                    }
+                                    onClick={() => table.setPageIndex(index)}
+                                    className={`cursor-pointer ${
+                                      table.getState().pagination.pageIndex ===
+                                      index
+                                        ? "bg-blue-500 text-white"
+                                        : "bg-transparent text-black"
+                                    }`}
+                                  >
+                                    {index + 1}
+                                  </PaginationLink>
+                                </PaginationItem>
+                              ))}
+                              <PaginationItem>
+                                <PaginationEllipsis />
+                              </PaginationItem>
+                            </>
+                          ) : table.getState().pagination.pageIndex >=
+                            table.getPageCount() - 3 ? (
+                            <>
+                              <PaginationItem>
+                                <PaginationEllipsis />
+                              </PaginationItem>
+                              {[
+                                table.getPageCount() - 3,
+                                table.getPageCount() - 2,
+                                table.getPageCount() - 1,
+                              ].map((index) => (
+                                <PaginationItem key={index}>
+                                  <PaginationLink
+                                    isActive={
+                                      table.getState().pagination.pageIndex ===
+                                      index
+                                    }
+                                    onClick={() => table.setPageIndex(index)}
+                                    className={`cursor-pointer ${
+                                      table.getState().pagination.pageIndex ===
+                                      index
+                                        ? "bg-blue-500 text-white"
+                                        : "bg-transparent text-black"
+                                    }`}
+                                  >
+                                    {index + 1}
+                                  </PaginationLink>
+                                </PaginationItem>
+                              ))}
+                            </>
+                          ) : (
+                            <>
+                              <PaginationItem>
+                                <PaginationEllipsis />
+                              </PaginationItem>
+                              {[
+                                table.getState().pagination.pageIndex - 1,
+                                table.getState().pagination.pageIndex,
+                                table.getState().pagination.pageIndex + 1,
+                              ].map((index) => (
+                                <PaginationItem key={index}>
+                                  <PaginationLink
+                                    isActive={
+                                      table.getState().pagination.pageIndex ===
+                                      index
+                                    }
+                                    onClick={() => table.setPageIndex(index)}
+                                    className={`cursor-pointer ${
+                                      table.getState().pagination.pageIndex ===
+                                      index
+                                        ? "bg-blue-500 text-white"
+                                        : "bg-transparent text-black"
+                                    }`}
+                                  >
+                                    {index + 1}
+                                  </PaginationLink>
+                                </PaginationItem>
+                              ))}
+                              <PaginationItem>
+                                <PaginationEllipsis />
+                              </PaginationItem>
+                            </>
+                          )}
 
-                      {/* Next Button */}
-                      <PaginationItem>
-                        <PaginationNext
-                          onClick={() => table.nextPage()}
-                          disabled={!table.getCanNextPage()}
-                          style={{
-                            pointerEvents: table.getCanNextPage()
-                              ? "auto"
-                              : "none",
-                            opacity: table.getCanNextPage() ? 1 : 0.5,
-                            cursor: table.getCanNextPage()
-                              ? "pointer"
-                              : "not-allowed",
-                          }}
-                        />
-                      </PaginationItem>
-                    </PaginationContent>
-                  </Pagination>
+                          {/* Next Button */}
+                          <PaginationItem>
+                            <PaginationNext
+                              onClick={() =>
+                                table.setPageIndex((prev) =>
+                                  Math.min(table.getPageCount() - 1, prev + 1)
+                                )
+                              }
+                              disabled={
+                                table.getState().pagination.pageIndex ===
+                                table.getPageCount() - 1
+                              }
+                              className="cursor-pointer"
+                            />
+                          </PaginationItem>
+                        </PaginationContent>
+                      </Pagination>
+                    )}
+                  </div>
 
                   {/* Rows Per Page Selector */}
                   <select
@@ -607,21 +758,22 @@ const BackReporting: React.FC = () => {
             onClose={() => setIsModalOpen(false)}
           />
           {currentStep > 1 && (
-            <div className="navigation-buttons">
-              <button
+            <div className="flex justify-end gap-4">
+              <Button
+                variant="outline"
                 onClick={handlePreviousStep}
                 disabled={currentStep === 1}
-                className="previous-button"
+                className="text-blue-600 h-12 w-40"
               >
                 Previous
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick={handleNextStep}
                 disabled={currentStep === 3}
-                className="next-button"
+                className="bg-blue-600 text-white h-12 w-40"
               >
                 Next
-              </button>
+              </Button>
             </div>
           )}
         </TabsContent>
@@ -634,28 +786,64 @@ const BackReporting: React.FC = () => {
               Back Report History
             </h3>
 
-            <p>search boc</p>
+            <div className="flex items-center space-x-2 rounded-lg border border-gray-300 dark:bg-gray-900 px-3.5 py-2">
+              <SearchIcon className="h-4 w-4" />
+              <Input
+                type="search"
+                placeholder="Search here"
+                value={search}
+                onChange={(e) => handleSearch(e.target.value)}
+                className="w-full border-0 outline-none shadow-none focus-visible:ring-0"
+              />
+            </div>
           </div>
-          <table className="history-table">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>File Name</th>
-                <th>Uploaded Date</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {uploadHistory.map((history, index) => (
-                <tr key={index}>
-                  <td>{index + 1}</td>
-                  <td>{history.filename}</td>
-                  <td>{history.date}</td>
-                  <td>{history.status}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="bg-[#EAF3FF] text-black border-0 border-r-2 border-white text-center">
+                  #
+                </TableHead>
+                <TableHead className="bg-[#EAF3FF] text-black border-0 border-r-2 border-white text-center">
+                  File Name
+                </TableHead>
+                <TableHead className="bg-[#EAF3FF] text-black border-0 border-r-2 border-white text-center">
+                  Uploaded Date
+                </TableHead>
+                <TableHead className="bg-[#EAF3FF] text-black border-0 border-r-2 border-white text-center">
+                  Status
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredHistory.length > 0 ? (
+                filteredHistory.map((history, index) => (
+                  <TableRow key={index}>
+                    <TableCell className="border-0 bg-white py-6 px-4 text-center min-w-32 border-b">
+                      {history.originalIndex}
+                    </TableCell>
+                    <TableCell className="border-0 bg-white py-6 px-4 text-center min-w-32 border-b">
+                      {history.filename}
+                    </TableCell>
+                    <TableCell className="border-0 bg-white py-6 px-4 text-center min-w-32 border-b">
+                      {history.date}
+                    </TableCell>
+                    <TableCell className="border-0 bg-white py-6 px-4 text-center min-w-32 border-b">
+                      {history.status}
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={4}
+                    className="border-0 bg-white py-6 px-4 text-center min-w-32 border-b text-gray-500"
+                  >
+                    No history available.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
         </TabsContent>
       </Tabs>
     </Layout>
@@ -678,6 +866,26 @@ function FileIcon(props) {
     >
       <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
       <path d="M14 2v4a2 2 0 0 0 2 2h4" />
+    </svg>
+  );
+}
+
+function SearchIcon(props) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <circle cx="11" cy="11" r="8" />
+      <path d="m21 21-4.3-4.3" />
     </svg>
   );
 }
