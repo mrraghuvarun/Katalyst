@@ -291,7 +291,7 @@ const BackReporting: React.FC = () => {
             </h3>
 
             {/* Stepper */}
-            <div className="stepper flex justify-between items-center mb-8 max-w-[800px] mx-auto">
+            <div className="stepper flex flex-col md:flex-row lg:flex-row justify-between items-center mb-8 max-w-[800px] mx-auto">
               <div
                 className={`step ${currentStep > 1 ? "completed" : ""} ${
                   currentStep === 1 ? "active" : ""
@@ -424,7 +424,8 @@ const BackReporting: React.FC = () => {
 
             {/* Uploaded File Name Display */}
             {file && (
-              <div className="rounded-lg mt-4 flex items-center justify-between border border-blue-500 bg-blue-50 text-blue-700  w-[535px] h-auto p-2">
+              <div>
+              <div className="rounded-lg mt-4 flex items-center justify-between border border-blue-500 bg-blue-50 text-blue-700 h-auto p-2">
                 <span className="text-sm font-medium truncate">
                   {file.name}
                 </span>
@@ -433,8 +434,9 @@ const BackReporting: React.FC = () => {
                   className="w-4 h-4 text-blue-500 cursor-pointer"
                 />
               </div>
+              </div>
             )}
-          </div>
+            </div>
 
           {currentStep === 2 && (
             <div className="bg-white p-6 rounded-xl">
