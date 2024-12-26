@@ -5,11 +5,10 @@ import * as XLSX from "xlsx";
 import { Input } from "@/src/components/ui/input";
 import * as FileSaver from "file-saver";
 import { Button } from "@/src/components/ui/button";
-import { ChevronDownIcon } from "@heroicons/react/solid";
-import { DocumentDownloadIcon } from "@heroicons/react/outline";
 import { Badge } from "@/src/components/ui/badge";
 import { Calendar } from "@/src/components/ui/calendar";
 import { Calendar as CalendarIcon } from "lucide-react";
+import { FileDown, ChevronDown } from 'lucide-react';
 import {
   Popover,
   PopoverContent,
@@ -318,7 +317,7 @@ const Trade: React.FC = () => {
               onClick={() => setShowFilters(!showFilters)}
             >
               <span>Filter Report</span>
-              <ChevronDownIcon
+              <ChevronDown
                 className={`w-4 h-4 transform ${
                   showFilters ? "rotate-180" : ""
                 }`}
@@ -328,7 +327,7 @@ const Trade: React.FC = () => {
               onClick={handleDownload}
               className="flex mb-2 items-center px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 ml-4"
             >
-              <DocumentDownloadIcon className="h-5 w-5 mr-2" />
+              <FileDown className="h-5 w-5 mr-2" />
               Download as Excel
             </button>
           </div>

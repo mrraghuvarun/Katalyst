@@ -164,53 +164,53 @@ h1 {
 
 /* Keep your existing icon background colors */
 .icon-container[data-type="Transactions"] {
-  background-color: rgba(0, 184, 184, 0.1);
-  color: rgb(0, 184, 184);
+  background-color: #15BACD;
+  color: rgb(255, 255, 255);
 }
 
 .icon-container[data-type="Accepted TRNs"] {
-  background-color: rgba(72, 199, 142, 0.1);
-  color: rgb(72, 199, 142);
+  background-color: #6BDFAD;
+  color: rgb(255, 255, 255);
 }
 
 .icon-container[data-type="Submitted TRNs"] {
-  background-color: rgba(255, 159, 67, 0.1);
-  color: rgb(255, 159, 67);
+  background-color: #F0BC86;
+  color: rgb(255, 255, 255);
 }
 
 .icon-container[data-type="Rejected TRNs"] {
-  background-color: rgba(255, 91, 92, 0.1);
-  color: rgb(255, 91, 92);
+  background-color: #FF8E6F;
+  color: rgb(255, 255, 255);
 }
 
 .icon-container[data-type="Trade Events"] {
-  background-color: rgba(82, 205, 117, 0.1);
-  color: rgb(82, 205, 117);
+  background-color: #B2EEA0;
+  color: rgb(255, 255, 255);
 }
 
 .icon-container[data-type="Late Submission TRNs"] {
-  background-color: rgba(255, 159, 67, 0.1);
-  color: rgb(255, 159, 67);
+  background-color: #97A0C3;
+  color: rgb(255, 255, 255);
 }
 
 .icon-container[data-type="Trades No Fingerprint"] {
-  background-color: rgba(114, 132, 193, 0.1);
-  color: rgb(114, 132, 193);
+  background-color: #97A0C3;
+  color: rgb(255, 255, 255);
 }
 
 .icon-container[data-type="New Trades"] {
-  background-color: rgba(72, 199, 142, 0.1);
-  color: rgb(72, 199, 142);
+  background-color: #6BDFAD;
+  color: rgb(255, 255, 255);
 }
 
 .icon-container[data-type="Amended Trades"] {
-  background-color: rgba(155, 89, 182, 0.1);
-  color: rgb(155, 89, 182);
+  background-color: #BD91EF;
+  color: rgb(255, 255, 255);
 }
 
 .icon-container[data-type="Cancelled Trades"] {
-  background-color: rgba(155, 89, 182, 0.1);
-  color: rgb(239, 37, 40);
+  background-color: #FF8E6F;
+  color: rgb(255, 255, 255);
 }
 
 @media (max-width: 768px) {

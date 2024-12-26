@@ -39,7 +39,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "../components/ui/tabs.js";
-import { Cross, X, XCircleIcon } from "lucide-react";
+import { XCircleIcon, FileUp } from "lucide-react";
 
 interface UploadHistory {
   originalIndex: number;
@@ -396,7 +396,7 @@ const BackReporting: React.FC = () => {
                         Supported files: XLSX or CSV
                       </span>
                     </div>
-                    <FileIcon className="w-6 h-6 text-blue-500" />
+                    <FileUp className="w-6 h-6 text-blue-500" />
                     <input
                       id="file-upload"
                       type="file"

@@ -46,12 +46,21 @@ import { DateRange } from "react-day-picker";
 import { cn } from "@/src/lib/utils";
 import { Button } from "@/src/components/ui/button";
 import { Calendar } from "@/src/components/ui/calendar";
+import PaidIcon from '@mui/icons-material/PaidRounded';
+import ReceiptIcon from '@mui/icons-material/ReceiptRounded';
+import FileDownloadDoneIcon from '@mui/icons-material/FileDownloadDoneRounded';
+import PriceChangeIcon from '@mui/icons-material/PriceChangeRounded';
+import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeRounded';
+import ScheduleSendOutlinedIcon from '@mui/icons-material/ScheduleSendRounded';
+import FingerprintOutlinedIcon from '@mui/icons-material/FingerprintRounded';
+import MoneyOutlinedIcon from '@mui/icons-material/MoneyRounded';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/src/components/ui/popover";
 import "../output.css";
+
 interface TradeDataItem {
   "Reporting Date": string;
   [key: string]: string | number;
@@ -80,116 +89,16 @@ const typeMap: Record<string, string> = {
 };
 
 const iconMap: Record<string, JSX.Element> = {
-  Transactions: (
-    <svg
-      className="card-icon"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-    >
-      <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
-    </svg>
-  ),
-  "Accepted TRNs": (
-    <svg
-      className="card-icon"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-    >
-      <path d="M5 13l4 4L19 7" />
-    </svg>
-  ),
-  "Submitted TRNs": (
-    <svg
-      className="card-icon"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-    >
-      <path d="M10 12L15 7L20 12M15 17L20 12M10 12H20M10 12L5 7" />
-    </svg>
-  ),
-  "Rejected TRNs": (
-    <svg
-      className="card-icon"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-    >
-      <path d="M18 6L6 18M6 6l12 12" />
-    </svg>
-  ),
-  "Late Submission TRNs": (
-    <svg
-      className="card-icon"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-    >
-      <path d="M20 12c0 4.418-3.582 8-8 8s-8-3.582-8-8 3.582-8 8-8 8 3.582 8 8zm-1 0c0-3.86-3.14-7-7-7s-7 3.14-7 7 3.14 7 7 7 7-3.14 7-7zm-7-3v6h4" />
-    </svg>
-  ),
-  "Trade Events": (
-    <svg
-      className="card-icon"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-    >
-      <path d="M18 12L12 18L6 12M12 6L6 12M12 6L18 12" />
-    </svg>
-  ),
-  "Trades No Fingerprint": (
-    <svg
-      className="card-icon"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-    >
-      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
-    </svg>
-  ),
-  "New Trades": (
-    <svg
-      className="card-icon"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-    >
-      <path d="M12 2v4M12 18v4M4 12h4M16 12h4M6.343 6.343l2.828 2.828M17.656 17.656l2.828 2.828M6.343 17.656l2.828-2.828M17.656 6.343l2.828-2.828" />
-    </svg>
-  ),
-  "Amended Trades": (
-    <svg
-      className="card-icon"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-    >
-      <path d="M10 12L15 7L20 12M15 17L20 12M10 12H20M10 12L5 7" />
-    </svg>
-  ),
-  "Cancelled Trades": (
-    <svg
-      className="card-icon"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-    >
-      <path d="M6 18L18 6M6 6l12 12" />
-    </svg>
-  ),
+  Transactions: <PaidIcon className="card-icon" />,
+  "Accepted TRNs":<FileDownloadDoneIcon className="card-icon" />,
+  "Submitted TRNs":<AccessTimeOutlinedIcon className="card-icon" />,
+  "Rejected TRNs":<ScheduleSendOutlinedIcon className="card-icon" />,
+  "Late Submission TRNs":<PaidIcon className="card-icon" />,
+  "Trade Events":<MoneyOutlinedIcon className="card-icon" />,
+  "Trades No Fingerprint":<FingerprintOutlinedIcon className="card-icon" />,
+  "New Trades":<ReceiptIcon className="card-icon" />,
+  "Amended Trades":<PriceChangeIcon className="card-icon" />,
+  "Cancelled Trades":<PaidIcon className="card-icon" />,
 };
 interface TradeDataItem {
   "Reporting Date": string;
