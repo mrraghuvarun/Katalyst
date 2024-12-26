@@ -297,9 +297,9 @@ const BackReporting: React.FC = () => {
                   currentStep === 1 ? "active" : ""
                 } flex flex-col items-center`}
               >
-                <div className="circle bg-blue-100 text-blue-700 w-12 h-12 flex items-center justify-center rounded-full">
+                <Button className="circle bg-blue-100 text-blue-700 w-12 h-12 flex items-center justify-center rounded-full">
                   STEP 1
-                </div>
+                </Button>
                 <p
                   className={`textColor mt-2 ${
                     currentStep >= 1
@@ -327,9 +327,9 @@ const BackReporting: React.FC = () => {
                   currentStep === 2 ? "active" : ""
                 } flex flex-col items-center`}
               >
-                <div className="circle bg-blue-100 text-blue-700 w-12 h-12 flex items-center justify-center rounded-full">
+                <Button className="circle bg-blue-100 text-blue-700 w-12 h-12 flex items-center justify-center rounded-full">
                   STEP 2
-                </div>
+                </Button>
                 <p
                   className={`textColor mt-2 ${
                     currentStep >= 2
@@ -356,9 +356,9 @@ const BackReporting: React.FC = () => {
                   currentStep === 3 ? "active" : ""
                 } flex flex-col items-center`}
               >
-                <div className="circle bg-blue-100 text-blue-700 w-12 h-12 flex items-center justify-center rounded-full">
+                <Button className="circle bg-blue-100 text-blue-700 w-12 h-12 flex items-center justify-center rounded-full">
                   STEP 3
-                </div>
+                </Button>
                 <p
                   className={`textColor mt-2 ${
                     currentStep === 3
@@ -371,7 +371,7 @@ const BackReporting: React.FC = () => {
               </div>
             </div>
 
-            <hr className="my-8 w-full border-gray-200" />
+            <hr className="my-2 w-full border-gray-200" />
 
             {/* Step 1: File Upload */}
             {currentStep === 1 && (
@@ -379,11 +379,11 @@ const BackReporting: React.FC = () => {
                 <h3 className="text-xl font-semibold text-black mb-4">
                   Select the CSV or XLSX File
                 </h3>
-                <div className="flex flex-row items-start gap-4">
+                  <div className="flex flex-col md:flext-row lg:flex-row items-start gap-4">
                   {/* File Drop Zone */}
                   <label
                     htmlFor="file-upload"
-                    className="border-2 border-dashed border-blue-500 bg-blue-50 text-blue-700 rounded-lg flex items-center justify-between h-[81px] w-[535px] p-4 cursor-pointer hover:bg-blue-100"
+                    className="border-2 border-dashed border-blue-500 bg-blue-50 text-blue-700 rounded-lg flex sm:h-auto sm:w-auto items-center justify-between p-4 h-[81px] w-[535px] cursor-pointer hover:bg-blue-100"
                   >
                     <div className="flex flex-col gap-1">
                       <span className="text-sm font-medium">
@@ -562,10 +562,12 @@ const BackReporting: React.FC = () => {
                                   Math.max(0, prev - 1)
                                 )
                               }
-                              disabled={
-                                table.getState().pagination.pageIndex === 1
-                              }
-                              className="cursor-pointer"
+                              disabled={!table.getCanPreviousPage()}
+                              className={`${
+                                !table.getCanPreviousPage()
+                                  ? "cursor-not-allowed opacity-50"
+                                  : "cursor-pointer"
+                              }`}
                             />
                           </PaginationItem>
 
@@ -699,11 +701,12 @@ const BackReporting: React.FC = () => {
                                   Math.min(table.getPageCount() - 1, prev + 1)
                                 )
                               }
-                              disabled={
-                                table.getState().pagination.pageIndex ===
-                                table.getPageCount() - 1
-                              }
-                              className="cursor-pointer"
+                              disabled={!table.getCanNextPage()}
+                              className={`${
+                                !table.getCanNextPage()
+                                  ? "cursor-not-allowed opacity-50"
+                                  : "cursor-pointer"
+                              }`}
                             />
                           </PaginationItem>
                         </PaginationContent>
@@ -754,11 +757,12 @@ const BackReporting: React.FC = () => {
                 <p className="text-sm text-gray-600">
                   Are you sure you want to upload this CSV file?
                 </p>
-                <div className="flex justify-center mt-6 space-x-4">
+                <div className="flex flex-col md:flex-row lg:flext-row justify-center mt-6 space-x-4">
                   <Button
                     onClick={handlePreviousStep}
                     size="lg"
                     variant="outline"
+                    className="mb-2 align-start"
                   >
                     Previous
                   </Button>

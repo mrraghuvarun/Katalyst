@@ -10,6 +10,13 @@ import { DocumentDownloadIcon } from "@heroicons/react/outline";
 import { Badge } from "@/src/components/ui/badge";
 import { Calendar } from "@/src/components/ui/calendar";
 import { Calendar as CalendarIcon } from "lucide-react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/src/components/ui/popover"
+import { format } from "date-fns"
+import { cn } from "@/src/lib/utils"
 import "./Trade.css";
 import {
   Table,
@@ -185,45 +192,61 @@ const Trade: React.FC = () => {
 
   const renderFilterRow = () => (
     <div className="filter-row p-6 rounded-lg border border-gray-300 mb-6">
-      <h3 className="text-2xl font-semibold text-black mb-6">Filter Report</h3>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {Object.entries(filters).map(([field, value]) => (
-          <div
-            key={field}
-            className="p-2 border border-gray-300 rounded-lg bg-white"
-          >
-            <label className="block text-sm text-gray-700">{field}</label>
-            {field === "Trade Status" ? (
-              <select
-                value={value}
-                onChange={(e) => handleFilterChange(field, e.target.value)}
-                className="w-full border border-white rounded focus:outline-none"
-              >
-                <option value="">Choose an option</option>
-                <option value="New">New</option>
-                <option value="Amend">Amend</option>
-                <option value="Cancel">Cancel</option>
-              </select>
-            ) : field.includes("Date") ? (
-              <input
-                type="date"
-                value={value}
-                onChange={(e) => handleFilterChange(field, e.target.value)}
-                className="w-full border border-white rounded focus:outline-none"
-              />
-            ) : (
-              <input
-                type="text"
-                value={value}
-                onChange={(e) => handleFilterChange(field, e.target.value)}
-                className="w-full border border-white rounded focus:outline-none"
-                placeholder={`Enter ${field}`}
-              />
-            )}
-          </div>
-        ))}
-      </div>
-      <div className="flex justify-end gap-4 mt-6">
+    <h3 className="text-2xl font-semibold text-black mb-6">Filter Report</h3>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {Object.entries(filters).map(([field, value]) => (
+        <div
+          key={field}
+          className="p-2 border border-gray-300 rounded-lg bg-white"
+        >
+          <label className="block text-sm text-gray-700">{field}</label>
+          {field === "Trade Status" ? (
+            <select
+              value={value}
+              onChange={(e) => handleFilterChange(field, e.target.value)}
+              className="w-full border border-white rounded focus:outline-none"
+            >
+              <option value="">Choose an option</option>
+              <option value="New">New</option>
+              <option value="Amend">Amend</option>
+              <option value="Cancel">Cancel</option>
+            </select>
+          ) : field.includes("Date") ? (
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button 
+                  variant="ghost" 
+                  className="w-full justify-start p-0 text-gray-900 hover:bg-transparent"
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {value ? format(new Date(value), "PPP") : "Pick a date"}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0">
+                <Calendar
+                  mode="single"
+                  selected={value ? new Date(value) : undefined}
+                  onSelect={(date) => 
+                    handleFilterChange(field, date ? date.toISOString().split('T')[0] : '')
+                  }
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
+          ) : (
+            <input
+              type="text"
+              value={value}
+              onChange={(e) => handleFilterChange(field, e.target.value)}
+              className="w-full border border-white rounded focus:outline-none"
+              placeholder={`Enter ${field}`}
+            />
+          )}
+        </div>
+      ))}
+    </div>
+
+      <div className="flex flex-col md:flex-row lg:flext-row justify-end gap-4 mt-6">
         <Button onClick={handleClearFilters} variant="outline" size="lg">
           Clear
         </Button>
@@ -339,7 +362,7 @@ const Trade: React.FC = () => {
             ))}
           </TableBody>
         </Table>
-
+        </div>
         <div className="ml-auto max-w-[700px] flex flex-col md:flex-row lg:flex-row items-center justify-end gap-2 mt-4">
           <p className="text-xs text-gray-500">
             Showing {startIndex + 1} to {endIndex} of {filteredData.length}{" "}
@@ -354,10 +377,9 @@ const Trade: React.FC = () => {
                     <PaginationPrevious
                       onClick={() => setCurrentPage((p) => Math.max(0, p - 1))}
                       disabled={currentPage === 0}
-                      className="cursor-pointer"
                       style={{
-                        pointerEvents: currentPage > 0 ? "auto" : "none",
-                        opacity: currentPage > 0 ? 1 : 0.5,
+                        cursor: currentPage === 0 ? "not-allowed" : "pointer",
+                        opacity: currentPage === 0 ? 0.5 : 1,
                       }}
                     />
                   </PaginationItem>
@@ -466,11 +488,12 @@ const Trade: React.FC = () => {
                         setCurrentPage((p) => Math.min(pageCount - 1, p + 1))
                       }
                       disabled={currentPage === pageCount - 1}
-                      className="cursor-pointer"
                       style={{
-                        pointerEvents:
-                          currentPage < pageCount - 1 ? "auto" : "none",
-                        opacity: currentPage < pageCount - 1 ? 1 : 0.5,
+                        cursor:
+                          currentPage === pageCount - 1
+                            ? "not-allowed"
+                            : "pointer",
+                        opacity: currentPage === pageCount - 1 ? 0.5 : 1,
                       }}
                     />
                   </PaginationItem>
@@ -497,7 +520,6 @@ const Trade: React.FC = () => {
             <option value={50}>50</option>
           </select>
         </div>
-      </div>
     </Layout>
   );
 };

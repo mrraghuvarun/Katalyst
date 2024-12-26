@@ -10,6 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/src/components/ui/table";
+import { XCircleIcon } from "lucide-react";
 // Replace with your ShadCN imports
 import { flexRender } from "@tanstack/react-table"; // Ensure this is installed and correctly imported
 
@@ -91,13 +92,10 @@ const Modal: React.FC<ModalProps> = ({
               </p>
             )}
           </div>
-          <button
-            onClick={onClose}
-            className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 focus:outline-none"
-            aria-label="Close"
-          >
-            &times;
-          </button>
+          <XCircleIcon
+                    onClick={onClose}
+                    className="w-6 h-6 text-gray-500 cursor-pointer"
+                  />
         </div>
 
         <div className="modal-table-container">
