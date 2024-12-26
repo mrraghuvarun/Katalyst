@@ -14,9 +14,9 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/src/components/ui/popover"
-import { format } from "date-fns"
-import { cn } from "@/src/lib/utils"
+} from "@/src/components/ui/popover";
+import { format } from "date-fns";
+import { cn } from "@/src/lib/utils";
 import "./Trade.css";
 import {
   Table,
@@ -192,59 +192,62 @@ const Trade: React.FC = () => {
 
   const renderFilterRow = () => (
     <div className="filter-row p-6 rounded-lg border border-gray-300 mb-6">
-    <h3 className="text-2xl font-semibold text-black mb-6">Filter Report</h3>
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      {Object.entries(filters).map(([field, value]) => (
-        <div
-          key={field}
-          className="p-2 border border-gray-300 rounded-lg bg-white"
-        >
-          <label className="block text-sm text-gray-700">{field}</label>
-          {field === "Trade Status" ? (
-            <select
-              value={value}
-              onChange={(e) => handleFilterChange(field, e.target.value)}
-              className="w-full border border-white rounded focus:outline-none"
-            >
-              <option value="">Choose an option</option>
-              <option value="New">New</option>
-              <option value="Amend">Amend</option>
-              <option value="Cancel">Cancel</option>
-            </select>
-          ) : field.includes("Date") ? (
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button 
-                  variant="ghost" 
-                  className="w-full justify-start p-0 text-gray-900 hover:bg-transparent"
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {value ? format(new Date(value), "PPP") : "Pick a date"}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0">
-                <Calendar
-                  mode="single"
-                  selected={value ? new Date(value) : undefined}
-                  onSelect={(date) => 
-                    handleFilterChange(field, date ? date.toISOString().split('T')[0] : '')
-                  }
-                  initialFocus
-                />
-              </PopoverContent>
-            </Popover>
-          ) : (
-            <input
-              type="text"
-              value={value}
-              onChange={(e) => handleFilterChange(field, e.target.value)}
-              className="w-full border border-white rounded focus:outline-none"
-              placeholder={`Enter ${field}`}
-            />
-          )}
-        </div>
-      ))}
-    </div>
+      <h3 className="text-2xl font-semibold text-black mb-6">Filter Report</h3>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {Object.entries(filters).map(([field, value]) => (
+          <div
+            key={field}
+            className="p-2 border border-gray-300 rounded-lg bg-white"
+          >
+            <label className="block text-sm text-gray-700">{field}</label>
+            {field === "Trade Status" ? (
+              <select
+                value={value}
+                onChange={(e) => handleFilterChange(field, e.target.value)}
+                className="w-full border border-white rounded focus:outline-none"
+              >
+                <option value="">Choose an option</option>
+                <option value="New">New</option>
+                <option value="Amend">Amend</option>
+                <option value="Cancel">Cancel</option>
+              </select>
+            ) : field.includes("Date") ? (
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start p-0 text-gray-900 hover:bg-transparent"
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {value ? format(new Date(value), "PPP") : "Pick a date"}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                  <Calendar
+                    mode="single"
+                    selected={value ? new Date(value) : undefined}
+                    onSelect={(date) =>
+                      handleFilterChange(
+                        field,
+                        date ? date.toISOString().split("T")[0] : ""
+                      )
+                    }
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+            ) : (
+              <input
+                type="text"
+                value={value}
+                onChange={(e) => handleFilterChange(field, e.target.value)}
+                className="w-full border border-white rounded focus:outline-none"
+                placeholder={`Enter ${field}`}
+              />
+            )}
+          </div>
+        ))}
+      </div>
 
       <div className="flex flex-col md:flex-row lg:flext-row justify-end gap-4 mt-6">
         <Button onClick={handleClearFilters} variant="outline" size="lg">
@@ -284,8 +287,6 @@ const Trade: React.FC = () => {
         ))}
     </div>
   );
-
-  console.log("Applied Filters:", appliedFilters);
 
   return (
     <Layout>
@@ -362,30 +363,48 @@ const Trade: React.FC = () => {
             ))}
           </TableBody>
         </Table>
-        </div>
-        <div className="ml-auto max-w-[700px] flex flex-col md:flex-row lg:flex-row items-center justify-end gap-2 mt-4">
-          <p className="text-xs text-gray-500">
-            Showing {startIndex + 1} to {endIndex} of {filteredData.length}{" "}
-            entries
-          </p>
+      </div>
+      <div className="ml-auto max-w-[700px] flex flex-col md:flex-row lg:flex-row items-center justify-end gap-2 mt-4">
+        <p className="text-xs text-gray-500">
+          Showing {startIndex + 1} to {endIndex} of {filteredData.length}{" "}
+          entries
+        </p>
 
-          <div>
-            {pageCount > 1 && (
-              <Pagination>
-                <PaginationContent>
-                  <PaginationItem>
-                    <PaginationPrevious
-                      onClick={() => setCurrentPage((p) => Math.max(0, p - 1))}
-                      disabled={currentPage === 0}
-                      style={{
-                        cursor: currentPage === 0 ? "not-allowed" : "pointer",
-                        opacity: currentPage === 0 ? 0.5 : 1,
-                      }}
-                    />
-                  </PaginationItem>
+        <div>
+          {pageCount > 1 && (
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    onClick={() => setCurrentPage((p) => Math.max(0, p - 1))}
+                    disabled={currentPage === 0}
+                    style={{
+                      cursor: currentPage === 0 ? "not-allowed" : "pointer",
+                      opacity: currentPage === 0 ? 0.5 : 1,
+                    }}
+                  />
+                </PaginationItem>
 
-                  {pageCount <= 3 ? (
-                    [...Array(pageCount)].map((_, index) => (
+                {pageCount <= 3 ? (
+                  [...Array(pageCount)].map((_, index) => (
+                    <PaginationItem key={index}>
+                      <PaginationLink
+                        isActive={currentPage === index}
+                        onClick={() => setCurrentPage(index)}
+                        className="cursor-pointer"
+                        style={{
+                          backgroundColor:
+                            currentPage === index ? "#007bff" : "transparent",
+                          color: currentPage === index ? "#fff" : "#000",
+                        }}
+                      >
+                        {index + 1}
+                      </PaginationLink>
+                    </PaginationItem>
+                  ))
+                ) : currentPage < 2 ? (
+                  <>
+                    {[0, 1, 2].map((index) => (
                       <PaginationItem key={index}>
                         <PaginationLink
                           isActive={currentPage === index}
@@ -400,10 +419,18 @@ const Trade: React.FC = () => {
                           {index + 1}
                         </PaginationLink>
                       </PaginationItem>
-                    ))
-                  ) : currentPage < 2 ? (
-                    <>
-                      {[0, 1, 2].map((index) => (
+                    ))}
+                    <PaginationItem>
+                      <PaginationEllipsis />
+                    </PaginationItem>
+                  </>
+                ) : currentPage >= pageCount - 3 ? (
+                  <>
+                    <PaginationItem>
+                      <PaginationEllipsis />
+                    </PaginationItem>
+                    {[pageCount - 3, pageCount - 2, pageCount - 1].map(
+                      (index) => (
                         <PaginationItem key={index}>
                           <PaginationLink
                             isActive={currentPage === index}
@@ -420,106 +447,78 @@ const Trade: React.FC = () => {
                             {index + 1}
                           </PaginationLink>
                         </PaginationItem>
-                      ))}
-                      <PaginationItem>
-                        <PaginationEllipsis />
-                      </PaginationItem>
-                    </>
-                  ) : currentPage >= pageCount - 3 ? (
-                    <>
-                      <PaginationItem>
-                        <PaginationEllipsis />
-                      </PaginationItem>
-                      {[pageCount - 3, pageCount - 2, pageCount - 1].map(
-                        (index) => (
-                          <PaginationItem key={index}>
-                            <PaginationLink
-                              isActive={currentPage === index}
-                              onClick={() => setCurrentPage(index)}
-                              className="cursor-pointer"
-                              style={{
-                                backgroundColor:
-                                  currentPage === index
-                                    ? "#007bff"
-                                    : "transparent",
-                                color: currentPage === index ? "#fff" : "#000",
-                              }}
-                            >
-                              {index + 1}
-                            </PaginationLink>
-                          </PaginationItem>
-                        )
-                      )}
-                    </>
-                  ) : (
-                    <>
-                      <PaginationItem>
-                        <PaginationEllipsis />
-                      </PaginationItem>
-                      {[currentPage - 1, currentPage, currentPage + 1].map(
-                        (index) => (
-                          <PaginationItem key={index}>
-                            <PaginationLink
-                              isActive={currentPage === index}
-                              onClick={() => setCurrentPage(index)}
-                              className="cursor-pointer"
-                              style={{
-                                backgroundColor:
-                                  currentPage === index
-                                    ? "#007bff"
-                                    : "transparent",
-                                color: currentPage === index ? "#fff" : "#000",
-                              }}
-                            >
-                              {index + 1}
-                            </PaginationLink>
-                          </PaginationItem>
-                        )
-                      )}
-                      <PaginationItem>
-                        <PaginationEllipsis />
-                      </PaginationItem>
-                    </>
-                  )}
+                      )
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <PaginationItem>
+                      <PaginationEllipsis />
+                    </PaginationItem>
+                    {[currentPage - 1, currentPage, currentPage + 1].map(
+                      (index) => (
+                        <PaginationItem key={index}>
+                          <PaginationLink
+                            isActive={currentPage === index}
+                            onClick={() => setCurrentPage(index)}
+                            className="cursor-pointer"
+                            style={{
+                              backgroundColor:
+                                currentPage === index
+                                  ? "#007bff"
+                                  : "transparent",
+                              color: currentPage === index ? "#fff" : "#000",
+                            }}
+                          >
+                            {index + 1}
+                          </PaginationLink>
+                        </PaginationItem>
+                      )
+                    )}
+                    <PaginationItem>
+                      <PaginationEllipsis />
+                    </PaginationItem>
+                  </>
+                )}
 
-                  <PaginationItem>
-                    <PaginationNext
-                      onClick={() =>
-                        setCurrentPage((p) => Math.min(pageCount - 1, p + 1))
-                      }
-                      disabled={currentPage === pageCount - 1}
-                      style={{
-                        cursor:
-                          currentPage === pageCount - 1
-                            ? "not-allowed"
-                            : "pointer",
-                        opacity: currentPage === pageCount - 1 ? 0.5 : 1,
-                      }}
-                    />
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
-            )}
-          </div>
-
-          <select
-            value={pageSize}
-            onChange={(e) => {
-              setPageSize(Number(e.target.value));
-              setCurrentPage(0);
-            }}
-            className="h-10 w-16 rounded border border-input bg-background px-3 ml-4"
-            style={{
-              cursor: "pointer",
-              textAlign: "center",
-            }}
-          >
-            <option value={5}>5</option>
-            <option value={10}>10</option>
-            <option value={20}>20</option>
-            <option value={50}>50</option>
-          </select>
+                <PaginationItem>
+                  <PaginationNext
+                    onClick={() =>
+                      setCurrentPage((p) => Math.min(pageCount - 1, p + 1))
+                    }
+                    disabled={currentPage === pageCount - 1}
+                    style={{
+                      cursor:
+                        currentPage === pageCount - 1
+                          ? "not-allowed"
+                          : "pointer",
+                      opacity: currentPage === pageCount - 1 ? 0.5 : 1,
+                    }}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          )}
         </div>
+
+        <select
+          value={pageSize}
+          onChange={(e) => {
+            setPageSize(Number(e.target.value));
+            setCurrentPage(0);
+          }}
+          className="h-10 w-16 rounded border border-input bg-background px-3 ml-4"
+          style={{
+            cursor: "pointer",
+            textAlign: "center",
+          }}
+        >
+          <option value={5}>5</option>
+          <option value={10}>10</option>
+          <option value={20}>20</option>
+          <option value={50}>50</option>
+        </select>
+      </div>
     </Layout>
   );
 };
