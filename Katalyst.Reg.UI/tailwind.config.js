@@ -43,6 +43,7 @@ module.exports = {
       },
       fontFamily: {
         'instrument-sans': ['"Instrument Sans"', 'sans-serif'],
+        'dm-serif': ['"DM Serif Display"', 'serif'],
       },
       borderRadius: {
         lg: `var(--radius)`,

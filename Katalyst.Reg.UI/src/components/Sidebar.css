@@ -7,15 +7,27 @@ body, h1, h2, h3, p {
 /* General styling for the sidebar */
 .sidebar {
     width: 280px;
-    height: 100vh;
+    height: calc(100vh - 64px); /* Subtract the header height */
     box-shadow: 2px 0 10px rgba(0, 0, 0, 0.15);
     display: flex;
     flex-direction: column;
     align-items: center;
-    position: fixed;
+    position: relative; /* Change to relative */
+    margin-top: 64px; /* Push it below the header */
     transition: width 0.3s ease, visibility 0.3s ease;
     overflow: hidden;
 }
+
+.fixed-sidebar {
+    position: fixed;
+    top: 0; /* Adjust to match your header height */
+    left: 0;
+    height: 100%; /* Full height */
+    z-index: 1000; /* Ensure it stays on top of other content */
+    background-color: #fff; /* Ensure it has a proper background */
+    border-right: 1px solid #ddd; /* Optional: Add a border for clarity */
+  }
+  
 
 /* Collapsed sidebar styles */
 .sidebar.collapsed {

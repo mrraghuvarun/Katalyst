@@ -288,15 +288,13 @@ const Trade: React.FC = () => {
 
   return (
     <Layout>
-      <div className="bg-white p-6 rounded-xl">
-        <div className="flex flex-col md:flex-row lg:flex-row justify-between items-start lg:items-center md:items-center mb-4">
+      <div className="bg-white p-6 rounded-xl mt-16">
+        <div className="flex flex-col md:flex-row lg:flex-row justify-between items-start mb-4">
           <div className="flex flex-col items-start justify-start">
             <h3 className="text-2xl font-semibold text-black mb-4">
               Trade Report
             </h3>
             {renderBadges()}
-          </div>
-          <div className="flex flex-col md:flex-row lg:flex-row items-baseline md:items-center lg:items-center justify-between mb-4 space-x-4">
             <div className="flex mb-2 items-center space-x-2 rounded-lg border border-gray-300 dark:bg-gray-900 px-3.5 py-2">
               <SearchIcon className="h-4 w-4" />
               <Input
@@ -307,6 +305,8 @@ const Trade: React.FC = () => {
                 className="w-full border-0 outline-none shadow-none focus-visible:ring-0"
               />
             </div>
+          </div>
+          <div className="flex flex-col md:flex-row lg:flex-row items-baseline md:items-start lg:items-start justify-between mb-4 space-x-4">
             <Button
               variant="outline"
               className={`flex mb-2 items-center space-x-2 py-6 ${

@@ -34,12 +34,15 @@ const items = [
 const AppSidebar: React.FC = () => {
   const { state } = useSidebar();
   const location = useLocation();
+  const headerHeight = 64;
 
   return (
     <Sidebar
-      className="p-4 rounded-lg border-0"
+      className="fixed-sidebar p-4 rounded-lg border-0 mt-16"
       collapsible="icon"
       variant="floating"
+      style={{ marginTop: `${headerHeight}px` }}
+
     >
       <SidebarContent>
         {state === "expanded" && (

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Modal from "../components/Modal.tsx";
+import Header from "../components/Header.js"
 import tradeData from "../assets/data.json";
 import detailedData from "../assets/trade.json";
 import Layout from "../components/Layout.tsx";
@@ -67,9 +68,14 @@ interface TradeDataItem {
 }
 
 interface DetailedDataItem {
+  "Order Number": number;
   "Trade Status": string;
+  "ARM Status": string;
   "Reporting Date": string;
-  [key: string]: string | number;
+  "Late Submission Only": boolean;
+  "No ISIN Only": boolean;
+  "ISIN": string;
+  [key: string]: any;
 }
 
 const typedTradeData = tradeData as TradeDataItem[];
@@ -136,24 +142,24 @@ const Summary: React.FC = () => {
 
   const handleCardClick = (title: string): void => {
     const formattedDate = format(selectedDate, "dd/MM/yyyy");
-    const type = typeMap[title];
-
-    let filteredData: DetailedDataItem[];
-
-    if (title === "Trade Events") {
-      filteredData = typedDetailedData.filter(
-        (item: DetailedDataItem) =>
-          ["New", "Amend", "Cancel"].includes(item["Trade Status"]) &&
-          item["Reporting Date"] === formattedDate
-      );
-    } else {
-      filteredData = typedDetailedData.filter(
-        (item: DetailedDataItem) =>
-          item["Trade Status"] === type &&
-          item["Reporting Date"] === formattedDate
-      );
-    }
-
+  
+    let filteredData = typedDetailedData.filter(item => {
+      const matches = {
+        "Amended Trades": item["Trade Status"] === "Amend",
+        "New Trades": item["Trade Status"] === "New",
+        "Cancelled Trades": item["Trade Status"] === "Cancel",
+        "Trade Events": ["New", "Amend", "Cancel"].includes(item["Trade Status"]),
+        "Accepted TRNs": item["ARM Status"] === "Accepted",
+        "Submitted TRNs": item["ARM Status"] === "Submitted",
+        "Rejected TRNs": item["ARM Status"] === "Rejected",
+        "Late Submission TRNs": item["Late Submission Only"] === true,
+        "Trades No Fingerprint": !item["ISIN"] || item["No ISIN Only"] === true
+      };
+  
+      return matches[title as keyof typeof matches] && item["Reporting Date"] === formattedDate;
+    });
+  
+    console.log('Filtered Data:', filteredData);
     setModalData(filteredData);
     setModalTitle(title);
     setModalOpen(true);
@@ -242,15 +248,17 @@ const Summary: React.FC = () => {
   };
 
   // Corrected typeMap that matches exact data field names
-  const typeMap = {
+  const typeMap : Record<string, string> =  {
     "New Trades": "Total Number of New Trades",
     "Amended Trades": "Total Number of Trades in Amended Status",
-    Transactions: "Total Number of TRN",
+    "Transactions": "Total Number of TRN",
     "Accepted TRNs": "Total Number of TRN Accepted",
     "Submitted TRNs": "Total Number of TRN in Submitted Status",
     "Rejected TRNs": "Total Number of TRN Rejected",
     "Trade Events": "Total Number of Trade Events",
     "Trades No Fingerprint": "Total Number of Trade Events without Fingerprint",
+    "Cancelled Trades":  "Total Number of Trades in Cancelled Status",
+    "Eligible Trades": "Total Number of Eligible Trades",
   };
 
   const chartData = tradeDataTyped
@@ -358,7 +366,7 @@ const Summary: React.FC = () => {
 
   return (
     <Layout>
-      <div className="bg-white p-6 rounded-xl">
+      <div className="bg-white p-6 rounded-xl mt-16">
         <div className="flex flex-col md:flex-row gap-2 md:gap-12 mb-6">
           <h3 className="text-2xl font-semibold text-black">Summary</h3>
           <div className="date-field">
@@ -367,7 +375,7 @@ const Summary: React.FC = () => {
             <DatePicker />
           </div>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
           {Object.keys(typeMap).map((key) => (
             <SummaryCard
               onClick={() => handleCardClick(key)}
@@ -375,7 +383,9 @@ const Summary: React.FC = () => {
               title={key}
               icon={iconMap[key]}
               value={Number(
-                selectedData ? selectedData[`Total Number of ${key}`] || 0 : 0
+                selectedData ? 
+                selectedData[typeMap[key] as keyof TradeDataItem] || 0 : 
+                0
               )}
             />
           ))}

@@ -10,9 +10,9 @@ import BackReporting from "./pages/BackReporting.tsx";
 import Loading from "./components/Loading.tsx";
 import HomePage from "./pages/HomePage.tsx";
 import DataInjection from "./pages/DataInjection.tsx";
+import Header from "./components/Header.tsx"; // Import the Header
 import "boxicons";
 import "./App.css";
-import { SidebarProvider } from "./components/ui/sidebar.js";
 
 const App: React.FC = () => {
   const location = useLocation();
@@ -30,9 +30,15 @@ const App: React.FC = () => {
     return () => clearTimeout(timer); // Clean up the timer on unmount
   }, [location]); // This hook runs every time the location changes
 
+  // Check if the current path is login
+  const isLoginPage = location.pathname === "/login";
+
   return (
     <div>
       {loading && <Loading />} {/* Show loading page during page transition */}
+      
+      {/* Conditionally render the Header */}
+      
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/summary" element={<Summary />} />

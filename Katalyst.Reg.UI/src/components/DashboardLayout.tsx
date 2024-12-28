@@ -25,7 +25,7 @@ const DashboardLayout: React.FC<LayoutProps> = ({ children }) => {
         <AppSidebar />
       </div>
       <main
-        className={`p-4 pl-0 flex-1 transition-all ease-linear`}
+        className={`p-4 pl-0 flex-1 transition-all ease-linear overflow-hidden`}
         style={{
           marginLeft: menuSpace,
           maxWidth: `calc(100vw - ${menuSpace})`,
