@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Modal from "../components/Modal.tsx";
-import Header from "../components/Header.js"
+import Header from "../components/Header.js";
 import tradeData from "../assets/data.json";
 import detailedData from "../assets/trade.json";
 import Layout from "../components/Layout.tsx";
@@ -47,20 +47,47 @@ import { DateRange } from "react-day-picker";
 import { cn } from "@/src/lib/utils";
 import { Button } from "@/src/components/ui/button";
 import { Calendar } from "@/src/components/ui/calendar";
-import PaidIcon from '@mui/icons-material/PaidRounded';
-import ReceiptIcon from '@mui/icons-material/ReceiptRounded';
-import FileDownloadDoneIcon from '@mui/icons-material/FileDownloadDoneRounded';
-import PriceChangeIcon from '@mui/icons-material/PriceChangeRounded';
-import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeRounded';
-import ScheduleSendOutlinedIcon from '@mui/icons-material/ScheduleSendRounded';
-import FingerprintOutlinedIcon from '@mui/icons-material/FingerprintRounded';
-import MoneyOutlinedIcon from '@mui/icons-material/MoneyRounded';
+import PaidIcon from "@mui/icons-material/PaidRounded";
+import ReceiptIcon from "@mui/icons-material/ReceiptRounded";
+import FileDownloadDoneIcon from "@mui/icons-material/FileDownloadDoneRounded";
+import PriceChangeIcon from "@mui/icons-material/PriceChangeRounded";
+import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeRounded";
+import ScheduleSendOutlinedIcon from "@mui/icons-material/ScheduleSendRounded";
+import FingerprintOutlinedIcon from "@mui/icons-material/FingerprintRounded";
+import MoneyOutlinedIcon from "@mui/icons-material/MoneyRounded";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/src/components/ui/popover";
 import "../output.css";
+import BarChartWithAPI from "../components/BarChartWithAPI.js";
+
+interface APIResponse {
+  response: {
+    reportDate: string;
+    tradeEvents: number;
+    tradeEventsWoFp: number;
+    newTrades: number;
+    amendedTrades: number;
+    cancelledTrades: number;
+    eligibleTrades: number;
+    transactions: number;
+    acceptedTransactions: number;
+    submittedTransactions: number;
+    rejectedTransactions: number;
+    lateSubmissionTransactions: number;
+  };
+  correlationId: string;
+  statusCode: number;
+  message: string;
+}
+
+interface RequestBody {
+  correlationId: string;
+  applicationName: string;
+  transactionDate: string;
+}
 
 interface TradeDataItem {
   "Reporting Date": string;
@@ -74,7 +101,7 @@ interface DetailedDataItem {
   "Reporting Date": string;
   "Late Submission Only": boolean;
   "No ISIN Only": boolean;
-  "ISIN": string;
+  ISIN: string;
   [key: string]: any;
 }
 
@@ -96,15 +123,15 @@ const typeMap: Record<string, string> = {
 
 const iconMap: Record<string, JSX.Element> = {
   Transactions: <PaidIcon className="card-icon" />,
-  "Accepted TRNs":<FileDownloadDoneIcon className="card-icon" />,
-  "Submitted TRNs":<AccessTimeOutlinedIcon className="card-icon" />,
-  "Rejected TRNs":<ScheduleSendOutlinedIcon className="card-icon" />,
-  "Late Submission TRNs":<PaidIcon className="card-icon" />,
-  "Trade Events":<MoneyOutlinedIcon className="card-icon" />,
-  "Trades No Fingerprint":<FingerprintOutlinedIcon className="card-icon" />,
-  "New Trades":<ReceiptIcon className="card-icon" />,
-  "Amended Trades":<PriceChangeIcon className="card-icon" />,
-  "Cancelled Trades":<PaidIcon className="card-icon" />,
+  "Accepted TRNs": <FileDownloadDoneIcon className="card-icon" />,
+  "Submitted TRNs": <AccessTimeOutlinedIcon className="card-icon" />,
+  "Rejected TRNs": <ScheduleSendOutlinedIcon className="card-icon" />,
+  "Late Submission TRNs": <PaidIcon className="card-icon" />,
+  "Trade Events": <MoneyOutlinedIcon className="card-icon" />,
+  "Trades No Fingerprint": <FingerprintOutlinedIcon className="card-icon" />,
+  "New Trades": <ReceiptIcon className="card-icon" />,
+  "Amended Trades": <PriceChangeIcon className="card-icon" />,
+  "Cancelled Trades": <PaidIcon className="card-icon" />,
 };
 interface TradeDataItem {
   "Reporting Date": string;
@@ -126,7 +153,7 @@ const Summary: React.FC = () => {
     to: new Date("2024-12-10"),
   });
   const [selectedDate, setSelectedDate] = useState<Date>(
-    new Date("2024-09-06")
+    new Date("2024-12-14")
   );
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
   const [modalData, setModalData] = useState<DetailedDataItem[]>([]);
@@ -139,27 +166,115 @@ const Summary: React.FC = () => {
   );
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   // const [dateRange, setDateRange] = useState("1 Jan 2024 - 10 Jan 2024");
+  const [apiData, setApiData] = useState<APIResponse["response"] | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  // Function to format date to yyyy-mm-dd
+  const formatDateForAPI = (date: Date): string => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
+    const day = String(date.getDate()).padStart(2, "0");
+    const formattedDate = `${year}-${month}-${day}`;
+    
+    console.log("Formatted date:", formattedDate);
+    return formattedDate;
+  };
+  
+
+  const fetchSummaryData = async (date: Date) => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      const formattedDate = formatDateForAPI(date);
+
+      const requestBody: RequestBody = {
+        correlationId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        applicationName: "string",
+        transactionDate: formattedDate,
+      };
+
+      console.log("Request body:", requestBody);
+
+      const response = await fetch(
+        `http://localhost:5113/api/v1/MifidTransaction/TransactionSummaryByDate`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(requestBody),
+        }
+      );
+
+      console.log("Response status:", response.status);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const rawData = await response.json();
+      console.log("Raw API response:", rawData);
+
+      setApiData(rawData.response);
+      console.log("Processed API data:", rawData.response);
+    } catch (err) {
+      console.error("Detailed error:", err);
+      setError(err instanceof Error ? err.message : "An error occurred");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (selectedDate) {
+      console.log("Selected date changed:", selectedDate);
+      fetchSummaryData(selectedDate);
+    }
+  }, [selectedDate]);
+
+  const getCardValue = (key: string): number => {
+    if (!apiData) {
+      console.log("No API data available");
+      return 0;
+    }
+
+    const apiKey = typeMap[key];
+    console.log("Getting value for:", key, "using API key:", apiKey);
+
+    const value = apiData[apiKey as keyof typeof apiData] || 0;
+    console.log("Retrieved value:", value);
+
+    return value;
+  };
+
+  // Add debug log for render
+  console.log("Current API data state:", apiData);
 
   const handleCardClick = (title: string): void => {
     const formattedDate = format(selectedDate, "dd/MM/yyyy");
-  
-    let filteredData = typedDetailedData.filter(item => {
+
+    let filteredData = typedDetailedData.filter((item) => {
       const matches = {
         "Amended Trades": item["Trade Status"] === "Amend",
         "New Trades": item["Trade Status"] === "New",
         "Cancelled Trades": item["Trade Status"] === "Cancel",
-        "Trade Events": ["New", "Amend", "Cancel"].includes(item["Trade Status"]),
+        "Trade Events": ["New", "Amend", "Cancel"].includes(
+          item["Trade Status"]
+        ),
         "Accepted TRNs": item["ARM Status"] === "Accepted",
         "Submitted TRNs": item["ARM Status"] === "Submitted",
         "Rejected TRNs": item["ARM Status"] === "Rejected",
         "Late Submission TRNs": item["Late Submission Only"] === true,
-        "Trades No Fingerprint": !item["ISIN"] || item["No ISIN Only"] === true
+        "Trades No Fingerprint": !item["ISIN"] || item["No ISIN Only"] === true,
       };
-  
-      return matches[title as keyof typeof matches] && item["Reporting Date"] === formattedDate;
+
+      return (
+        matches[title as keyof typeof matches] &&
+        item["Reporting Date"] === formattedDate
+      );
     });
-  
-    console.log('Filtered Data:', filteredData);
+
+    console.log("Filtered Data:", filteredData);
     setModalData(filteredData);
     setModalTitle(title);
     setModalOpen(true);
@@ -248,16 +363,30 @@ const Summary: React.FC = () => {
   };
 
   // Corrected typeMap that matches exact data field names
-  const typeMap : Record<string, string> =  {
+  const typeMap: Record<string, string> = {
+    "Trade Events": "tradeEvents",
+    "Trades No Fingerprint": "tradeEventsWoFp",
+    "New Trades": "newTrades",
+    "Amended Trades": "amendedTrades",
+    "Cancelled Trades": "cancelledTrades",
+    "Eligible Trades": "eligibleTrades",
+    Transactions: "transactions",
+    "Accepted TRNs": "acceptedTransactions",
+    "Submitted TRNs": "submittedTransactions",
+    "Rejected TRNs": "rejectedTransactions",
+    "Late Submission TRNs": "lateSubmissionTransactions",
+  };
+
+  const chartMap: Record<string, string> = {
     "New Trades": "Total Number of New Trades",
     "Amended Trades": "Total Number of Trades in Amended Status",
-    "Transactions": "Total Number of TRN",
+    Transactions: "Total Number of TRN",
     "Accepted TRNs": "Total Number of TRN Accepted",
     "Submitted TRNs": "Total Number of TRN in Submitted Status",
     "Rejected TRNs": "Total Number of TRN Rejected",
     "Trade Events": "Total Number of Trade Events",
     "Trades No Fingerprint": "Total Number of Trade Events without Fingerprint",
-    "Cancelled Trades":  "Total Number of Trades in Cancelled Status",
+    "Cancelled Trades": "Total Number of Trades in Cancelled Status",
     "Eligible Trades": "Total Number of Eligible Trades",
   };
 
@@ -272,7 +401,9 @@ const Summary: React.FC = () => {
       date: item["Reporting Date"],
       value:
         item[
-          typeMap[selectedField as keyof typeof typeMap] as keyof TradeDataItem
+          chartMap[
+            selectedField as keyof typeof chartMap
+          ] as keyof TradeDataItem
         ],
     }));
 
@@ -371,25 +502,31 @@ const Summary: React.FC = () => {
           <h3 className="text-2xl font-semibold text-black">Summary</h3>
           <div className="date-field">
             <p className="text-sm text-gray-700">Showing: </p>
-
             <DatePicker />
           </div>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-          {Object.keys(typeMap).map((key) => (
-            <SummaryCard
-              onClick={() => handleCardClick(key)}
-              key={key}
-              title={key}
-              icon={iconMap[key]}
-              value={Number(
-                selectedData ? 
-                selectedData[typeMap[key] as keyof TradeDataItem] || 0 : 
-                0
-              )}
-            />
-          ))}
-        </div>
+
+        {isLoading ? (
+          <div className="flex justify-center items-center h-40">
+            <p>Loading...</p>
+          </div>
+        ) : error ? (
+          <div className="flex justify-center items-center h-40 text-red-500">
+            <p>{error}</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+            {Object.keys(typeMap).map((key) => (
+              <SummaryCard
+                onClick={() => handleCardClick(key)}
+                key={key}
+                title={key}
+                icon={iconMap[key]}
+                value={getCardValue(key)}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
@@ -414,7 +551,7 @@ const Summary: React.FC = () => {
                 onChange={(e) => setSelectedField(e.target.value)}
                 className="info-select"
               >
-                {Object.keys(typeMap).map((field) => (
+                {Object.keys(chartMap).map((field) => (
                   <option key={field} value={field}>
                     {field}
                   </option>
@@ -425,50 +562,11 @@ const Summary: React.FC = () => {
 
           <div className="flex flex-col md:flex-row gap-6 w-full">
             {/* Bar Chart Container */}
-            <div className="flex-1">
-              <ChartContainer
-                config={chartConfig}
-                className="min-h-[200px] max-h-[350px] w-full"
-              >
-                <BarChart
-                  data={chartData}
-                  width={isMobile ? 300 : 600}
-                  height={isMobile ? 300 : 400}
-                >
-                  <CartesianGrid vertical={false} />
-                  <XAxis
-                    dataKey="date"
-                    tickLine={false}
-                    tickMargin={10}
-                    axisLine={false}
-                    tickFormatter={(value) => {
-                      const date = new Date(value);
-                      return date.toLocaleDateString("en-GB", {
-                        day: "2-digit",
-                        month: "short",
-                      });
-                    }}
-                  />
-                  <YAxis
-                    dataKey="value"
-                    domain={[0, roundedHighestValue]}
-                    tickLine={false}
-                    tickMargin={10}
-                    axisLine={false}
-                    tickFormatter={(value) => value.toLocaleString()}
-                  />
-                  <ChartTooltip
-                    content={<ChartTooltipContent className="bg-white" />}
-                  />
-                  <ChartLegend content={<ChartLegendContent />} />
-                  <Bar
-                    dataKey="value"
-                    fill={chartConfig.value.color}
-                    radius={4}
-                  />
-                </BarChart>
-              </ChartContainer>
-            </div>
+            <BarChartWithAPI
+              dateRange={dateRange}
+              selectedField={selectedField}
+              isMobile={isMobile}
+            />
           </div>
 
           <hr className="mt-6 w-full border-b-1 border-gray-200" />

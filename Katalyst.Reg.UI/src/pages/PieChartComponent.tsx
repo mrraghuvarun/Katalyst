@@ -1,10 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import tradeData from "../assets/data.json";
 import "./Summary.css";
-import { addDays, format } from "date-fns";
+import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
-import { DateRange } from "react-day-picker";
 import { cn } from "@/src/lib/utils";
 import { Button } from "@/src/components/ui/button";
 import { Calendar } from "@/src/components/ui/calendar";
@@ -13,31 +11,58 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/src/components/ui/popover";
-import "../output.css";
 import { Label, Pie, PieChart } from "recharts";
 import { Card } from "@/src/components/ui/card";
 import {
-  ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/src/components/ui/chart";
-import { DayPicker } from "react-day-picker";
-interface TradeDataItem {
-  "Reporting Date": string;
-  [key: string]: string | number;
-}
-
-const typedTradeData = tradeData as TradeDataItem[];
 
 const PieChartComponent: React.FC = () => {
-  const [selectedDate, setSelectedDate] = useState<Date>(
-    new Date("2024-09-06")
-  );
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date("2024-12-14"));
+  const [selectedData, setSelectedData] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
   const formattedSelectedDate = format(selectedDate, "yyyy-MM-dd");
-  const selectedData: TradeDataItem | undefined = typedTradeData.find(
-    (item: TradeDataItem) => item["Reporting Date"] === formattedSelectedDate
-  );
+
+  const fetchData = async (date: string) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await fetch(
+        "http://localhost:5113/api/v1/MifidTransaction/TransactionSummaryByDate",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            correlationId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+            applicationName: "string",
+            transactionDate: date,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      setSelectedData(data.response);
+    } catch (err: any) {
+      setError(err.message || "Something went wrong");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData(formattedSelectedDate);
+  }, [formattedSelectedDate]);
+
   const DatePicker = () => {
     return (
       <Popover>
@@ -71,22 +96,22 @@ const PieChartComponent: React.FC = () => {
     return [
       {
         category: "Total Trades",
-        value: selectedData["Total Number of Trade Events"] || 0,
+        value: selectedData.tradeEvents || 0,
         fill: "#76DAE5",
       },
       {
         category: "New Trades",
-        value: selectedData["Total Number of New Trades"] || 0,
+        value: selectedData.newTrades || 0,
         fill: "#FBD4AC",
       },
       {
         category: "Amended Trades",
-        value: selectedData["Total Number of Trades in Amended Status"] || 0,
+        value: selectedData.amendedTrades || 0,
         fill: "#016AFF",
       },
       {
         category: "Cancelled Trades",
-        value: selectedData["Total Number of Trades in Cancelled Status"] || 0,
+        value: selectedData.cancelledTrades || 0,
         fill: "#FF9274",
       },
     ];
@@ -120,7 +145,11 @@ const PieChartComponent: React.FC = () => {
           <DatePicker />
         </div>
       </div>
-      {selectedData ? (
+      {isLoading ? (
+        <p className="text-center text-gray-500">Loading data...</p>
+      ) : error ? (
+        <p className="text-center text-red-500">{error}</p>
+      ) : selectedData ? (
         <div className="flex-1 pb-0">
           <ChartContainer
             config={chartConfig}
@@ -153,9 +182,7 @@ const PieChartComponent: React.FC = () => {
                             y={viewBox.cy}
                             className="fill-foreground text-3xl font-bold"
                           >
-                            {selectedData
-                              ? selectedData["Total Number of Trade Events"]
-                              : 0}
+                            {selectedData.tradeEvents || 0}
                           </tspan>
                           <tspan
                             x={viewBox.cx}
@@ -193,7 +220,7 @@ const PieChartComponent: React.FC = () => {
           </div>
         </div>
       ) : (
-        <p className="text-gray-500 text-center">Please select a date.</p>
+        <p className="text-gray-500 text-center">No data to display</p>
       )}
     </Card>
   );
