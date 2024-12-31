@@ -2,6 +2,7 @@ import React, { useEffect, useState, useMemo, useRef } from "react";
 import * as XLSX from "xlsx";
 import { BlobServiceClient } from '@azure/storage-blob';
 import { XCircleIcon } from "lucide-react";
+import Layout from "../components/Layout.tsx";
 import Modal from "../components/HistoryModal.tsx";
 import SuccessModal from "../components/SuccessModal.tsx";
 import Loading from "../components/Loading.tsx";
@@ -181,7 +182,7 @@ const BackReporting: React.FC = () => {
       });
 
       // Backend API Call
-      const backendUrl = 'http://localhost:7000/api/upload';
+      const backendUrl = 'http://localhost:7071/api/upload';
       const response = await fetch(backendUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -277,10 +278,11 @@ const BackReporting: React.FC = () => {
   }
 
   return (
-      <Tabs defaultValue="update_report" className="w-full mt-4">
+    <Layout>
+      <Tabs defaultValue="update_report" className="w-full mt-16">
         <TabsList className="bg-white p-2 py-6 rounded-lg mb-4">
-          <TabsTrigger value="update_report">Upload Report</TabsTrigger>
-          <TabsTrigger value="back_report">Upload Report History</TabsTrigger>
+          <TabsTrigger value="update_report">Update Report</TabsTrigger>
+          <TabsTrigger value="back_report">Back Report History</TabsTrigger>
         </TabsList>
         <TabsContent value="update_report">
           <div className="bg-white w-full p-6 mb-6 rounded-xl">
@@ -846,6 +848,7 @@ const BackReporting: React.FC = () => {
           </Table>
         </TabsContent>
       </Tabs>
+    </Layout>
   );
 };
 
