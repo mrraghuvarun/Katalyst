@@ -2,6 +2,7 @@ import React, { useEffect, useState, useMemo, useRef } from "react";
 import * as XLSX from "xlsx";
 import { BlobServiceClient } from '@azure/storage-blob';
 import { XCircleIcon } from "lucide-react";
+import Header from '../components/Header.tsx';
 import Modal from "../components/HistoryModal.tsx";
 import SuccessModal from "../components/SuccessModal.tsx";
 import Loading from "../components/Loading.tsx";
@@ -49,7 +50,7 @@ interface UploadHistory {
 
 const BackReporting: React.FC = () => {
   // Azure Configuration
-  const SAS_URL = 'https://mifiddatainjection.blob.core.windows.net/datainjection?sp=racwdli&st=2024-12-30T13:20:41Z&se=2024-12-30T21:20:41Z&sv=2022-11-02&sr=c&sig=cLUGhRPkx0tS181WMDpniNOiG%2BK9WHCRDC%2F8s5fU5Fw%3D';
+  const SAS_URL = 'https://mifiddatainjection.blob.core.windows.net/?sv=2022-11-02&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2025-06-30T19:18:19Z&st=2024-12-31T11:18:19Z&spr=https,http&sig=O6gd7NjxeRe%2FZckPX3ilnWNvOkEmT1LEWKZtJ%2FY0stQ%3D';
 
   // State Management
   const [search, setSearch] = useState("");
@@ -181,7 +182,7 @@ const BackReporting: React.FC = () => {
       });
 
       // Backend API Call
-      const backendUrl = 'http://localhost:7000/api/upload';
+      const backendUrl = 'http://localhost:7071/api/upload';
       const response = await fetch(backendUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -277,6 +278,8 @@ const BackReporting: React.FC = () => {
   }
 
   return (
+    <>
+    <Header />
       <Tabs defaultValue="update_report" className="w-full mt-4">
         <TabsList className="bg-white p-2 py-6 rounded-lg mb-4">
           <TabsTrigger value="update_report">Upload Report</TabsTrigger>
@@ -288,7 +291,6 @@ const BackReporting: React.FC = () => {
               Upload Process
             </h3>
 
-            {/* Stepper */}
             <div className="stepper flex flex-col md:flex-row lg:flex-row justify-between items-center mb-8 max-w-[800px] mx-auto">
               <div
                 className={`step ${currentStep > 1 ? "completed" : ""} ${
@@ -846,6 +848,7 @@ const BackReporting: React.FC = () => {
           </Table>
         </TabsContent>
       </Tabs>
+      </>
   );
 };
 

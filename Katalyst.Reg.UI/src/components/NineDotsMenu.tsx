@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import './NineDotsMenu.css';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 // Import the images
-import mifidIcon from '../assets/MIFID.ico';
-import dataInjectionIcon from '../assets/MIFID.ico';
+import mifidIcon from "../assets/MIFID.ico";
+import dataIngestion from "../assets/dataingestion.jpg";
 
 const NineDotsMenu: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,10 +13,10 @@ const NineDotsMenu: React.FC = () => {
   };
 
   return (
-    <div className="nine-dots-container">
+    <div className="relative">
       {/* 9-dots icon */}
       <button
-        className="nine-dots-icon"
+        className="text-xl text-gray-800 hover:text-blue-600 transition-colors"
         onClick={toggleMenu}
         aria-label="Toggle Menu"
       >
@@ -26,18 +25,24 @@ const NineDotsMenu: React.FC = () => {
 
       {/* Dropdown menu */}
       {isOpen && (
-        <div className="menu-sheet">
-          <ul className="menu-grid">
+        <div className="absolute top-14 left-0 bg-white border border-gray-300 rounded-lg shadow-md w-72 p-4 z-50">
+          <ul className="grid grid-cols-3 gap-4">
             <li>
-              <Link to="/login" className="menu-item">
-                <img src={mifidIcon} alt="MIFID" />
-                <span>MIFID</span>
+              <Link
+                to="/login"
+                className="flex flex-col items-center text-gray-800 hover:bg-gray-100 p-2 rounded-lg transition-colors"
+              >
+                <img src={mifidIcon} alt="MIFID" className="w-10 h-10 mb-2" />
+                <span className="text-sm">MIFID</span>
               </Link>
             </li>
             <li>
-              <Link to="/data-injection" className="menu-item">
-                <img src={dataInjectionIcon} alt="Data Injection" />
-                <span>Data Injection</span>
+              <Link
+                to="/data-ingestion"
+                className="flex flex-col items-center text-gray-800 hover:bg-gray-100 p-2 rounded-lg transition-colors"
+              >
+                <img src={dataIngestion} alt="Data Injection" className="w-10 h-10 mb-2" />
+                <span className="text-sm">Data Ingestion</span>
               </Link>
             </li>
           </ul>

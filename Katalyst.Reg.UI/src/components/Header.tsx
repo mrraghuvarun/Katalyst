@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate, useLocation } from "react-router-dom"; // Import useNavigate
 import {
   Card,
   CardContent,
@@ -15,62 +15,60 @@ const Header: React.FC = () => {
   const [showProfileCard, setShowProfileCard] = useState(false);
   const [showNotificationCard, setShowNotificationCard] = useState(false);
   const navigate = useNavigate(); // Initialize the navigate function
-
+  const location = useLocation(); // Initialize the location object
   const toggleProfileCard = () => {
     setShowProfileCard((prev) => !prev);
-    setShowNotificationCard(false); // Close the notification card if open
+    setShowNotificationCard(false);
+  };
+
+  const getTitle = () => {
+    switch (location.pathname) {
+      case "/data-ingestion":
+        return "Data Ingestion";
+      default:
+        return "MIFID";
+    }
   };
 
   const toggleNotificationCard = () => {
     setShowNotificationCard((prev) => !prev);
-    setShowProfileCard(false); // Close the profile card if open
+    setShowProfileCard(false);
   };
 
   const handleLogout = () => {
-    // Perform logout logic (e.g., clearing tokens or user data)
-    localStorage.removeItem("authToken"); // Example: Remove auth token from local storage
-    navigate("/login"); // Redirect to the login page
+    localStorage.removeItem("authToken");
+    navigate("/");
   };
 
   return (
     <div className="fixed top-0 left-0 w-full h-16 flex justify-between items-center px-5 bg-white border-b border-gray-300 z-50">
-      {/* Logo */}
       <div className="flex items-center bg-blue-600 rounded-lg p-2">
         <span className="font-dm-serif text-white text-2xl tracking-wide">
-          MIFID
+          {getTitle()}
         </span>
       </div>
-
-      {/* Header Right */}
       <div className="flex items-center space-x-4">
-        {/* Notification Icon */}
         <div
           className="text-gray-600 text-xl cursor-pointer"
           onClick={toggleNotificationCard}
         >
           🔔
         </div>
-
-        {/* User Info */}
         <div className="text-right">
           <div className="text-sm font-semibold">Raghu Varun</div>
           <div className="text-xs text-gray-500">Admin</div>
         </div>
-
-        {/* User Avatar */}
         <div
           className="w-10 h-10 rounded-full overflow-hidden cursor-pointer"
           onClick={toggleProfileCard}
         >
           <img
-            src={raghuAvatar} // Use the imported image here
+            src={raghuAvatar}
             alt="User Avatar"
             className="w-full h-full object-cover"
           />
         </div>
       </div>
-
-      {/* Profile Card */}
       {showProfileCard && (
         <div className="absolute top-20 right-5 bg-white shadow-lg rounded-lg z-50 w-64">
           <Card>
@@ -91,8 +89,6 @@ const Header: React.FC = () => {
           </Card>
         </div>
       )}
-
-      {/* Notification Card */}
       {showNotificationCard && (
         <div className="absolute top-20 right-5 bg-white shadow-lg rounded-lg z-50 w-64">
           <Card>

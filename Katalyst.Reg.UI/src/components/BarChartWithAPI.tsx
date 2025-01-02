@@ -40,7 +40,7 @@ const BarChartWithAPI: React.FC<ChartProps> = ({ dateRange, selectedField, isMob
       };
 
       const response = await fetch(
-        'http://localhost:5113/api/v1/MifidTransaction/TransactionsByLookbackCalendarDays',
+        'https://devkatalystapi-dahratgkchgda0hn.northeurope-01.azurewebsites.net/api/v1/MifidTransaction/TransactionsByLookbackCalendarDays',
         {
           method: 'POST',
           headers: {

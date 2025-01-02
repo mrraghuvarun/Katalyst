@@ -32,7 +32,7 @@ const PieChartComponent: React.FC = () => {
     setError(null);
     try {
       const response = await fetch(
-        "http://localhost:5113/api/v1/MifidTransaction/TransactionSummaryByDate",
+        "https://devkatalystapi-dahratgkchgda0hn.northeurope-01.azurewebsites.net/api/v1/MifidTransaction/TransactionSummaryByDate",
         {
           method: "POST",
           headers: {
